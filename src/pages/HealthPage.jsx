@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
+import '../styles/HealthPage.css'
 import {
   Heart, Moon, Footprints, Flame, Droplet, Scale, Smile,
   Activity, Save, Loader2, CheckCircle2, AlertCircle,

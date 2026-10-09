@@ -1,0 +1,217 @@
+/* =========================================
+   CONFIRM MODAL — Premium Center Dialog
+========================================= */
+
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cm-overlay.cm-visible {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cm-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 26px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow:
+    0 32px 80px -12px rgba(15, 23, 42, 0.4),
+    0 0 0 1px rgba(226, 232, 240, 0.5);
+  text-align: center;
+  transform: translateY(20px) scale(0.94);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.cm-overlay.cm-visible .cm-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.cm-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: 0.85;
+}
+
+.cm-card-confirm::before { color: #3b82f6; }
+.cm-card-info::before { color: #0ea5e9; }
+.cm-card-alert::before { color: #8b5cf6; }
+.cm-card-success::before { color: #10b981; }
+.cm-card-danger::before { color: #dc2626; }
+.cm-card-error::before { color: #dc2626; }
+.cm-card-warning::before { color: #d97706; }
+
+.cm-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cm-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  transform: rotate(90deg);
+}
+
+.cm-icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  color: #ffffff;
+  position: relative;
+  animation: cmIconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+}
+
+@keyframes cmIconPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cm-icon::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.25;
+  animation: cmPulseRing 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes cmPulseRing {
+  0%, 100% { transform: scale(1); opacity: 0.25; }
+  50% { transform: scale(1.15); opacity: 0.05; }
+}
+
+.cm-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+
+.cm-message {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #64748b;
+  margin: 0 0 24px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.cm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cm-actions.cm-single {
+  justify-content: center;
+}
+
+.cm-actions.cm-single .cm-btn-confirm {
+  width: 100%;
+}
+
+.cm-btn {
+  flex: 1;
+  padding: 13px 20px;
+  border-radius: 13px;
+  font-size: 13.5px;
+  font-weight: 800;
+  font-family: inherit;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  border: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.cm-btn-cancel {
+  background: #ffffff;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.cm-btn-cancel:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.cm-btn-confirm {
+  color: #ffffff;
+}
+
+.cm-btn-confirm:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.cm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .cm-card {
+    padding: 26px 22px 22px;
+    border-radius: 20px;
+  }
+  .cm-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .cm-title { font-size: 17px; }
+  .cm-message { font-size: 12.5px; }
+  .cm-actions { flex-direction: column-reverse; gap: 8px; }
+  .cm-btn { padding: 12px 18px; font-size: 13px; }
+}

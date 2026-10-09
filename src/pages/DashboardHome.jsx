@@ -6,15 +6,22 @@ import {
   listApprovedReviews,
   listMyReviews,
 } from '../lib/supabase'
+import '../styles/dashboard-home.css'
 import {
   Heart, Activity, Footprints, Flame, Moon, Droplet, Smile,
   Sparkles, Newspaper, ExternalLink, Loader2, TrendingUp,
   Calendar, RefreshCw, AlertCircle, Target, Award,
   Star, Send, CheckCircle2, MessageSquareHeart, ThumbsUp, Quote,
-  ShieldCheck, Radio, CircleCheck, ArrowRight, ChevronRight,
+  ShieldCheck, Radio, CircleCheck,
 } from 'lucide-react'
+import Blogs from '../components/Blogs/Blogs'
 
-export default function DashboardHome({ user, profile, displayName }) {
+export default function DashboardHome({
+  user,
+  profile,
+  displayName,
+  onAskQuestion,
+}) {
   const [vitals, setVitals] = useState(null)
   const [recentVitals, setRecentVitals] = useState([])
   const [news, setNews] = useState([])
@@ -84,6 +91,19 @@ export default function DashboardHome({ user, profile, displayName }) {
   const firstName = displayName?.split(' ')[0] || 'there'
   const healthScore = computeHealthScore(vitals)
 
+  /* =========================================
+     ASK QUESTION → OPEN CHAT WITH IT
+  ========================================= */
+  function askQuestion(q) {
+    if (typeof onAskQuestion === 'function') {
+      onAskQuestion(q)
+    } else {
+      // Fallback: agar parent ne prop nahi diya to localStorage use karo
+      localStorage.setItem('pending_chat_question', q)
+      window.location.href = '/chat'
+    }
+  }
+
   return (
     <div className="dashboard-home">
       {error && (
@@ -92,20 +112,16 @@ export default function DashboardHome({ user, profile, displayName }) {
         </div>
       )}
 
-      {/* =========================================
-          HERO — Node wale jaisa premium
-      ========================================= */}
+      {/* HERO */}
       <section className="hero-section-react">
         <div className="hero-glow-react hero-glow-one-react" />
         <div className="hero-glow-react hero-glow-two-react" />
 
         <div className="hero-content-react">
-          {/* LEFT */}
           <div className="hero-left-react">
             <div className="ai-badge-react">
               <span className="pulse-dot-react" />
               AI Health Assistant
-              <span className="langchain-badge">LANGCHAIN</span>
             </div>
 
             <h2 className="hero-title-react">
@@ -119,7 +135,6 @@ export default function DashboardHome({ user, profile, displayName }) {
               a qualified doctor when you need one.
             </p>
 
-            {/* Health Score Chip */}
             <div className="hero-actions-react">
               <div className="hero-score-chip">
                 <div className="hero-score-ring-small">
@@ -160,36 +175,36 @@ export default function DashboardHome({ user, profile, displayName }) {
               </button>
             </div>
 
-            {/* Quick Questions */}
+            {/* QUICK QUESTIONS — onAskQuestion use */}
             <div className="quick-questions-react">
               <button
                 className="quick-question-react"
-                onClick={() => (window.location.href = '/chat?q=I have a headache')}
+                onClick={() => askQuestion('I have a headache')}
               >
                 I have a headache
               </button>
               <button
                 className="quick-question-react"
-                onClick={() => (window.location.href = '/chat?q=Why am I feeling tired')}
+                onClick={() => askQuestion('Why am I feeling tired?')}
               >
                 Why am I feeling tired?
               </button>
               <button
                 className="quick-question-react"
-                onClick={() => (window.location.href = '/chat?q=How can I sleep better')}
+                onClick={() => askQuestion('How can I sleep better?')}
               >
                 How can I sleep better?
               </button>
               <button
                 className="quick-question-react"
-                onClick={() => (window.location.href = '/chat?q=Is my heart rate normal')}
+                onClick={() => askQuestion('Is my heart rate normal?')}
               >
                 Is my heart rate normal?
               </button>
             </div>
           </div>
 
-          {/* RIGHT — ORB */}
+          {/* ORB */}
           <div className="hero-orb-wrapper-react">
             <div className="hero-orb-react">
               <div className="orb-ring-react ring-one-react" />
@@ -215,9 +230,7 @@ export default function DashboardHome({ user, profile, displayName }) {
         </div>
       </section>
 
-      {/* =========================================
-          TRUST STRIP — 4 cards
-      ========================================= */}
+      {/* TRUST STRIP */}
       <section className="trust-grid-react">
         <TrustCard
           icon={ShieldCheck}
@@ -227,7 +240,7 @@ export default function DashboardHome({ user, profile, displayName }) {
         <TrustCard
           icon={Sparkles}
           title="Smart AI"
-          text="LangChain powered assistance"
+         text="AI-Powered Healthcare Assistant"
         />
         <TrustCard
           icon={CircleCheck}
@@ -241,9 +254,7 @@ export default function DashboardHome({ user, profile, displayName }) {
         />
       </section>
 
-      {/* =========================================
-          STATS GRID — 6 VITALS
-      ========================================= */}
+      {/* STATS GRID */}
       <section className="stats-grid-react">
         <StatCard
           label="Heart Rate"
@@ -301,9 +312,7 @@ export default function DashboardHome({ user, profile, displayName }) {
         />
       </section>
 
-      {/* =========================================
-          7-DAY TREND CHART
-      ========================================= */}
+      {/* 7-DAY TREND */}
       {recentVitals.length > 0 && (
         <section className="section-card-react">
           <div className="section-card-header-react">
@@ -323,9 +332,9 @@ export default function DashboardHome({ user, profile, displayName }) {
         </section>
       )}
 
-      {/* =========================================
-          HEALTH NEWS
-      ========================================= */}
+     <Blogs user={user} profile={profile} />
+
+      {/* HEALTH NEWS */}
       <section className="section-card-react">
         <div className="section-card-header-react">
           <div className="section-icon-react">
@@ -390,9 +399,7 @@ export default function DashboardHome({ user, profile, displayName }) {
         )}
       </section>
 
-      {/* =========================================
-          FEEDBACK SECTION
-      ========================================= */}
+      {/* FEEDBACK */}
       <FeedbackSection user={user} displayName={displayName} />
     </div>
   )

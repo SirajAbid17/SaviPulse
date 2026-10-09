@@ -7,12 +7,14 @@ import {
   deleteRecord,
   toggleRecordPin,
 } from '../lib/supabase'
+import '../styles/RecordsPage.css'
+import ConfirmModal from '../components/ConfirmModal'
 import {
   FileText, Plus, Trash2, Loader2, Eye, Sparkles,
   AlertCircle, X, Download, Pin, Upload, Cloud,
   FileCheck2, Calendar, HardDrive, Hash, Type, Tag,
   CheckCircle2, ListChecks, Pill, FlaskConical, Info,
-  AlertTriangle, CalendarClock, FolderOpen,
+  AlertTriangle, CalendarClock, FolderOpen, Lightbulb,
 } from 'lucide-react'
 
 const RECORD_TYPES = [
@@ -39,8 +41,43 @@ export default function RecordsPage({ user }) {
   const [filterType, setFilterType] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
+  /* ============ MODAL STATE ============ */
+  const [modal, setModal] = useState({
+    open: false,
+    type: 'confirm',
+    title: '',
+    message: '',
+    confirmText: 'OK',
+    cancelText: 'Cancel',
+    showCancel: true,
+    loading: false,
+    onConfirm: null,
+    onCancel: null,
+  })
+
+  function openModal(config) {
+    setModal({
+      open: true,
+      type: 'confirm',
+      title: '',
+      message: '',
+      confirmText: 'OK',
+      cancelText: 'Cancel',
+      showCancel: true,
+      loading: false,
+      onConfirm: null,
+      onCancel: null,
+      ...config,
+    })
+  }
+
+  function closeModal() {
+    setModal((m) => ({ ...m, open: false, loading: false }))
+  }
+
   useEffect(() => {
     load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function load() {
@@ -64,12 +101,19 @@ export default function RecordsPage({ user }) {
       await load()
       setShowUploadModal(false)
 
-      // Auto-analyze image
       if (file.type.startsWith('image/')) {
         setTimeout(() => analyzeRecord(newRecord), 400)
       }
     } catch (err) {
-      alert(`❌ ${err.message}`)
+      openModal({
+        type: 'error',
+        title: 'Upload Failed',
+        message: err.message || 'Something went wrong while uploading.',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
     } finally {
       setUploading(false)
     }
@@ -80,7 +124,6 @@ export default function RecordsPage({ user }) {
     setAnalyzing(record.id)
 
     try {
-      // Cache check
       if (record.ai_analysis?.summary) {
         setViewRecord(record)
         setViewMode('analysis')
@@ -88,13 +131,11 @@ export default function RecordsPage({ user }) {
         return
       }
 
-      // Call Edge Function
       const res = await callAnalyzeRecord(record.file_url)
       if (res?.error) throw new Error(res.error)
 
       const analysisData = res.analysis
 
-      // Save to DB
       await supabase
         .from('medical_records')
         .update({ ai_analysis: analysisData })
@@ -106,7 +147,15 @@ export default function RecordsPage({ user }) {
       setViewMode('analysis')
     } catch (err) {
       console.error('Analyze failed:', err)
-      alert(`❌ AI Analysis failed: ${err.message}`)
+      openModal({
+        type: 'error',
+        title: 'AI Analysis Failed',
+        message: err.message || 'Could not analyze this record. Please try again.',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
     } finally {
       setAnalyzing(null)
     }
@@ -122,18 +171,45 @@ export default function RecordsPage({ user }) {
       await toggleRecordPin(record.id, !record.is_pinned)
       await load()
     } catch (err) {
-      alert(`❌ ${err.message}`)
+      openModal({
+        type: 'error',
+        title: 'Pin Failed',
+        message: err.message || 'Could not pin the record.',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
     }
   }
 
-  async function handleDelete(record) {
-    if (!confirm(`Delete "${record.title}"? This cannot be undone.`)) return
-    try {
-      await deleteRecord(record)
-      await load()
-    } catch (err) {
-      alert(`❌ ${err.message}`)
-    }
+  function handleDelete(record) {
+    openModal({
+      type: 'danger',
+      title: 'Delete Record?',
+      message: `"${record.title}" will be permanently deleted. This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        try {
+          await deleteRecord(record)
+          await load()
+          closeModal()
+        } catch (err) {
+          openModal({
+            type: 'error',
+            title: 'Delete Failed',
+            message: err.message || 'Could not delete the record.',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: closeModal,
+            onCancel: closeModal,
+          })
+        }
+      },
+      onCancel: closeModal,
+    })
   }
 
   /* ============ FILTERED ============ */
@@ -150,7 +226,6 @@ export default function RecordsPage({ user }) {
     return true
   })
 
-  /* ============ STATS ============ */
   const stats = {
     total: records.length,
     prescriptions: records.filter((r) => r.type === 'prescription').length,
@@ -168,7 +243,7 @@ export default function RecordsPage({ user }) {
           </div>
           <div>
             <h2>Medical Records</h2>
-            <p>Keep your health records organized & secure</p>
+            <p>Keep your health records organized &amp; secure</p>
           </div>
         </div>
         <button
@@ -183,30 +258,10 @@ export default function RecordsPage({ user }) {
       {/* STATS */}
       {records.length > 0 && (
         <section className="records-stats-grid">
-          <RecordStat
-            icon={FolderOpen}
-            value={stats.total}
-            label="Total Records"
-            color="blue"
-          />
-          <RecordStat
-            icon={FileText}
-            value={stats.prescriptions}
-            label="Prescriptions"
-            color="green"
-          />
-          <RecordStat
-            icon={FlaskConical}
-            value={stats.labReports}
-            label="Lab Reports"
-            color="purple"
-          />
-          <RecordStat
-            icon={Sparkles}
-            value={stats.aiAnalyzed}
-            label="AI Analyzed"
-            color="amber"
-          />
+          <RecordStat icon={FolderOpen} value={stats.total} label="Total Records" color="blue" />
+          <RecordStat icon={FileText} value={stats.prescriptions} label="Prescriptions" color="green" />
+          <RecordStat icon={FlaskConical} value={stats.labReports} label="Lab Reports" color="purple" />
+          <RecordStat icon={Sparkles} value={stats.aiAnalyzed} label="AI Analyzed" color="amber" />
         </section>
       )}
 
@@ -322,6 +377,20 @@ export default function RecordsPage({ user }) {
           analyzing={analyzing === viewRecord.id}
         />
       )}
+
+      {/* CONFIRM MODAL */}
+      <ConfirmModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        showCancel={modal.showCancel}
+        loading={modal.loading}
+        onConfirm={modal.onConfirm || closeModal}
+        onCancel={modal.onCancel || closeModal}
+      />
     </div>
   )
 }
@@ -344,7 +413,7 @@ function RecordStat({ icon: Icon, value, label, color }) {
 }
 
 /* =========================================
-   RECORD CARD
+   RECORD CARD — Compact + Single-Row Actions
 ========================================= */
 function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
   const hasAI = !!record.ai_analysis?.summary
@@ -354,13 +423,14 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
 
   return (
     <div className="record-card-v2">
+      {/* THUMBNAIL */}
       <div className="record-thumb-v2">
         {isImage ? (
           <img src={record.file_url} alt={record.title} loading="lazy" />
         ) : (
           <div className="record-file-icon-v2">
-            <FileText size={36} strokeWidth={1.5} />
-            <span>PDF</span>
+            <FileText size={32} strokeWidth={1.5} />
+            <span>{record.file_type?.includes('pdf') ? 'PDF' : 'FILE'}</span>
           </div>
         )}
 
@@ -379,19 +449,20 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
         )}
       </div>
 
+      {/* BODY */}
       <div className="record-body-v2">
         <h3 className="record-title-v2">{record.title}</h3>
 
         {record.notes && (
           <p className="record-notes-v2">
-            {record.notes.slice(0, 80)}
-            {record.notes.length > 80 ? '…' : ''}
+            {record.notes.slice(0, 70)}
+            {record.notes.length > 70 ? '…' : ''}
           </p>
         )}
 
         <div className="record-meta-v2">
           <span>
-            <Calendar size={11} />
+            <Calendar size={10} />
             {new Date(record.created_at).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'short',
@@ -400,48 +471,58 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
           </span>
           {record.file_size > 0 && (
             <span>
-              <HardDrive size={11} />
+              <HardDrive size={10} />
               {(record.file_size / 1024 / 1024).toFixed(2)} MB
             </span>
           )}
         </div>
-
-        {record.tags?.length > 0 && (
-          <div className="record-tags-v2">
-            {record.tags.slice(0, 3).map((tag, i) => (
-              <span key={i} className="record-tag-v2">
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
+      {/* ACTIONS — Single Row: tags left, icons right */}
       <div className="record-actions-v2">
-        <button onClick={onView} title="View" className="record-action-v2">
-          <Eye size={14} />
-        </button>
+        {/* Tags inline (left side) */}
+        {record.tags?.length > 0 ? (
+          <div className="record-tags-inline">
+            {record.tags.slice(0, 2).map((tag, i) => (
+              <span key={i} className="record-tag-v2">#{tag}</span>
+            ))}
+            {record.tags.length > 2 && (
+              <span className="record-tag-more">+{record.tags.length - 2}</span>
+            )}
+          </div>
+        ) : (
+          <span className="record-actions-empty" />
+        )}
 
+        <span className="record-actions-spacer" />
+
+        {/* AI button — icon only */}
         {isImage && (
           <button
             onClick={hasAI ? onView : onAnalyze}
             disabled={analyzing}
-            title={hasAI ? 'View AI' : 'Analyze'}
+            title={hasAI ? 'View AI Analysis' : 'Analyze with AI'}
             className={`record-action-v2 record-action-ai-v2 ${
               analyzing ? 'analyzing' : ''
             }`}
           >
             {analyzing ? (
               <Loader2
-                size={14}
+                size={13}
                 style={{ animation: 'spin 1s linear infinite' }}
               />
             ) : (
-              <Sparkles size={14} />
+              <Sparkles size={13} />
             )}
           </button>
         )}
 
+        {/* View */}
+        <button onClick={onView} title="View" className="record-action-v2">
+          <Eye size={13} />
+        </button>
+
+        {/* Download */}
         <a
           href={record.file_url}
           target="_blank"
@@ -449,23 +530,25 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
           title="Download"
           className="record-action-v2"
         >
-          <Download size={14} />
+          <Download size={13} />
         </a>
 
+        {/* Pin */}
         <button
           onClick={onPin}
-          title="Pin"
+          title={record.is_pinned ? 'Unpin' : 'Pin'}
           className={`record-action-v2 ${record.is_pinned ? 'pinned' : ''}`}
         >
-          <Pin size={14} />
+          <Pin size={13} />
         </button>
 
+        {/* Delete */}
         <button
           onClick={onDelete}
           title="Delete"
           className="record-action-v2 record-action-danger-v2"
         >
-          <Trash2 size={14} />
+          <Trash2 size={13} />
         </button>
       </div>
     </div>
@@ -544,7 +627,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
         </div>
 
         <form onSubmit={handleSubmit} className="upload-form-v2">
-          {/* DROPZONE */}
           <div
             className={`dropzone-v2 ${dragOver ? 'drag-over' : ''} ${
               file ? 'has-file' : ''
@@ -571,7 +653,7 @@ function UploadModal({ onClose, onUpload, uploading }) {
                   <Cloud size={22} />
                 </div>
                 <p>
-                  <strong>Click to upload</strong> or drag & drop
+                  <strong>Click to upload</strong> or drag &amp; drop
                 </p>
                 <small>PDF, JPG, PNG, DOCX · Max 15 MB</small>
               </div>
@@ -597,7 +679,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
             )}
           </div>
 
-          {/* TITLE */}
           <div className="form-row-v2">
             <label>
               <Type size={12} />
@@ -613,7 +694,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
             />
           </div>
 
-          {/* TYPE */}
           <div className="form-row-v2">
             <label>
               <Tag size={12} />
@@ -628,7 +708,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
             </select>
           </div>
 
-          {/* DATE */}
           <div className="form-row-v2">
             <label>
               <Calendar size={12} />
@@ -641,7 +720,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
             />
           </div>
 
-          {/* TAGS */}
           <div className="form-row-v2">
             <label>
               <Hash size={12} />
@@ -656,7 +734,6 @@ function UploadModal({ onClose, onUpload, uploading }) {
             />
           </div>
 
-          {/* NOTES */}
           <div className="form-row-v2">
             <label>
               <FileText size={12} />
@@ -693,10 +770,7 @@ function UploadModal({ onClose, onUpload, uploading }) {
             >
               {uploading ? (
                 <>
-                  <Loader2
-                    size={14}
-                    style={{ animation: 'spin 1s linear infinite' }}
-                  />
+                  <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
                   Uploading…
                 </>
               ) : (
@@ -801,10 +875,7 @@ function ViewModal({ record, mode, setMode, onClose, onAnalyze, analyzing }) {
                 >
                   {analyzing ? (
                     <>
-                      <Loader2
-                        size={14}
-                        style={{ animation: 'spin 1s linear infinite' }}
-                      />
+                      <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
                       Analyzing…
                     </>
                   ) : (
@@ -825,6 +896,25 @@ function ViewModal({ record, mode, setMode, onClose, onAnalyze, analyzing }) {
                 Download
               </a>
             </div>
+
+            {isImage && !hasAI && (
+              <div className="view-ai-explain">
+                <Sparkles size={18} />
+                <div>
+                  <strong>What AI can do with this image</strong>
+                  <p>
+                    Our AI reads prescriptions, lab reports, scans and notes,
+                    then explains them in simple language.
+                  </p>
+                  <ul>
+                    <li>Plain-language summary (English + Urdu)</li>
+                    <li>Key findings &amp; abnormal values highlighted</li>
+                    <li>Medicines, dosages and their purpose</li>
+                    <li>Warnings, advice and follow-up reminders</li>
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -843,11 +933,13 @@ function AIAnalysisView({ analysis: a }) {
   return (
     <div className="ai-analysis-v2">
       <div className="ai-analysis-header-v2">
-        <div className="ai-analysis-badge-v2">
-          <Sparkles size={12} /> AI Analysis
-        </div>
-        <div className="ai-analysis-doc-type-v2">
-          {a.documentType || 'Document'}
+        <div>
+          <span className="ai-analysis-badge-v2">
+            <Sparkles size={12} /> AI Analysis
+          </span>
+          {a.documentType && (
+            <span className="ai-analysis-doc-type-v2">{a.documentType}</span>
+          )}
         </div>
         <h3 className="ai-analysis-summary-v2">{a.summary}</h3>
         {a.summaryUrdu && (

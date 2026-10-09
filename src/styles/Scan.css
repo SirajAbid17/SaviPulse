@@ -1,0 +1,310 @@
+/* =========================================================
+   CONFIRM MODAL — SaviPulse
+   Clean · Flat · Professional · Fully Responsive
+   Works with ConfirmModal.jsx
+========================================================= */
+
+/* ---------- OVERLAY ---------- */
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 42, 36, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  opacity: 0;
+  transition: opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.cm-overlay.cm-visible {
+  opacity: 1;
+}
+
+/* ---------- CARD ---------- */
+.cm-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+
+  padding: 28px 26px 22px;
+
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e4ece9;
+
+  box-shadow:
+    0 24px 48px -12px rgba(15, 42, 36, 0.22),
+    0 8px 16px -8px rgba(15, 42, 36, 0.12);
+
+  text-align: center;
+
+  transform: scale(0.94) translateY(8px);
+  opacity: 0;
+
+  transition:
+    transform 0.26s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.cm-overlay.cm-visible .cm-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* ---------- CLOSE BUTTON ---------- */
+.cm-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #e4ece9;
+  border-radius: 8px;
+  background: #f8fbfa;
+
+  color: #6d847d;
+
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.cm-close:hover {
+  background: #fef2f2;
+  color: #dc4545;
+  border-color: #fecaca;
+}
+
+.cm-close:active {
+  transform: scale(0.94);
+}
+
+/* ---------- ICON ---------- */
+.cm-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 16px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 16px;
+  color: #ffffff;
+
+  /* background + box-shadow come from inline style (per type) */
+}
+
+/* ---------- TITLE ---------- */
+.cm-title {
+  margin: 0 0 8px;
+
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  color: #0f2a24;
+  line-height: 1.25;
+}
+
+/* ---------- MESSAGE ---------- */
+.cm-message {
+  margin: 0 0 22px;
+
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+
+  color: #6d847d;
+}
+
+/* ---------- ACTIONS ---------- */
+.cm-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cm-actions.cm-single {
+  justify-content: center;
+}
+
+.cm-actions.cm-single .cm-btn-confirm {
+  flex: 0 1 auto;
+  min-width: 140px;
+}
+
+/* ---------- BUTTONS ---------- */
+.cm-btn {
+  flex: 1;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-height: 44px;
+  padding: 11px 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+}
+
+.cm-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.cm-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+/* Cancel button */
+.cm-btn-cancel {
+  background: #ffffff;
+  color: #26443c;
+  border: 1.5px solid #e4ece9;
+}
+
+.cm-btn-cancel:hover:not(:disabled) {
+  background: #f2f6f4;
+  border-color: #cfdbd6;
+  color: #0f2a24;
+}
+
+/* Confirm button — color comes from inline style */
+.cm-btn-confirm {
+  color: #ffffff;
+}
+
+.cm-btn-confirm:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+/* ---------- LOADING SPINNER ---------- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   TYPE-SPECIFIC ACCENTS (optional, per type)
+========================================================= */
+.cm-card-danger .cm-title { color: #991b1b; }
+.cm-card-error  .cm-title { color: #991b1b; }
+.cm-card-warning .cm-title { color: #92400e; }
+.cm-card-success .cm-title { color: #065f46; }
+.cm-card-info   .cm-title { color: #075985; }
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .cm-overlay {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .cm-card {
+    max-width: 100%;
+    padding: 24px 20px 18px;
+    border-radius: 16px;
+  }
+
+  .cm-icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 14px;
+  }
+
+  .cm-title {
+    font-size: 16.5px;
+  }
+
+  .cm-message {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .cm-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .cm-btn {
+    width: 100%;
+    min-height: 42px;
+    font-size: 13px;
+  }
+
+  .cm-actions.cm-single .cm-btn-confirm {
+    min-width: 0;
+  }
+}
+
+/* Ultra small */
+@media (max-width: 360px) {
+  .cm-card {
+    padding: 22px 18px 16px;
+  }
+
+  .cm-title {
+    font-size: 15.5px;
+  }
+
+  .cm-message {
+    font-size: 12.5px;
+  }
+
+  .cm-close {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cm-overlay,
+  .cm-card,
+  .cm-btn,
+  .cm-close {
+    transition: none;
+  }
+  .cm-card {
+    transform: none;
+    opacity: 1;
+  }
+}

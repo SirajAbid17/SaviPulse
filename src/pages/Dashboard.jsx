@@ -5,7 +5,7 @@ import {
   LogOut, Menu, X, Shield, Newspaper, LineChart, Stethoscope,
   Crown,
 } from 'lucide-react'
-
+import '../styles/dashboard.css'
 import DashboardHome from './DashboardHome'
 import ChatPage from './ChatPage'
 import HealthPage from './HealthPage'
@@ -15,7 +15,71 @@ import InsightsPage from './InsightsPage'
 import SettingsPage from './SettingsPage'
 import DailyCarePage from './DailyCarePage'
 import AdminPage from './AdminPage'
-import ImpactPill from '../components/ImpactPill'
+
+import ConfirmModal from '../components/ConfirmModal'
+import HelpScannerModal from '../components/HelpScannerModal'
+
+/* =========================================================
+   HEART BADGE + SCROLLING SUPPORT MESSAGE
+   ---------------------------------------------------------
+   • Desktop (≥ 900px): heart RIGHT edge, long scrolling message
+   • Mobile  (< 900px): heart LEFT edge, only "Scan here" text
+                        (no scroll, no marquee)
+   • Click → opens HelpScannerModal (SadaPay + IBAN)
+========================================================= */
+function RightHeartBadge({ onClick }) {
+  const supportText =
+    "I’m Siraj, creator of SaviPulse. Scan to support and inspire my next project!"
+  const shortText = "Support"
+
+  const qrSrc = "/scaner.jpeg"
+
+  return (
+    <div
+      className="right-heart-badge"
+      title="Support SaviPulse"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
+    >
+      {/* === DESKTOP: long scrolling line === */}
+      <div className="heart-scroll-line">
+        <div className="heart-scroll-marquee">
+          <img
+            src={qrSrc}
+            alt="Support QR"
+            className="heart-scroll-qr"
+            draggable="false"
+          />
+          <span className="heart-scroll-text">{supportText}</span>
+
+          <img
+            src={qrSrc}
+            alt=""
+            aria-hidden="true"
+            className="heart-scroll-qr"
+            draggable="false"
+          />
+          <span className="heart-scroll-text" aria-hidden="true">
+            {supportText}
+          </span>
+        </div>
+      </div>
+
+      {/* === MOBILE: only short "Scan here" text === */}
+      <span className="heart-short-text">{shortText}</span>
+
+      {/* Heart icon */}
+      <Heart size={24} strokeWidth={2.4} fill="currentColor" />
+    </div>
+  )
+}
 
 export default function Dashboard({ session, profile }) {
   const user = session.user
@@ -29,6 +93,42 @@ export default function Dashboard({ session, profile }) {
 
   const [page, setPage] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [pendingChatQuestion, setPendingChatQuestion] = useState(null)
+  const [helpModalOpen, setHelpModalOpen] = useState(false)
+
+  /* ============ MODAL STATE ============ */
+  const [modal, setModal] = useState({
+    open: false,
+    type: 'confirm',
+    title: '',
+    message: '',
+    confirmText: 'OK',
+    cancelText: 'Cancel',
+    showCancel: true,
+    loading: false,
+    onConfirm: null,
+    onCancel: null,
+  })
+
+  function openModal(config) {
+    setModal({
+      open: true,
+      type: 'confirm',
+      title: '',
+      message: '',
+      confirmText: 'OK',
+      cancelText: 'Cancel',
+      showCancel: true,
+      loading: false,
+      onConfirm: null,
+      onCancel: null,
+      ...config,
+    })
+  }
+
+  function closeModal() {
+    setModal((m) => ({ ...m, open: false, loading: false }))
+  }
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -45,10 +145,32 @@ export default function Dashboard({ session, profile }) {
   const personal = navItems.slice(7)
   const isAdmin = profile?.role === 'admin'
 
-  async function logout() {
-    const ok = window.confirm('Are you sure you want to logout?')
-    if (!ok) return
-    await supabase.auth.signOut()
+  /* ============ LOGOUT WITH MODAL ============ */
+  function handleLogout() {
+    openModal({
+      type: 'confirm',
+      title: 'Logout?',
+      message: 'Are you sure you want to logout from SaviPulse?',
+      confirmText: 'Logout',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        try {
+          await supabase.auth.signOut()
+          closeModal()
+        } catch (err) {
+          console.error('Logout failed:', err)
+          closeModal()
+        }
+      },
+      onCancel: closeModal,
+    })
+  }
+
+  function openChatWithQuestion(question) {
+    setPendingChatQuestion(question)
+    setPage('chat')
+    setSidebarOpen(false)
   }
 
   return (
@@ -101,6 +223,7 @@ export default function Dashboard({ session, profile }) {
                 onClick={() => {
                   setPage(item.id)
                   setSidebarOpen(false)
+                  if (item.id !== 'chat') setPendingChatQuestion(null)
                 }}
               >
                 <Icon size={17} />
@@ -137,7 +260,6 @@ export default function Dashboard({ session, profile }) {
             )
           })}
 
-          {/* ADMIN LINK — only for admins */}
           {isAdmin && (
             <>
               <div className="sidebar-divider" />
@@ -180,7 +302,7 @@ export default function Dashboard({ session, profile }) {
             </div>
             <button
               className="sidebar-user-logout"
-              onClick={logout}
+              onClick={handleLogout}
               title="Quick logout"
               aria-label="Logout"
             >
@@ -188,69 +310,7 @@ export default function Dashboard({ session, profile }) {
             </button>
           </div>
 
-          <div className="sidebar-follow-card">
-            <div className="sidebar-follow-header">
-              <div className="sidebar-follow-icon">
-                <Sparkles size={12} />
-              </div>
-              <div>
-                <strong>Follow Us</strong>
-                <small>Stay healthy with us</small>
-              </div>
-            </div>
-
-            <div className="sidebar-socials">
-              <a
-                href="https://github.com/SirajAbid17"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sidebar-social sidebar-social-github"
-                title="GitHub"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.3 2.8.1 3.2.8.8 1.3 1.9 1.3 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z" />
-                </svg>
-              </a>
-
-              <a
-                href="https://linkedin.com/in/sirajabid17"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sidebar-social sidebar-social-linkedin"
-                title="LinkedIn"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z" />
-                </svg>
-              </a>
-
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sidebar-social sidebar-social-twitter"
-                title="Twitter / X"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sidebar-social sidebar-social-youtube"
-                title="YouTube"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.5 3.5z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          <button className="sidebar-logout-btn" onClick={logout}>
+          <button className="sidebar-logout-btn" onClick={handleLogout}>
             <LogOut size={14} />
             <span>Logout</span>
           </button>
@@ -280,11 +340,13 @@ export default function Dashboard({ session, profile }) {
             <button
               className="improve-pill"
               onClick={() => setPage('health')}
+              title="Improve your Health"
             >
-              <Sparkles size={13} /> Improve your Health
+              <Sparkles size={13} />
+              <span>Improve your Health</span>
             </button>
 
-            <div className="profile-chip">
+            <div className="profile-chip" title={displayName}>
               <div className="avatar">{initials}</div>
               <div className="profile-info">
                 <strong>{displayName}</strong>
@@ -292,8 +354,13 @@ export default function Dashboard({ session, profile }) {
               </div>
             </div>
 
-            <button className="icon-button" onClick={logout} title="Logout">
-              <LogOut size={17} />
+            <button
+              className="icon-button topbar-logout"
+              onClick={handleLogout}
+              title="Logout"
+              aria-label="Logout"
+            >
+              <LogOut size={16} />
             </button>
           </div>
         </header>
@@ -305,9 +372,16 @@ export default function Dashboard({ session, profile }) {
               user={user}
               profile={profile}
               displayName={displayName}
+              onAskQuestion={openChatWithQuestion}
             />
           )}
-          {page === 'chat' && <ChatPage user={user} />}
+          {page === 'chat' && (
+            <ChatPage
+              user={user}
+              pendingQuestion={pendingChatQuestion}
+              onPendingConsumed={() => setPendingChatQuestion(null)}
+            />
+          )}
           {page === 'daily-care' && <DailyCarePage user={user} />}
           {page === 'health' && <HealthPage user={user} />}
           {page === 'insights' && <InsightsPage user={user} />}
@@ -319,7 +393,7 @@ export default function Dashboard({ session, profile }) {
               user={user}
               profile={profile}
               displayName={displayName}
-              onLogout={logout}
+              onLogout={handleLogout}
             />
           )}
         </div>
@@ -349,8 +423,28 @@ export default function Dashboard({ session, profile }) {
         </footer>
       </main>
 
-      {/* ✅ IMPACT PILL + MODAL — appears on every page */}
-      <ImpactPill />
+      {/* 👇 HEART BADGE — opens HelpScannerModal on click */}
+      <RightHeartBadge onClick={() => setHelpModalOpen(true)} />
+
+      {/* HELP SCANNER MODAL */}
+      <HelpScannerModal
+        isOpen={helpModalOpen}
+        onClose={() => setHelpModalOpen(false)}
+      />
+
+      {/* CONFIRM MODAL */}
+      <ConfirmModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        showCancel={modal.showCancel}
+        loading={modal.loading}
+        onConfirm={modal.onConfirm || closeModal}
+        onCancel={modal.onCancel || closeModal}
+      />
     </div>
   )
 }

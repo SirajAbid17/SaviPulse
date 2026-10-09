@@ -1,0 +1,801 @@
+/* =========================================================
+   SAVIPULSE — DAILY CARE PAGE
+   Clean · Professional · Fully Responsive
+   ---------------------------------------------------------
+   1.  Page & Layout
+   2.  Hero
+   3.  Stats Grid
+   4.  Alerts / Suggestions / Wins (shared sections)
+   5.  Care Item
+   6.  Routine Grid
+   7.  Recent Activity
+   8.  Footer Note
+   9.  Responsive
+   10. Accessibility
+========================================================= */
+
+/* =========================================
+   TOKENS
+========================================= */
+.daily-care-page {
+  --dc-primary:       #10b981;
+  --dc-primary-dark:  #0f766e;
+  --dc-ink:           #0f2a24;
+  --dc-ink-2:         #26443c;
+  --dc-muted:         #6d847d;
+  --dc-muted-2:       #94a8a1;
+  --dc-line:          #e4ece9;
+  --dc-line-2:        #eef3f1;
+  --dc-surface:       #ffffff;
+  --dc-surface-2:     #fafcfb;
+  --dc-surface-3:     #f8fbfa;
+  --dc-danger:        #dc2626;
+  --dc-warn:          #d97706;
+  --dc-ease:          cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* =========================================
+   1. HERO
+========================================= */
+.daily-care-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 36px 32px;
+  border-radius: 20px;
+  background: #5b21b6;
+  color: #fff;
+}
+
+.daily-care-hero-glow {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.28), transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.daily-care-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+
+.daily-care-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ddd6fe;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.daily-care-hero-badge svg { color: #c4b5fd; flex-shrink: 0; }
+
+.daily-care-hero-badge .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c4b5fd;
+  flex-shrink: 0;
+  animation: dcPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dcPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.daily-care-hero h1 {
+  margin: 20px 0 0;
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.daily-care-hero h1 span {
+  display: block;
+  color: #c4b5fd;
+  margin-top: 2px;
+}
+
+.daily-care-hero p {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(237, 233, 254, 0.78);
+  max-width: 560px;
+}
+
+.daily-care-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 22px;
+  padding: 11px 18px;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #5b21b6;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.16s var(--dc-ease), transform 0.16s var(--dc-ease);
+}
+
+.daily-care-refresh:hover:not(:disabled) {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.daily-care-refresh:active:not(:disabled) { transform: translateY(0); }
+.daily-care-refresh:disabled { opacity: 0.7; cursor: wait; }
+
+/* =========================================
+   2. STATS GRID
+========================================= */
+.daily-care-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.daily-care-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--dc-surface);
+  border: 1px solid var(--dc-line);
+  transition: border-color 0.16s var(--dc-ease);
+  min-width: 0;
+}
+
+.daily-care-stat:hover { border-color: #cbd5e1; }
+
+.daily-care-stat-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  flex-shrink: 0;
+}
+
+.daily-care-stat-green .daily-care-stat-icon  { background: #ecfdf5; color: #059669; }
+.daily-care-stat-orange .daily-care-stat-icon { background: #fff7ed; color: #ea580c; }
+.daily-care-stat-amber .daily-care-stat-icon  { background: #fffbeb; color: #d97706; }
+.daily-care-stat-red .daily-care-stat-icon    { background: #fef2f2; color: #dc2626; }
+.daily-care-stat-purple .daily-care-stat-icon { background: #f5f3ff; color: #7c3aed; }
+.daily-care-stat-slate .daily-care-stat-icon  { background: #f1f5f9; color: #64748b; }
+
+.daily-care-stat-body { flex: 1; min-width: 0; }
+
+.daily-care-stat-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--dc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+}
+
+.daily-care-stat-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dc-ink);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.daily-care-stat-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  color: var(--dc-muted-2);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* =========================================
+   3. SHARED SECTION CARDS
+========================================= */
+.daily-care-alerts,
+.daily-care-suggestions,
+.daily-care-wins,
+.daily-care-routine,
+.daily-care-recent {
+  padding: 22px;
+  background: var(--dc-surface);
+  border-radius: 18px;
+  border: 1px solid var(--dc-line);
+  min-width: 0;
+}
+
+.daily-care-alerts { border-color: #fecaca; }
+
+.daily-care-alerts-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #fee2e2;
+}
+
+.daily-care-alerts-header > svg { color: var(--dc-danger); flex-shrink: 0; }
+
+.daily-care-alerts-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #7f1d1d;
+  letter-spacing: -0.015em;
+}
+
+.daily-care-alerts-header p {
+  margin: 3px 0 0;
+  font-size: 11.5px;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+.daily-care-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--dc-line-2);
+}
+
+.daily-care-section-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.daily-care-section-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dc-ink);
+  letter-spacing: -0.015em;
+}
+
+.daily-care-section-header p {
+  margin: 3px 0 0;
+  font-size: 11.5px;
+  color: var(--dc-muted);
+  font-weight: 500;
+}
+
+.daily-care-section-badge {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.daily-care-alerts-list,
+.daily-care-suggestions-list,
+.daily-care-wins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================================
+   4. CARE ITEM
+========================================= */
+.care-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--dc-surface-2);
+  border: 1px solid var(--dc-line-2);
+  transition: border-color 0.16s var(--dc-ease), background 0.16s var(--dc-ease);
+  min-width: 0;
+}
+
+.care-item:hover {
+  background: var(--dc-surface);
+  border-color: var(--dc-line);
+}
+
+.care-item-high   { border-color: #fecaca; }
+.care-item-medium { border-color: #fde68a; }
+.care-item-low    { border-color: #a7f3d0; }
+
+.care-item-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.care-item-body { flex: 1; min-width: 0; }
+
+.care-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.care-item-header strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dc-ink);
+  letter-spacing: -0.01em;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.care-item-badge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.care-badge-high   { background: #fee2e2; color: #b91c1c; }
+.care-badge-medium { background: #fef3c7; color: #b45309; }
+.care-badge-low    { background: #d1fae5; color: #047857; }
+
+.care-item-body p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--dc-ink-2);
+  overflow-wrap: anywhere;
+}
+
+.care-item-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.care-item-action svg { flex-shrink: 0; }
+
+/* =========================================
+   5. ROUTINE GRID
+========================================= */
+.daily-care-routine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.routine-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--dc-surface-2);
+  border: 1px solid var(--dc-line-2);
+  transition: border-color 0.16s var(--dc-ease), background 0.16s var(--dc-ease);
+  min-width: 0;
+}
+
+.routine-card:hover {
+  background: var(--dc-surface);
+  border-color: var(--dc-line);
+}
+
+.routine-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dc-line-2);
+}
+
+.routine-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.routine-orange .routine-icon { background: #fff7ed; color: #ea580c; }
+.routine-amber .routine-icon  { background: #fffbeb; color: #d97706; }
+.routine-blue .routine-icon   { background: #eff6ff; color: #2563eb; }
+.routine-purple .routine-icon { background: #f5f3ff; color: #7c3aed; }
+
+.routine-time {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--dc-muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.routine-header h4 {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--dc-ink);
+  letter-spacing: -0.01em;
+}
+
+.routine-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.routine-items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 11.5px;
+  color: var(--dc-ink-2);
+  line-height: 1.55;
+}
+
+.routine-items li svg {
+  color: #10b981;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* =========================================
+   6. RECENT ACTIVITY
+========================================= */
+.daily-care-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recent-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 11px;
+  background: var(--dc-surface-2);
+  border: 1px solid var(--dc-line-2);
+  transition: background 0.15s var(--dc-ease), border-color 0.15s var(--dc-ease);
+  min-width: 0;
+}
+
+.recent-row:hover {
+  background: var(--dc-surface);
+  border-color: var(--dc-line);
+}
+
+.recent-row.today {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.recent-row-date { min-width: 60px; flex-shrink: 0; }
+
+.recent-row-date strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dc-ink);
+}
+
+.recent-row-date small {
+  display: block;
+  font-size: 9.5px;
+  color: var(--dc-muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1px;
+  font-weight: 600;
+}
+
+.recent-row.today .recent-row-date strong { color: #059669; }
+
+.recent-row-vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-vital {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.recent-vital.hr    { background: #fee2e2; color: #b91c1c; }
+.recent-vital.sleep { background: #ede9fe; color: #6d28d9; }
+.recent-vital.steps { background: #d1fae5; color: #047857; }
+.recent-vital.cal   { background: #ffedd5; color: #c2410c; }
+.recent-vital.water { background: #dbeafe; color: #1d4ed8; }
+.recent-vital.mood  { background: #fef9c3; padding: 2px 6px; font-size: 13px; }
+
+/* =========================================
+   7. FOOTER NOTE
+========================================= */
+.daily-care-footer-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 11px;
+  background: var(--dc-surface-2);
+  border: 1px solid var(--dc-line);
+  font-size: 11.5px;
+  color: var(--dc-muted);
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.daily-care-footer-note svg {
+  color: var(--dc-muted-2);
+  flex-shrink: 0;
+}
+
+/* =========================================
+   8. RESPONSIVE
+========================================= */
+
+/* --- Tablet --- */
+@media (max-width: 1024px) {
+  .daily-care-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .daily-care-hero {
+    padding: 30px 26px;
+  }
+  .daily-care-hero h1 {
+    font-size: 26px;
+  }
+}
+
+/* --- Small tablet --- */
+@media (max-width: 900px) {
+  .daily-care-hero {
+    padding: 26px 22px;
+    border-radius: 16px;
+  }
+  .daily-care-hero h1 {
+    font-size: 24px;
+  }
+  .daily-care-hero p {
+    font-size: 13px;
+  }
+  .daily-care-routine-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- Mobile --- */
+@media (max-width: 640px) {
+  .daily-care-page {
+    gap: 14px;
+  }
+
+  .daily-care-hero {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+  .daily-care-hero-badge {
+    font-size: 10px;
+    padding: 6px 11px;
+  }
+  .daily-care-hero h1 {
+    font-size: 21px;
+    margin-top: 16px;
+  }
+  .daily-care-hero p {
+    font-size: 12.5px;
+    margin-top: 10px;
+  }
+  .daily-care-refresh {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    margin-top: 18px;
+  }
+
+  .daily-care-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .daily-care-stat {
+    padding: 14px;
+  }
+  .daily-care-stat-value {
+    font-size: 18px;
+  }
+
+  .daily-care-alerts,
+  .daily-care-suggestions,
+  .daily-care-wins,
+  .daily-care-routine,
+  .daily-care-recent {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .daily-care-section-header,
+  .daily-care-alerts-header {
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+  }
+  .daily-care-section-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .daily-care-section-header h3,
+  .daily-care-alerts-header h3 {
+    font-size: 14px;
+  }
+
+  .care-item {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .care-item-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .care-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .care-item-body p {
+    font-size: 12px;
+  }
+
+  .daily-care-routine-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recent-row {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .recent-row-date {
+    min-width: 50px;
+  }
+
+  .daily-care-footer-note {
+    font-size: 11px;
+    padding: 10px 14px;
+  }
+}
+
+/* --- Ultra small --- */
+@media (max-width: 420px) {
+  .daily-care-hero {
+    padding: 18px 14px;
+  }
+  .daily-care-hero h1 {
+    font-size: 19px;
+  }
+  .daily-care-hero p {
+    font-size: 12px;
+  }
+  .daily-care-hero-badge {
+    font-size: 9px;
+    padding: 5px 10px;
+  }
+
+  .daily-care-stat {
+    padding: 12px;
+  }
+  .daily-care-stat-value {
+    font-size: 17px;
+  }
+
+  .care-item-body p {
+    font-size: 11.5px;
+  }
+  .care-item-header strong {
+    font-size: 12.5px;
+  }
+
+  .recent-vital {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+}
+
+/* =========================================
+   9. ACCESSIBILITY
+========================================= */
+.daily-care-refresh:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daily-care-page *,
+  .daily-care-page *::before,
+  .daily-care-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .daily-care-hero-badge .pulse-dot {
+    animation: none !important;
+  }
+}
+
+/* Print */
+@media print {
+  .daily-care-hero,
+  .daily-care-refresh {
+    display: none !important;
+  }
+  .daily-care-page {
+    gap: 12px;
+  }
+  .daily-care-alerts,
+  .daily-care-suggestions,
+  .daily-care-wins,
+  .daily-care-routine,
+  .daily-care-recent {
+    border: 1px solid #ccc;
+    box-shadow: none;
+  }
+}

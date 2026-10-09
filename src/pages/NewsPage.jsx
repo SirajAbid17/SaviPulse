@@ -8,6 +8,7 @@ import {
   Activity, Moon, Droplet, Shield, Stethoscope, Award,
   CheckCircle2,
 } from 'lucide-react'
+import '../styles/NewsPage.css'
 
 /* =========================================
    CATEGORY DEFINITIONS

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, callHealthNews, callTrendingTopics, callNutritionInsights } from '../lib/supabase'
+import '../styles/InsightsPage.css'
 import {
   Sparkles, Activity, TrendingUp, Newspaper, Loader2,
   ExternalLink, RefreshCw, Heart, Moon, Footprints, Flame,

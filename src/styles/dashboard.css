@@ -1,0 +1,1922 @@
+/* =========================================================
+   SAVIPULSE — DASHBOARD SHELL
+   Clean · Flat · Professional · Fully Responsive
+========================================================= */
+
+/* ---------- TOKENS ---------- */
+.app-shell {
+  --sp-primary:        #10b981;
+  --sp-primary-dark:   #0f766e;
+  --sp-primary-soft:   #e6faf1;
+
+  --sp-ink:            #0f2a24;
+  --sp-ink-2:          #26443c;
+  --sp-muted:          #6d847d;
+  --sp-muted-2:        #94a8a1;
+  --sp-line:           #e4ece9;
+  --sp-line-2:         #eef3f1;
+
+  --sp-surface:        #ffffff;
+  --sp-surface-2:      #f8fbfa;
+  --sp-surface-3:      #f2f6f4;
+  --sp-canvas:         #f4f8f6;
+
+  --sp-danger:         #dc4545;
+  --sp-admin:          #dc2626;
+
+  --sidebar-w:         256px;
+  --topbar-h:          64px;
+  --footer-h:          44px;
+
+  --sp-ease:           cubic-bezier(.2,.7,.2,1);
+
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--sp-canvas);
+  color: var(--sp-ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell *,
+.app-shell *::before,
+.app-shell *::after { box-sizing: border-box; }
+
+/* =========================================================
+   MOBILE TOPBAR
+========================================================= */
+.mobile-topbar {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 16px;
+  background: var(--sp-surface);
+  border-bottom: 1px solid var(--sp-line);
+}
+
+.brand-mini { display: flex; align-items: center; gap: 10px; }
+.brand-mini-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--sp-primary);
+  color: #fff;
+}
+.brand-mini h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--sp-ink);
+}
+.brand-mini h1 span { color: var(--sp-primary); }
+.brand-mini p {
+  margin: 0;
+  font-size: 10px;
+  color: var(--sp-muted);
+  font-weight: 500;
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sp-line);
+  border-radius: 9px;
+  background: var(--sp-surface);
+  color: var(--sp-ink);
+  cursor: pointer;
+  transition: background .18s var(--sp-ease), border-color .18s var(--sp-ease);
+}
+.icon-button:hover { background: var(--sp-surface-2); border-color: var(--sp-primary); }
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: var(--sidebar-w);
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--sp-surface);
+  border-right: 1px solid var(--sp-line);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  transition: transform .25s var(--sp-ease);
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid var(--sp-line-2);
+  flex-shrink: 0;
+  height: var(--topbar-h);
+  box-sizing: border-box;
+}
+
+.logo-mark {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--sp-primary);
+  color: #fff;
+  flex-shrink: 0;
+}
+.pulse-ring { display: none; }
+
+.logo-text h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--sp-ink);
+}
+.logo-text h1 span { color: var(--sp-primary); }
+.logo-text p {
+  margin: 1px 0 0;
+  font-size: 10px;
+  color: var(--sp-muted);
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 10px 0;
+  flex-shrink: 0;
+}
+
+.nav-heading {
+  margin: 6px 8px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--sp-muted-2);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--sp-ink-2);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s var(--sp-ease), color .15s var(--sp-ease);
+}
+.nav-item:hover { background: var(--sp-surface-2); color: var(--sp-ink); }
+.nav-item.active {
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary-dark);
+  font-weight: 600;
+}
+.nav-item.active svg { color: var(--sp-primary); }
+.nav-item svg { flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary-dark);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.nav-badge-new {
+  background: #fef3c7;
+  color: #92400e;
+}
+.nav-badge-admin {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sidebar-divider {
+  height: 1px;
+  margin: 10px 8px;
+  background: var(--sp-line-2);
+  flex-shrink: 0;
+}
+
+.nav-item-admin { color: var(--sp-admin); }
+.nav-item-admin:hover { background: #fef2f2; color: var(--sp-admin); }
+.nav-item-admin.active {
+  background: #fef2f2;
+  color: var(--sp-admin);
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 16px;
+  border-top: 1px solid var(--sp-line-2);
+  background: var(--sp-surface);
+  flex-shrink: 0;
+}
+
+.sidebar-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--sp-line);
+  border-radius: 10px;
+  background: var(--sp-surface-2);
+}
+
+.sidebar-user-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--sp-primary);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-user-status {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid var(--sp-surface);
+}
+
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sp-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-role {
+  display: block;
+  font-size: 10.5px;
+  color: var(--sp-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.sidebar-user-logout {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sp-line);
+  border-radius: 8px;
+  background: var(--sp-surface);
+  color: var(--sp-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s var(--sp-ease), color .15s var(--sp-ease), border-color .15s var(--sp-ease);
+}
+.sidebar-user-logout:hover {
+  background: #fef2f2;
+  color: var(--sp-danger);
+  border-color: #fecaca;
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 11px 14px;
+  border: 1.5px solid #fca5a5;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background .15s var(--sp-ease), color .15s var(--sp-ease), border-color .15s var(--sp-ease);
+}
+.sidebar-logout-btn svg {
+  flex-shrink: 0;
+  stroke-width: 2.4;
+  color: currentColor;
+}
+.sidebar-logout-btn span {
+  display: inline-block;
+  line-height: 1;
+  color: currentColor;
+}
+.sidebar-logout-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+.sidebar-logout-btn:hover svg,
+.sidebar-logout-btn:hover span {
+  color: #ffffff;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15,42,36,.45);
+  animation: fadeIn .2s var(--sp-ease);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* =========================================================
+   MAIN AREA
+========================================================= */
+.main-area {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  margin-top: var(--topbar-h);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  z-index: 90;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  margin: 0;
+  background: var(--sp-surface);
+  border-bottom: 1px solid var(--sp-line);
+  box-sizing: border-box;
+}
+
+.topbar-title { min-width: 0; flex: 1; }
+.topbar-title h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--sp-ink);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-title p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--sp-muted);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.improve-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border: 1px solid var(--sp-primary);
+  border-radius: 999px;
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary-dark);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .18s var(--sp-ease), color .18s var(--sp-ease);
+}
+.improve-pill:hover {
+  background: var(--sp-primary);
+  color: #fff;
+}
+
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid var(--sp-line);
+  border-radius: 999px;
+  background: var(--sp-surface-2);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sp-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-info { display: flex; flex-direction: column; line-height: 1.2; }
+.profile-info strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sp-ink);
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profile-info small {
+  font-size: 10px;
+  color: var(--sp-muted);
+  font-weight: 500;
+}
+
+.topbar-logout {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--sp-line);
+  border-radius: 9px;
+  background: var(--sp-surface);
+  color: var(--sp-muted);
+  cursor: pointer;
+  transition: background .15s var(--sp-ease), color .15s var(--sp-ease), border-color .15s var(--sp-ease);
+}
+.topbar-logout:hover {
+  background: #fef2f2;
+  color: var(--sp-danger);
+  border-color: #fecaca;
+}
+
+.page-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sp-line) transparent;
+}
+.page-content::-webkit-scrollbar { width: 8px; }
+.page-content::-webkit-scrollbar-thumb {
+  background: var(--sp-line);
+  border-radius: 8px;
+}
+.page-content::-webkit-scrollbar-thumb:hover { background: var(--sp-muted-2); }
+
+.page-content:has(.chat-shell) {
+  padding: 0;
+  overflow: hidden;
+}
+
+.global-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--footer-h);
+  padding: 0 24px;
+  background: var(--sp-surface);
+  border-top: 1px solid var(--sp-line);
+  font-size: 11.5px;
+  color: var(--sp-muted);
+}
+
+.global-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.global-footer-logo {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--sp-primary);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.global-footer-left span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.global-footer-left strong { color: var(--sp-ink); font-weight: 600; }
+
+.global-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.global-footer-dot { color: var(--sp-muted-2); }
+.global-footer-version { color: var(--sp-muted); }
+.global-footer-made { color: var(--sp-muted); }
+
+/* =========================================================
+   CHAT SHELL
+========================================================= */
+.chat-shell {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: 0;
+  border: 0;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* =========================================================
+   RESPONSIVE — LAYOUT
+========================================================= */
+
+@media (min-width: 1440px) {
+  .sidebar-logout-btn {
+    font-size: 13.5px;
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+  .sidebar-user-card { padding: 11px; }
+  .sidebar-user-avatar { width: 38px; height: 38px; font-size: 13px; }
+}
+
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 232px; }
+
+  .topbar { padding: 0 18px; }
+  .page-content { padding: 18px; }
+  .page-content:has(.chat-shell) { padding: 0; }
+  .global-footer { padding: 0 18px; }
+}
+
+@media (max-width: 900px) {
+  .mobile-topbar { display: flex; }
+
+  .sidebar {
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    transform: translateX(-100%);
+    width: 280px;
+    max-width: 82vw;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 12px 0 40px -20px rgba(15,42,36,.35);
+  }
+
+  .sidebar-overlay { display: block; }
+
+  .topbar {
+    left: 0;
+    padding: 0 16px;
+  }
+
+  .main-area {
+    margin-left: 0;
+    margin-top: var(--topbar-h);
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .page-content { padding: 16px; }
+  .page-content:has(.chat-shell) { padding: 0; }
+  .global-footer { padding: 0 16px; }
+
+  .profile-info { display: none; }
+  .profile-chip { padding: 4px; }
+  .improve-pill span { display: none; }
+  .improve-pill { padding: 8px; }
+}
+
+@media (max-width: 640px) {
+  :root { --topbar-h: 58px; }
+
+  .topbar-title h2 { font-size: 15px; }
+  .topbar-title p { font-size: 11px; }
+  .topbar { padding: 0 14px; }
+
+  .page-content { padding: 14px; }
+  .page-content:has(.chat-shell) { padding: 0; }
+
+  .global-footer {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px 14px;
+  }
+  .global-footer-right { flex-wrap: wrap; }
+}
+
+@media (max-width: 420px) {
+  :root { --topbar-h: 56px; }
+
+  .topbar-right { gap: 6px; }
+  .profile-chip { display: none; }
+  .mobile-topbar { padding: 0 12px; }
+  .page-content { padding: 12px; }
+  .page-content:has(.chat-shell) { padding: 0; }
+}
+
+/* =========================================================
+   HEART BADGE + ATTACHED SCROLLING SUPPORT MESSAGE
+   ---------------------------------------------------------
+   • Desktop (≥ 900px): heart RIGHT edge, message slides LEFT
+   • Mobile  (< 900px): heart LEFT edge,  message slides RIGHT
+   • On hover: heart + message fuse into ONE continuous pill
+   • Marquee scrolls infinitely, pauses on direct hover
+   • QR slot inside the marquee
+========================================================= */
+
+/* --- Wrapper (heart + message) --- */
+.right-heart-badge {
+  position: fixed;
+  top: 92%;
+  transform: translateY(-50%);
+  z-index: 250;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  height: 52px;
+  padding: 0;
+
+  background: var(--sp-primary, #10b981);
+  color: #ffffff;
+
+  cursor: pointer;
+  animation: rightHeartPulse 2.4s infinite ease-in-out;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  /* Desktop default — right edge */
+  right: 0;
+  left: auto;
+  border-radius: 16px 0 0 16px;
+  box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25);
+}
+
+.right-heart-badge:hover {
+  background: var(--sp-primary-dark, #0f766e);
+  box-shadow: -6px 0 28px rgba(16, 185, 129, 0.55);
+  animation-play-state: paused;
+}
+
+/* Heart icon */
+.right-heart-badge > svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 2;
+  margin: 14px;
+}
+
+.right-heart-badge:hover > svg {
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   THE SCROLLING MESSAGE — attached to heart on hover
+========================================================= */
+.heart-scroll-line {
+  position: relative;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  /* collapsed by default */
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  /* Same color as hovered heart — attached look */
+  background: var(--sp-primary-dark, #0f766e);
+  color: #ffffff;
+
+  overflow: hidden;
+
+  /* Rounded on the OUTER side only */
+  border-radius: 16px 0 0 16px;
+  border: none;
+
+  transition:
+    width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+/* Desktop: message sits LEFT of the heart */
+.right-heart-badge .heart-scroll-line {
+  order: -1;
+  margin-right: 0;
+}
+
+.right-heart-badge:hover .heart-scroll-line {
+  width: 520px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Marquee wrapper --- */
+.heart-scroll-marquee {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  height: 100%;
+  animation: heartMarqueeLeft 32s linear infinite;
+  will-change: transform;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+/* --- Text style --- */
+.heart-scroll-text {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* --- QR inside the marquee --- */
+.heart-scroll-qr {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+/* Desktop animation: scroll right → left */
+@keyframes heartMarqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Pause marquee while hovering directly over the message */
+.right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
+  animation-play-state: paused;
+}
+
+/* =========================================================
+   PULSE
+========================================================= */
+@keyframes rightHeartPulse {
+  0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+  50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
+  100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+}
+
+/* =========================================================
+   LARGE SCREENS (≥ 1440px)
+========================================================= */
+@media (min-width: 1440px) {
+  .right-heart-badge {
+    height: 60px;
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge > svg {
+    width: 28px;
+    height: 28px;
+    margin: 16px;
+  }
+  .right-heart-badge .heart-scroll-line {
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 640px;
+  }
+  .heart-scroll-text {
+    font-size: 13.5px;
+  }
+  .heart-scroll-qr {
+    width: 38px;
+    height: 38px;
+  }
+  .heart-scroll-marquee {
+    gap: 34px;
+  }
+}
+
+/* =========================================================
+   SMALL SCREENS (< 900px) — heart LEFT edge
+========================================================= */
+@media (max-width: 900px) {
+  .right-heart-badge {
+    right: auto;
+    left: 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
+  }
+
+  .right-heart-badge:hover {
+    box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
+  }
+
+  .right-heart-badge .heart-scroll-line {
+    order: 2;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0 16px 16px 0;
+  }
+
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 400px;
+  }
+
+  .heart-scroll-marquee {
+    animation: heartMarqueeRight 26s linear infinite;
+  }
+
+  /* Mobile animation: scroll left → right */
+  @keyframes heartMarqueeRight {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes rightHeartPulse {
+    0%   { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+    50%  { box-shadow: 4px 0 32px rgba(16, 185, 129, 0.55); }
+    100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+  }
+}
+
+/* =========================================================
+   EXTRA SMALL MOBILE (≤ 480px)
+========================================================= */
+@media (max-width: 480px) {
+  .right-heart-badge {
+    height: 46px;
+    border-radius: 0 14px 14px 0;
+  }
+  .right-heart-badge > svg {
+    width: 20px;
+    height: 20px;
+    margin: 13px;
+  }
+  .right-heart-badge .heart-scroll-line {
+    border-radius: 0 14px 14px 0;
+  }
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 300px;
+  }
+  .heart-scroll-text {
+    font-size: 11.5px;
+  }
+  .heart-scroll-qr {
+    width: 28px;
+    height: 28px;
+  }
+  .heart-scroll-marquee {
+    gap: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* =========================================================
+   ULTRA SMALL (≤ 360px) — safe fallback
+========================================================= */
+@media (max-width: 360px) {
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 240px;
+  }
+  .heart-scroll-text {
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   HELP MODAL ANIMATIONS
+========================================================= */
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes scan {
+  0%   { top: 0%;   opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { top: 100%; opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 0%;   opacity: 0; }
+}
+/* =========================================================
+   HEART BADGE + ATTACHED SCROLLING SUPPORT MESSAGE
+   ---------------------------------------------------------
+   • Desktop (≥ 900px): heart RIGHT edge, message slides LEFT,
+                        scroll chalega
+   • Mobile  (< 900px): heart LEFT edge, scroll NAHI chalega
+                        (message permanently hidden on hover)
+========================================================= */
+
+/* --- Wrapper (heart + message) --- */
+.right-heart-badge {
+  position: fixed;
+  top: 92%;
+  transform: translateY(-50%);
+  z-index: 250;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  height: 52px;
+  padding: 0;
+
+  background: var(--sp-primary, #10b981);
+  color: #ffffff;
+
+  cursor: pointer;
+  animation: rightHeartPulse 2.4s infinite ease-in-out;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  /* Desktop default — right edge */
+  right: 0;
+  left: auto;
+  border-radius: 16px 0 0 16px;
+  box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25);
+}
+
+.right-heart-badge:hover {
+  background: var(--sp-primary-dark, #0f766e);
+  box-shadow: -6px 0 28px rgba(16, 185, 129, 0.55);
+  animation-play-state: paused;
+}
+
+/* Heart icon */
+.right-heart-badge > svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 2;
+  margin: 14px;
+}
+
+.right-heart-badge:hover > svg {
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   THE SCROLLING MESSAGE — desktop only
+========================================================= */
+.heart-scroll-line {
+  position: relative;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  /* collapsed by default */
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  background: var(--sp-primary-dark, #0f766e);
+  color: #ffffff;
+
+  overflow: hidden;
+
+  border-radius: 16px 0 0 16px;
+  border: none;
+
+  transition:
+    width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+/* Desktop: message sits LEFT of the heart */
+.right-heart-badge .heart-scroll-line {
+  order: -1;
+  margin-right: 0;
+}
+
+.right-heart-badge:hover .heart-scroll-line {
+  width: 520px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Marquee wrapper --- */
+.heart-scroll-marquee {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  height: 100%;
+  animation: heartMarqueeLeft 32s linear infinite;
+  will-change: transform;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+/* --- Text style --- */
+.heart-scroll-text {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* --- QR inside the marquee --- */
+.heart-scroll-qr {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+@keyframes heartMarqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Pause marquee while hovering directly over the message */
+.right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
+  animation-play-state: paused;
+}
+
+/* =========================================================
+   PULSE
+========================================================= */
+@keyframes rightHeartPulse {
+  0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+  50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
+  100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+}
+
+/* =========================================================
+   LARGE SCREENS (≥ 1440px)
+========================================================= */
+@media (min-width: 1440px) {
+  .right-heart-badge {
+    height: 60px;
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge > svg {
+    width: 28px;
+    height: 28px;
+    margin: 16px;
+  }
+  .right-heart-badge .heart-scroll-line {
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 640px;
+  }
+  .heart-scroll-text {
+    font-size: 13.5px;
+  }
+  .heart-scroll-qr {
+    width: 38px;
+    height: 38px;
+  }
+  .heart-scroll-marquee {
+    gap: 34px;
+  }
+}
+
+/* =========================================================
+   SMALL SCREENS (< 900px) — heart LEFT edge
+   👇 Scroll/message is COMPLETELY DISABLED here.
+   Hover pe sirf heart pulse karega, koi text nahi aayega.
+========================================================= */
+@media (max-width: 900px) {
+  /* Heart stays on the LEFT */
+  .right-heart-badge {
+    right: auto;
+    left: 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
+    /* no gap on hover, because nothing appears */
+    gap: 0;
+  }
+
+  .right-heart-badge:hover {
+    box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
+  }
+
+  /* ❌ Hide the scrolling message entirely on small screens */
+  .heart-scroll-line,
+  .right-heart-badge:hover .heart-scroll-line {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  @keyframes rightHeartPulse {
+    0%   { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+    50%  { box-shadow: 4px 0 32px rgba(16, 185, 129, 0.55); }
+    100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+  }
+}
+
+/* =========================================================
+   EXTRA SMALL MOBILE (≤ 480px)
+========================================================= */
+@media (max-width: 480px) {
+  .right-heart-badge {
+    height: 46px;
+    border-radius: 0 14px 14px 0;
+  }
+  .right-heart-badge > svg {
+    width: 20px;
+    height: 20px;
+    margin: 13px;
+  }
+
+  /* belt-and-braces — hide again here */
+  .heart-scroll-line,
+  .right-heart-badge:hover .heart-scroll-line {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+/* =========================================================
+   HEART BADGE + SCROLLING SUPPORT MESSAGE
+   ---------------------------------------------------------
+   • Desktop (≥ 900px): heart RIGHT edge, long scrolling text
+   • Mobile  (< 900px): heart LEFT edge, only "Scan here"
+========================================================= */
+
+/* --- Wrapper (heart + message) --- */
+.right-heart-badge {
+  position: fixed;
+  top: 92%;
+  transform: translateY(-50%);
+  z-index: 250;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  height: 52px;
+  padding: 0;
+
+  background: var(--sp-primary, #10b981);
+  color: #ffffff;
+
+  cursor: pointer;
+  animation: rightHeartPulse 2.4s infinite ease-in-out;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  /* Desktop default — right edge */
+  right: 0;
+  left: auto;
+  border-radius: 16px 0 0 16px;
+  box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25);
+}
+
+.right-heart-badge:hover {
+  background: var(--sp-primary-dark, #0f766e);
+  box-shadow: -6px 0 28px rgba(16, 185, 129, 0.55);
+  animation-play-state: paused;
+}
+
+.right-heart-badge > svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 2;
+  margin: 14px;
+}
+
+.right-heart-badge:hover > svg {
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   LONG SCROLL LINE — desktop only
+========================================================= */
+.heart-scroll-line {
+  position: relative;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  background: var(--sp-primary-dark, #0f766e);
+  color: #ffffff;
+
+  overflow: hidden;
+
+  border-radius: 16px 0 0 16px;
+  border: none;
+
+  transition:
+    width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+.right-heart-badge .heart-scroll-line {
+  order: -1;
+  margin-right: 0;
+}
+
+.right-heart-badge:hover .heart-scroll-line {
+  width: 520px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.heart-scroll-marquee {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  height: 100%;
+  animation: heartMarqueeLeft 32s linear infinite;
+  will-change: transform;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.heart-scroll-text {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.heart-scroll-qr {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+@keyframes heartMarqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
+  animation-play-state: paused;
+}
+
+/* =========================================================
+   SHORT TEXT — mobile only ("Scan here")
+========================================================= */
+.heart-short-text {
+  display: none;                     /* hidden on desktop */
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+  padding-right: 4px;
+  order: -1;
+  margin-right: 2px;
+  animation: heartShortPulse 2.4s infinite ease-in-out;
+}
+
+@keyframes heartShortPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.85; }
+}
+
+/* =========================================================
+   PULSE
+========================================================= */
+@keyframes rightHeartPulse {
+  0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+  50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
+  100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+}
+
+/* =========================================================
+   LARGE SCREENS (≥ 1440px)
+========================================================= */
+@media (min-width: 1440px) {
+  .right-heart-badge {
+    height: 60px;
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge > svg {
+    width: 28px;
+    height: 28px;
+    margin: 16px;
+  }
+  .right-heart-badge .heart-scroll-line {
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 640px;
+  }
+  .heart-scroll-text {
+    font-size: 13.5px;
+  }
+  .heart-scroll-qr {
+    width: 38px;
+    height: 38px;
+  }
+  .heart-scroll-marquee {
+    gap: 34px;
+  }
+}
+
+/* =========================================================
+   SMALL SCREENS (< 900px)
+   • Heart on LEFT edge
+   • Long scroll line DISABLED
+   • Only short "Scan here" text shows
+========================================================= */
+@media (max-width: 900px) {
+  .right-heart-badge {
+    right: auto;
+    left: 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
+    gap: 0;
+    padding-right: 12px;
+    animation: none;
+  }
+
+  .right-heart-badge:hover {
+    background: var(--sp-primary-dark, #0f766e);
+    box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
+  }
+
+  /* 🔥 HIDE the long scroll line on mobile */
+  .right-heart-badge .heart-scroll-line,
+  .right-heart-badge:hover .heart-scroll-line {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+
+  .right-heart-badge .heart-scroll-marquee,
+  .right-heart-badge:hover .heart-scroll-marquee {
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* 🟢 SHOW the short "Scan here" text */
+  .heart-short-text {
+    display: inline-block;
+  }
+
+  .right-heart-badge > svg {
+    margin: 14px 14px 14px 8px;
+  }
+
+  @keyframes rightHeartPulse {
+    0%   { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+    50%  { box-shadow: 4px 0 32px rgba(16, 185, 129, 0.55); }
+    100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+  }
+}
+
+/* =========================================================
+   EXTRA SMALL MOBILE (≤ 480px)
+========================================================= */
+@media (max-width: 480px) {
+  .right-heart-badge {
+    height: 46px;
+    border-radius: 0 14px 14px 0;
+    padding-right: 10px;
+  }
+  .right-heart-badge > svg {
+    width: 20px;
+    height: 20px;
+    margin: 13px 12px 13px 6px;
+  }
+  .heart-short-text {
+    font-size: 11.5px;
+  }
+}
+
+/* =========================================================
+   ULTRA SMALL (≤ 360px)
+========================================================= */
+@media (max-width: 360px) {
+  .heart-short-text {
+    font-size: 11px;
+  }
+  .right-heart-badge {
+    padding-right: 8px;
+  }
+}
+
+.heart-short-text {
+  display: none;                     /* hidden on desktop */
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+  padding-left: 14px;                /* 👈 LEFT GAP — yahan adjust karo */
+  padding-right: 4px;
+  order: -1;
+  margin-right: 2px;
+  animation: heartShortPulse 2.4s infinite ease-in-out;
+}
+/* =========================================================
+   HEART BADGE + SCROLLING SUPPORT MESSAGE — FINAL
+   ---------------------------------------------------------
+   • Desktop (≥ 900px): heart RIGHT edge, long scrolling text
+   • Mobile  (< 900px): heart LEFT edge, only "Scan here" text
+   Click → opens HelpScannerModal
+========================================================= */
+
+/* ---------- Wrapper ---------- */
+.right-heart-badge {
+  position: fixed;
+  top: 92%;
+  transform: translateY(-50%);
+  z-index: 250;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  height: 52px;
+  padding: 0;
+
+  background: var(--sp-primary, #10b981);
+  color: #ffffff;
+
+  cursor: pointer;
+  animation: rightHeartPulse 2.4s infinite ease-in-out;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  right: 0;
+  left: auto;
+  border-radius: 16px 0 0 16px;
+  box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25);
+}
+
+.right-heart-badge:hover {
+  background: var(--sp-primary-dark, #0f766e);
+  box-shadow: -6px 0 28px rgba(16, 185, 129, 0.55);
+  animation-play-state: paused;
+}
+
+.right-heart-badge > svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 2;
+  margin: 14px;
+}
+
+.right-heart-badge:hover > svg {
+  transform: scale(1.1);
+}
+
+/* ---------- Long scrolling line (desktop) ---------- */
+.heart-scroll-line {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  background: var(--sp-primary-dark, #0f766e);
+  color: #ffffff;
+  overflow: hidden;
+
+  border-radius: 16px 0 0 16px;
+  border: none;
+
+  transition:
+    width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+.right-heart-badge .heart-scroll-line {
+  order: -1;
+  margin-right: 0;
+}
+
+.right-heart-badge:hover .heart-scroll-line {
+  width: 520px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.heart-scroll-marquee {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+  height: 100%;
+  animation: heartMarqueeLeft 32s linear infinite;
+  will-change: transform;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.heart-scroll-text {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.heart-scroll-qr {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+@keyframes heartMarqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
+  animation-play-state: paused;
+}
+
+/* ---------- Short text (mobile only) ---------- */
+.heart-short-text {
+  display: none;                     /* hidden on desktop */
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+  order: -1;
+  padding-left: 14px;                /* 👈 LEFT GAP yahan */
+  padding-right: 4px;
+  margin-right: 2px;
+  animation: heartShortPulse 2.4s infinite ease-in-out;
+}
+
+@keyframes heartShortPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.85; }
+}
+
+/* ---------- Pulse ---------- */
+@keyframes rightHeartPulse {
+  0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+  50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
+  100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
+}
+
+/* ---------- Large screens ---------- */
+@media (min-width: 1440px) {
+  .right-heart-badge {
+    height: 60px;
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge > svg {
+    width: 28px;
+    height: 28px;
+    margin: 16px;
+  }
+  .right-heart-badge .heart-scroll-line {
+    border-radius: 20px 0 0 20px;
+  }
+  .right-heart-badge:hover .heart-scroll-line {
+    width: 640px;
+  }
+  .heart-scroll-text {
+    font-size: 13.5px;
+  }
+  .heart-scroll-qr {
+    width: 38px;
+    height: 38px;
+  }
+  .heart-scroll-marquee {
+    gap: 34px;
+  }
+}
+
+/* ---------- Small screens (< 900px) ---------- */
+@media (max-width: 900px) {
+  .right-heart-badge {
+    right: auto;
+    left: 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
+    gap: 0;
+    padding-right: 12px;
+    animation: none;
+  }
+
+  .right-heart-badge:hover {
+    background: var(--sp-primary-dark, #0f766e);
+    box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
+  }
+
+  /* Hide long scroll line */
+  .right-heart-badge .heart-scroll-line,
+  .right-heart-badge:hover .heart-scroll-line {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+
+  .right-heart-badge .heart-scroll-marquee,
+  .right-heart-badge:hover .heart-scroll-marquee {
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* Show short text */
+  .heart-short-text {
+    display: inline-block;
+  }
+
+  .right-heart-badge > svg {
+    margin: 14px 14px 14px 8px;
+  }
+
+  @keyframes rightHeartPulse {
+    0%   { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+    50%  { box-shadow: 4px 0 32px rgba(16, 185, 129, 0.55); }
+    100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+  }
+}
+
+/* ---------- Extra small (≤ 480px) ---------- */
+@media (max-width: 480px) {
+  .right-heart-badge {
+    height: 46px;
+    border-radius: 0 14px 14px 0;
+    padding-right: 10px;
+  }
+  .right-heart-badge > svg {
+    width: 20px;
+    height: 20px;
+    margin: 13px 12px 13px 6px;
+  }
+  .heart-short-text {
+    font-size: 11.5px;
+    padding-left: 12px;
+  }
+}
+
+/* ---------- Ultra small (≤ 360px) ---------- */
+@media (max-width: 360px) {
+  .heart-short-text {
+    font-size: 11px;
+    padding-left: 10px;
+  }
+  .right-heart-badge {
+    padding-right: 8px;
+  }
+}
+/* =========================================================
+   SMALL SCREENS (< 900px)
+   • Heart on LEFT edge
+   • Long scroll line DISABLED
+   • Only short "Support" text — tighter width
+========================================================= */
+@media (max-width: 900px) {
+  .right-heart-badge {
+    right: auto;
+    left: 0;
+    border-radius: 0 16px 16px 0;
+    box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
+    gap: 0;
+
+    /* 👇 YAHAN padding kam kar di */
+    padding-left: 0;
+    padding-right: 4px;
+
+    animation: none;
+  }
+
+  .right-heart-badge:hover {
+    background: var(--sp-primary-dark, #0f766e);
+    box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
+  }
+
+  /* HIDE the long scroll line */
+  .right-heart-badge .heart-scroll-line,
+  .right-heart-badge:hover .heart-scroll-line {
+    display: none !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+  }
+
+  .right-heart-badge .heart-scroll-marquee,
+  .right-heart-badge:hover .heart-scroll-marquee {
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* SHOW the short text — tighter left gap */
+  .heart-short-text {
+    display: inline-block;
+    font-size: 11.5px;              /* 👈 thoda chhota font */
+    padding-left: 8px;              /* 👈 kam left gap (pehle 14px tha) */
+    padding-right: 2px;             /* 👈 kam right gap */
+    margin-right: 0;
+    letter-spacing: 0.01em;
+  }
+
+  /* Heart icon margin bhi thoda tighter */
+  .right-heart-badge > svg {
+    margin: 14px 10px 14px 6px;     /* 👈 right side kam kiya */
+  }
+
+  @keyframes rightHeartPulse {
+    0%   { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+    50%  { box-shadow: 4px 0 32px rgba(16, 185, 129, 0.55); }
+    100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
+  }
+}
+/* =========================================================
+   EXTRA SMALL MOBILE (≤ 480px)
+========================================================= */
+@media (max-width: 480px) {
+  .right-heart-badge {
+    height: 42px;                    /* 👈 thoda chhota height */
+    border-radius: 0 12px 12px 0;
+    padding-right: 4px;
+  }
+
+  .right-heart-badge > svg {
+    width: 18px;                     /* 👈 chhota heart icon */
+    height: 18px;
+    margin: 12px 8px 12px 4px;
+  }
+
+  .heart-short-text {
+    font-size: 11px;
+    padding-left: 6px;               /* 👈 aur kam gap */
+  }
+}
+/* =========================================================
+   ULTRA SMALL (≤ 360px)
+========================================================= */
+@media (max-width: 360px) {
+  .right-heart-badge {
+    height: 38px;
+    border-radius: 0 10px 10px 0;
+    padding-right: 3px;
+  }
+
+  .right-heart-badge > svg {
+    width: 16px;
+    height: 16px;
+    margin: 11px 6px 11px 3px;
+  }
+
+  .heart-short-text {
+    font-size: 10.5px;
+    padding-left: 5px;
+  }
+}

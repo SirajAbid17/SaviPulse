@@ -12,19 +12,19 @@ import {
   clearConversationMessages,
   generateTitle,
 } from '../lib/supabase'
+import '../styles/ChatPage.css'
 import { marked } from 'marked'
+import ConfirmModal from '../components/ConfirmModal'
 import {
   Sparkles, Send, MessageSquare, Loader2, Copy, Check,
   ThumbsUp, ThumbsDown, RotateCcw, AlertTriangle, Trash2,
-  User, Bot, Sparkle, Zap, Clock, ChevronDown, Plus,
-  MessageCirclePlus, Search, Pin, PinOff, Edit3, X,
-  MoreVertical, Menu, MessageSquarePlus, PanelLeftClose,
-  PanelLeftOpen, ChevronRight,
+  User, Bot, Sparkle, Zap, Clock, Plus,
+  Search, Pin, PinOff, Edit3, X,
+  MessageSquarePlus,
+  PanelLeftClose, PanelLeftOpen,
+  AlignLeft, EllipsisVertical,
 } from 'lucide-react'
 
-/* =========================================
-   MARKDOWN RENDERER
-========================================= */
 function renderMarkdown(text) {
   if (!text) return ''
   try {
@@ -39,13 +39,13 @@ function renderMarkdown(text) {
   }
 }
 
-export default function ChatPage({ user }) {
+export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
   /* ============ CONVERSATION STATE ============ */
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId] = useState(null)
   const [convsLoading, setConvsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(true) // desktop
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [renamingId, setRenamingId] = useState(null)
   const [renameValue, setRenameValue] = useState('')
@@ -58,8 +58,41 @@ export default function ChatPage({ user }) {
   const [messagesLoading, setMessagesLoading] = useState(false)
   const [error, setError] = useState('')
   const [copiedId, setCopiedId] = useState(null)
-  const [showScrollBtn, setShowScrollBtn] = useState(false)
   const [reactions, setReactions] = useState({})
+
+  /* ============ MODAL STATE ============ */
+  const [modal, setModal] = useState({
+    open: false,
+    type: 'confirm',
+    title: '',
+    message: '',
+    confirmText: 'OK',
+    cancelText: 'Cancel',
+    showCancel: true,
+    loading: false,
+    onConfirm: null,
+    onCancel: null,
+  })
+
+  function openModal(config) {
+    setModal({
+      open: true,
+      type: 'confirm',
+      title: '',
+      message: '',
+      confirmText: 'OK',
+      cancelText: 'Cancel',
+      showCancel: true,
+      loading: false,
+      onConfirm: null,
+      onCancel: null,
+      ...config,
+    })
+  }
+
+  function closeModal() {
+    setModal((m) => ({ ...m, open: false, loading: false }))
+  }
 
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
@@ -71,6 +104,7 @@ export default function ChatPage({ user }) {
   ========================================= */
   useEffect(() => {
     initConversations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id])
 
   async function initConversations() {
@@ -82,7 +116,6 @@ export default function ChatPage({ user }) {
       if (list.length > 0) {
         await switchConversation(list[0].id)
       }
-      // Else: show empty state (no auto-create — will create on first message)
     } catch (err) {
       console.error('Load conversations failed:', err)
       setError('Failed to load conversations')
@@ -91,9 +124,6 @@ export default function ChatPage({ user }) {
     }
   }
 
-  /* =========================================
-     SWITCH CONVERSATION
-  ========================================= */
   async function switchConversation(convId) {
     if (convId === activeConvId) return
 
@@ -122,9 +152,6 @@ export default function ChatPage({ user }) {
     }
   }
 
-  /* =========================================
-     CREATE NEW CONVERSATION
-  ========================================= */
   function handleNewConversation() {
     setActiveConvId(null)
     setMessages([])
@@ -135,11 +162,9 @@ export default function ChatPage({ user }) {
     setMobileSidebarOpen(false)
   }
 
-  /* =========================================
-     AUTO SCROLL
-  ========================================= */
   useEffect(() => {
     scrollToBottom()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, loading])
 
   const scrollToBottom = useCallback((smooth = true) => {
@@ -150,16 +175,6 @@ export default function ChatPage({ user }) {
     }, 50)
   }, [])
 
-  const handleScroll = () => {
-    const el = messagesContainerRef.current
-    if (!el) return
-    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100
-    setShowScrollBtn(!isAtBottom)
-  }
-
-  /* =========================================
-     SEND MESSAGE
-  ========================================= */
   async function handleSend(e, overrideText = null) {
     e?.preventDefault()
     const text = (overrideText || message).trim()
@@ -172,7 +187,6 @@ export default function ChatPage({ user }) {
     let isNewConv = false
 
     try {
-      // Create conversation if none exists
       if (!convId) {
         const newConv = await createConversation(user.id, generateTitle(text))
         convId = newConv.id
@@ -181,7 +195,6 @@ export default function ChatPage({ user }) {
         isNewConv = true
       }
 
-      // Add user message optimistically
       const userMsg = {
         sender: 'user',
         text,
@@ -189,7 +202,6 @@ export default function ChatPage({ user }) {
       }
       setMessages((prev) => [...prev, userMsg])
 
-      // Save user message to DB
       await saveMessage({
         conversationId: convId,
         userId: user.id,
@@ -199,7 +211,6 @@ export default function ChatPage({ user }) {
 
       setLoading(true)
 
-      // Call AI
       const history = messages.slice(-10).map((m) => ({
         sender: m.sender,
         text: m.text,
@@ -215,10 +226,8 @@ export default function ChatPage({ user }) {
         createdAt: new Date().toISOString(),
       }
 
-      // Add AI message optimistically
       setMessages((prev) => [...prev, aiMsg])
 
-      // Save AI message
       await saveMessage({
         conversationId: convId,
         userId: user.id,
@@ -227,14 +236,12 @@ export default function ChatPage({ user }) {
         emergency: aiMsg.emergency,
       })
 
-      // Update conversation meta
       const newLastMessage = aiMsg.text.slice(0, 120)
       await updateConversation(convId, {
         last_message: newLastMessage,
-        message_count: (messages.length + 2),
+        message_count: messages.length + 2,
       })
 
-      // Refresh conversation list (with updated title/last message)
       if (!isNewConv) {
         setConversations((prev) =>
           prev.map((c) =>
@@ -257,7 +264,6 @@ export default function ChatPage({ user }) {
       }
       setMessages((prev) => [...prev, errMsg])
 
-      // Try to save error message if we have a conv
       if (convId) {
         try {
           await saveMessage({
@@ -275,9 +281,24 @@ export default function ChatPage({ user }) {
     }
   }
 
-  /* =========================================
-     RETRY
-  ========================================= */
+  useEffect(() => {
+    const q = pendingQuestion || localStorage.getItem('pending_chat_question')
+    if (!q) return
+    if (convsLoading || messagesLoading) return
+
+    if (!pendingQuestion) {
+      localStorage.removeItem('pending_chat_question')
+    }
+
+    const timer = setTimeout(() => {
+      handleSend(null, q)
+      onPendingConsumed?.()
+    }, 400)
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingQuestion, convsLoading, messagesLoading])
+
   function handleRetry() {
     const lastUser = [...messages].reverse().find((m) => m.sender === 'user')
     if (!lastUser) return
@@ -302,9 +323,6 @@ export default function ChatPage({ user }) {
     handleSend(null, lastUser.text)
   }
 
-  /* =========================================
-     RENAME CONVERSATION
-  ========================================= */
   async function handleRenameStart(conv) {
     setRenamingId(conv.id)
     setRenameValue(conv.title)
@@ -340,38 +358,39 @@ export default function ChatPage({ user }) {
     }
   }
 
-  /* =========================================
-     DELETE CONVERSATION
-  ========================================= */
-  async function handleDeleteConv(conv) {
+  function handleDeleteConv(conv) {
     setMenuOpenId(null)
-    const ok = window.confirm(
-      `Delete "${conv.title}"? All messages will be permanently removed.`
-    )
-    if (!ok) return
+    openModal({
+      type: 'danger',
+      title: 'Delete Conversation?',
+      message: `"${conv.title}" and all its messages will be permanently deleted. This cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        try {
+          await deleteConversation(conv.id)
+          setConversations((prev) => prev.filter((c) => c.id !== conv.id))
 
-    try {
-      await deleteConversation(conv.id)
-      setConversations((prev) => prev.filter((c) => c.id !== conv.id))
-
-      if (activeConvId === conv.id) {
-        // Switch to another conversation or empty
-        const remaining = conversations.filter((c) => c.id !== conv.id)
-        if (remaining.length > 0) {
-          await switchConversation(remaining[0].id)
-        } else {
-          setActiveConvId(null)
-          setMessages([])
+          if (activeConvId === conv.id) {
+            const remaining = conversations.filter((c) => c.id !== conv.id)
+            if (remaining.length > 0) {
+              await switchConversation(remaining[0].id)
+            } else {
+              setActiveConvId(null)
+              setMessages([])
+            }
+          }
+          closeModal()
+        } catch (err) {
+          setError('Delete failed')
+          closeModal()
         }
-      }
-    } catch (err) {
-      setError('Delete failed')
-    }
+      },
+      onCancel: closeModal,
+    })
   }
 
-  /* =========================================
-     PIN CONVERSATION
-  ========================================= */
   async function handleTogglePin(conv) {
     setMenuOpenId(null)
     try {
@@ -392,36 +411,40 @@ export default function ChatPage({ user }) {
     }
   }
 
-  /* =========================================
-     CLEAR CONVERSATION MESSAGES
-  ========================================= */
-  async function handleClearMessages() {
+  function handleClearMessages() {
     if (!activeConvId) return
-    const ok = window.confirm('Clear all messages in this conversation?')
-    if (!ok) return
-
-    try {
-      await clearConversationMessages(activeConvId)
-      setMessages([])
-      await updateConversation(activeConvId, {
-        last_message: '',
-        message_count: 0,
-      })
-      setConversations((prev) =>
-        prev.map((c) =>
-          c.id === activeConvId
-            ? { ...c, last_message: '', message_count: 0 }
-            : c
-        )
-      )
-    } catch (err) {
-      setError('Clear failed')
-    }
+    openModal({
+      type: 'warning',
+      title: 'Clear All Messages?',
+      message: 'All messages in this conversation will be permanently removed. The conversation itself will remain.',
+      confirmText: 'Clear',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        try {
+          await clearConversationMessages(activeConvId)
+          setMessages([])
+          await updateConversation(activeConvId, {
+            last_message: '',
+            message_count: 0,
+          })
+          setConversations((prev) =>
+            prev.map((c) =>
+              c.id === activeConvId
+                ? { ...c, last_message: '', message_count: 0 }
+                : c
+            )
+          )
+          closeModal()
+        } catch (err) {
+          setError('Clear failed')
+          closeModal()
+        }
+      },
+      onCancel: closeModal,
+    })
   }
 
-  /* =========================================
-     COPY & REACTIONS
-  ========================================= */
   async function handleCopy(text, idx) {
     try {
       await navigator.clipboard.writeText(text)
@@ -437,9 +460,6 @@ export default function ChatPage({ user }) {
     }))
   }
 
-  /* =========================================
-     CLICK OUTSIDE MENU
-  ========================================= */
   useEffect(() => {
     function handleClick(e) {
       if (menuOpenId && menuRef.current && !menuRef.current.contains(e.target)) {
@@ -450,9 +470,6 @@ export default function ChatPage({ user }) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [menuOpenId])
 
-  /* =========================================
-     KEYBOARD SHORTCUTS
-  ========================================= */
   useEffect(() => {
     function handleKey(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -466,11 +483,9 @@ export default function ChatPage({ user }) {
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /* =========================================
-     FILTER CONVERSATIONS BY SEARCH
-  ========================================= */
   const filteredConvs = conversations.filter((c) => {
     if (!searchQuery.trim()) return true
     const q = searchQuery.toLowerCase()
@@ -496,9 +511,6 @@ export default function ChatPage({ user }) {
 
   return (
     <div className="chat-shell">
-      {/* =========================================
-          MOBILE OVERLAY
-      ========================================= */}
       {mobileSidebarOpen && (
         <div
           className="chat-mobile-overlay"
@@ -506,15 +518,11 @@ export default function ChatPage({ user }) {
         />
       )}
 
-      {/* =========================================
-          SIDEBAR — CONVERSATIONS LIST
-      ========================================= */}
       <aside
         className={`chat-sidebar ${sidebarOpen ? 'open' : 'closed'} ${
           mobileSidebarOpen ? 'mobile-open' : ''
         }`}
       >
-        {/* Header */}
         <div className="chat-sidebar-header">
           <button
             className="chat-new-btn"
@@ -534,7 +542,6 @@ export default function ChatPage({ user }) {
           </button>
         </div>
 
-        {/* Search */}
         <div className="chat-sidebar-search">
           <Search size={14} />
           <input
@@ -553,7 +560,6 @@ export default function ChatPage({ user }) {
           )}
         </div>
 
-        {/* List */}
         <div className="chat-sidebar-list">
           {convsLoading ? (
             <div className="chat-sidebar-loading">
@@ -642,11 +648,7 @@ export default function ChatPage({ user }) {
         </div>
       </aside>
 
-      {/* =========================================
-          MAIN CHAT AREA
-      ========================================= */}
       <section className="chat-main">
-        {/* Header */}
         <div className="chat-header">
           <div className="chat-header-left">
             {!sidebarOpen && (
@@ -662,9 +664,9 @@ export default function ChatPage({ user }) {
             <button
               className="chat-mobile-menu"
               onClick={() => setMobileSidebarOpen(true)}
-              title="Menu"
+              title="Open conversations"
             >
-              <Menu size={16} />
+              <AlignLeft size={17} />
             </button>
 
             <div className="chat-avatar">
@@ -699,11 +701,9 @@ export default function ChatPage({ user }) {
           </div>
         </div>
 
-        {/* Messages */}
         <div
           className="chat-messages"
           ref={messagesContainerRef}
-          onScroll={handleScroll}
         >
           {messagesLoading ? (
             <div className="chat-msg-loading">
@@ -744,18 +744,6 @@ export default function ChatPage({ user }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Scroll button */}
-        {showScrollBtn && (
-          <button
-            className="chat-scroll-btn"
-            onClick={() => scrollToBottom()}
-            title="Scroll to latest"
-          >
-            <ChevronDown size={16} />
-          </button>
-        )}
-
-        {/* Input */}
         <form onSubmit={handleSend} className="chat-input-form">
           <div className="chat-input-wrap">
             <textarea
@@ -765,7 +753,7 @@ export default function ChatPage({ user }) {
                 setMessage(e.target.value)
                 e.target.style.height = 'auto'
                 e.target.style.height =
-                  Math.min(e.target.scrollHeight, 140) + 'px'
+                  Math.min(e.target.scrollHeight, 80) + 'px'
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -773,22 +761,11 @@ export default function ChatPage({ user }) {
                   handleSend(e)
                 }
               }}
-              placeholder="Ask about symptoms, medicines, diet, or anything health-related…"
+              placeholder="Ask about symptoms, medicines, diet…"
               rows={1}
               disabled={loading}
               maxLength={2000}
             />
-
-            <div className="chat-input-footer">
-              <div className="chat-input-hints">
-                <kbd>⏎</kbd> send
-                <span className="chat-hint-sep">·</span>
-                <kbd>⇧⏎</kbd> new line
-                <span className="chat-hint-sep">·</span>
-                <kbd>⌘N</kbd> new chat
-              </div>
-              <span className="chat-char-count">{message.length}/2000</span>
-            </div>
           </div>
 
           <button
@@ -800,10 +777,7 @@ export default function ChatPage({ user }) {
             {loading ? (
               <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
             ) : (
-              <>
-                <Send size={16} />
-                <span className="chat-send-label">Send</span>
-              </>
+              <Send size={16} />
             )}
           </button>
         </form>
@@ -814,6 +788,20 @@ export default function ChatPage({ user }) {
           consult a qualified doctor for urgent concerns.
         </p>
       </section>
+
+      {/* CONFIRM MODAL */}
+      <ConfirmModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        showCancel={modal.showCancel}
+        loading={modal.loading}
+        onConfirm={modal.onConfirm || closeModal}
+        onCancel={modal.onCancel || closeModal}
+      />
     </div>
   )
 }
@@ -879,7 +867,7 @@ function ConversationItem({
           }}
           title="Options"
         >
-          <MoreVertical size={14} />
+          <EllipsisVertical size={14} />
         </button>
       )}
 

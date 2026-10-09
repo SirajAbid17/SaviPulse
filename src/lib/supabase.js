@@ -10,6 +10,8 @@ if (!supabaseUrl || !supabaseKey) {
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
 const RECORDS_BUCKET = 'records'
+const AVATAR_BUCKET = 'avatars'
+const BLOG_BUCKET = 'blogs'
 
 /* =========================================
    IMAGE → BASE64 HELPER
@@ -35,17 +37,13 @@ async function urlToDataURL(imageUrl) {
 
 /* =========================================
    ROBUST STORAGE PATH EXTRACTION
-   Handles: public, sign, authenticated, and raw paths
 ========================================= */
 function extractStoragePath(url) {
   if (!url) return null
-
   try {
-    // If it's already a raw path like "userId/1234.jpg" (no http), return as-is
     if (!url.startsWith('http')) {
       return decodeURIComponent(url.replace(/^\/+/, ''))
     }
-
     const markers = [
       `/storage/v1/object/public/${RECORDS_BUCKET}/`,
       `/storage/v1/object/sign/${RECORDS_BUCKET}/`,
@@ -54,7 +52,6 @@ function extractStoragePath(url) {
       `/object/public/${RECORDS_BUCKET}/`,
       `/object/sign/${RECORDS_BUCKET}/`,
     ]
-
     for (const marker of markers) {
       const idx = url.indexOf(marker)
       if (idx !== -1) {
@@ -66,15 +63,12 @@ function extractStoragePath(url) {
         return decodeURIComponent(path)
       }
     }
-
-    // Last resort: parse URL and grab everything after /object/.../records/
     const u = new URL(url)
     const parts = u.pathname.split('/')
     const recIdx = parts.indexOf(RECORDS_BUCKET)
     if (recIdx !== -1 && recIdx < parts.length - 1) {
       return decodeURIComponent(parts.slice(recIdx + 1).join('/'))
     }
-
     return null
   } catch (err) {
     console.warn('extractStoragePath failed:', err)
@@ -84,16 +78,13 @@ function extractStoragePath(url) {
 
 /* =========================================
    FIND REAL PATH IN BUCKET
-   If extracted path fails, try to find the file by basename
 ========================================= */
 async function findRealPathInBucket(extractedPath) {
   if (!extractedPath) return null
-
   const parts = extractedPath.split('/')
-  const folder = parts[0]              // e.g. userId
-  const fileName = parts[parts.length - 1] // e.g. 1730400000.jpg
+  const folder = parts[0]
+  const fileName = parts[parts.length - 1]
 
-  // List files directly in the folder
   const { data: files, error } = await supabase.storage
     .from(RECORDS_BUCKET)
     .list(folder, { limit: 100 })
@@ -102,18 +93,12 @@ async function findRealPathInBucket(extractedPath) {
     console.warn('List bucket folder failed:', error.message)
     return null
   }
-
   if (!files || files.length === 0) return null
 
   console.log('📁 Files in bucket folder:', files.map((f) => f.name))
-
-  // Exact match by basename
   const exact = files.find((f) => f.name === fileName)
   if (exact) return `${folder}/${exact.name}`
-
-  // Fallback: if only 1 file, use it
   if (files.length === 1) return `${folder}/${files[0].name}`
-
   return null
 }
 
@@ -169,17 +154,9 @@ export async function callNutritionInsights() {
   return data
 }
 
-/** Analyze medical record (AI)
- *  Strategy:
- *   1. Try direct fetch (public bucket) — fast path
- *   2. Extract path → createSignedUrl
- *   3. If "Object not found", list folder & retry with real filename
- *   4. Send base64 to edge function
- */
 export async function callAnalyzeRecord(imageUrl) {
   let dataUrl
 
-  // ---- Attempt 1: direct fetch ----
   try {
     dataUrl = await urlToDataURL(imageUrl)
     console.log('✅ Direct fetch succeeded')
@@ -187,7 +164,6 @@ export async function callAnalyzeRecord(imageUrl) {
     console.warn('⚠️ Direct fetch failed:', err.message)
     console.warn('🔗 Full URL:', imageUrl)
 
-    // ---- Attempt 2: signed URL ----
     let path = extractStoragePath(imageUrl)
     console.warn('📂 Extracted path:', path)
 
@@ -201,13 +177,10 @@ export async function callAnalyzeRecord(imageUrl) {
       .from(RECORDS_BUCKET)
       .createSignedUrl(path, 120)
 
-    // ---- Attempt 3: if not found, search bucket for the real file ----
     if (signErr && /not found/i.test(signErr.message)) {
       console.warn('🔍 Object not found — searching bucket for real path…')
-
       const realPath = await findRealPathInBucket(path)
       console.warn('🎯 Real path found:', realPath)
-
       if (realPath) {
         path = realPath
         const retry = await supabase.storage
@@ -233,7 +206,6 @@ export async function callAnalyzeRecord(imageUrl) {
     dataUrl = await urlToDataURL(signed.signedUrl)
   }
 
-  // ---- Send to Edge Function ----
   const { data, error } = await supabase.functions.invoke('analyze-record', {
     body: { dataUrl },
   })
@@ -242,12 +214,43 @@ export async function callAnalyzeRecord(imageUrl) {
     console.error('Edge function error:', error)
     throw new Error(error.message || 'Analysis failed')
   }
-
-  if (data?.error) {
-    throw new Error(data.error)
-  }
-
+  if (data?.error) throw new Error(data.error)
   return data
+}
+
+/* =========================================
+   PROFILE HELPERS
+   ✅ FIXED: email column REMOVED (it's in auth.users, not profiles)
+========================================= */
+
+export async function getProfileById(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, avatar_url, role')
+    .eq('id', userId)
+    .maybeSingle()
+  if (error) {
+    console.warn('getProfileById failed:', error.message)
+    return null
+  }
+  return data
+}
+
+export async function listProfilesByIds(userIds) {
+  if (!userIds || userIds.length === 0) return {}
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, avatar_url, role')
+    .in('id', userIds)
+  if (error) {
+    console.warn('listProfilesByIds failed:', error.message)
+    return {}
+  }
+  const profileMap = {}
+  data?.forEach((p) => {
+    profileMap[p.id] = p
+  })
+  return profileMap
 }
 
 /* =========================================
@@ -262,7 +265,6 @@ export async function listConversations(userId) {
     .eq('is_archived', false)
     .order('is_pinned', { ascending: false })
     .order('updated_at', { ascending: false })
-
   if (error) throw error
   return data || []
 }
@@ -270,15 +272,9 @@ export async function listConversations(userId) {
 export async function createConversation(userId, title = 'New Conversation') {
   const { data, error } = await supabase
     .from('conversations')
-    .insert({
-      user_id: userId,
-      title,
-      last_message: '',
-      message_count: 0,
-    })
+    .insert({ user_id: userId, title, last_message: '', message_count: 0 })
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -290,7 +286,6 @@ export async function updateConversation(conversationId, updates) {
     .eq('id', conversationId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -300,7 +295,6 @@ export async function deleteConversation(conversationId) {
     .from('conversations')
     .delete()
     .eq('id', conversationId)
-
   if (error) throw error
 }
 
@@ -311,7 +305,6 @@ export async function togglePinConversation(conversationId, isPinned) {
     .eq('id', conversationId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -322,7 +315,6 @@ export async function getConversationMessages(conversationId) {
     .select('*')
     .eq('conversation_id', conversationId)
     .order('created_at', { ascending: true })
-
   if (error) throw error
   return data || []
 }
@@ -347,7 +339,6 @@ export async function saveMessage({
     })
     .select()
     .single()
-
   if (err) throw err
   return data
 }
@@ -357,7 +348,6 @@ export async function clearConversationMessages(conversationId) {
     .from('conversation_messages')
     .delete()
     .eq('conversation_id', conversationId)
-
   if (error) throw error
 }
 
@@ -395,7 +385,6 @@ export async function submitReview(userId, rating, text) {
     .insert({ user_id: userId, rating, text, status: 'pending' })
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -408,21 +397,11 @@ export async function listApprovedReviews(limit = 6) {
     .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false })
     .limit(limit)
-
   if (error) throw error
   if (!reviews || reviews.length === 0) return []
 
   const userIds = [...new Set(reviews.map((r) => r.user_id))]
-
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, full_name, avatar_url')
-    .in('id', userIds)
-
-  const profileMap = {}
-  profiles?.forEach((p) => {
-    profileMap[p.id] = p
-  })
+  const profileMap = await listProfilesByIds(userIds)
 
   return reviews.map((r) => ({
     ...r,
@@ -436,7 +415,6 @@ export async function listMyReviews(userId) {
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
-
   if (error) throw error
   return data || []
 }
@@ -451,7 +429,6 @@ export async function checkIsAdmin(userId) {
     .select('role')
     .eq('id', userId)
     .maybeSingle()
-
   if (error) return false
   return data?.role === 'admin'
 }
@@ -465,7 +442,6 @@ export async function getAdminStats() {
     supabase.from('medical_records').select('id', { count: 'exact', head: true }),
     supabase.from('chat_history').select('id', { count: 'exact', head: true }),
   ])
-
   return {
     totalUsers: users.count || 0,
     totalChats: chats.count || 0,
@@ -482,7 +458,6 @@ export async function listAllUsers(limit = 100) {
     .select('*')
     .order('created_at', { ascending: false })
     .limit(limit)
-
   if (error) throw error
   return data || []
 }
@@ -492,7 +467,6 @@ export async function listAllReviews(status = null) {
     .from('reviews')
     .select('*')
     .order('created_at', { ascending: false })
-
   if (status) query = query.eq('status', status)
 
   const { data: reviews, error } = await query
@@ -500,16 +474,7 @@ export async function listAllReviews(status = null) {
   if (!reviews || reviews.length === 0) return []
 
   const userIds = [...new Set(reviews.map((r) => r.user_id))]
-
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, full_name, email, avatar_url')
-    .in('id', userIds)
-
-  const profileMap = {}
-  profiles?.forEach((p) => {
-    profileMap[p.id] = p
-  })
+  const profileMap = await listProfilesByIds(userIds)
 
   return reviews.map((r) => ({
     ...r,
@@ -524,7 +489,6 @@ export async function approveReview(reviewId) {
     .eq('id', reviewId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -536,7 +500,6 @@ export async function rejectReview(reviewId) {
     .eq('id', reviewId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -548,7 +511,6 @@ export async function toggleFeaturedReview(reviewId, isFeatured) {
     .eq('id', reviewId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -558,7 +520,6 @@ export async function deleteReview(reviewId) {
     .from('reviews')
     .delete()
     .eq('id', reviewId)
-
   if (error) throw error
 }
 
@@ -569,7 +530,6 @@ export async function updateUserRole(userId, role) {
     .eq('id', userId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -585,19 +545,16 @@ export async function listRecords(userId) {
     .eq('user_id', userId)
     .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: false })
-
   if (error) throw error
   return data || []
 }
 
-/** Sanitize filename: strip spaces, keep letters/numbers/dot/dash/underscore */
 function sanitizeFileName(name) {
   const dot = name.lastIndexOf('.')
   const base = dot > 0 ? name.slice(0, dot) : name
   const ext = dot > 0 ? name.slice(dot + 1) : ''
-  const safeBase = base
-    .replace(/[^a-zA-Z0-9-_]/g, '_')
-    .slice(0, 60) || 'file'
+  const safeBase =
+    base.replace(/[^a-zA-Z0-9-_]/g, '_').slice(0, 60) || 'file'
   const safeExt = ext.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).toLowerCase()
   return safeExt ? `${safeBase}.${safeExt}` : safeBase
 }
@@ -662,7 +619,6 @@ export async function deleteRecord(record) {
     .from('medical_records')
     .delete()
     .eq('id', record.id)
-
   if (error) throw error
 }
 
@@ -673,7 +629,6 @@ export async function toggleRecordPin(recordId, isPinned) {
     .eq('id', recordId)
     .select()
     .single()
-
   if (error) throw error
   return data
 }
@@ -685,7 +640,297 @@ export async function updateRecord(recordId, updates) {
     .eq('id', recordId)
     .select()
     .single()
+  if (error) throw error
+  return data
+}
+
+/* =========================================
+   AVATAR UPLOAD
+========================================= */
+
+function avatarExtension(file) {
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
+  return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext) ? ext : 'jpg'
+}
+
+export async function uploadAvatar(userId, file) {
+  if (!file) throw new Error('No file provided.')
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Only image files are allowed.')
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error('Image must be smaller than 5 MB.')
+  }
+
+  const ext = avatarExtension(file)
+  const path = `${userId}/avatar.${ext}`
+
+  console.log('📤 Uploading avatar to:', path)
+
+  try {
+    const { data: existing } = await supabase.storage
+      .from(AVATAR_BUCKET)
+      .list(userId)
+    if (existing?.length) {
+      await supabase.storage
+        .from(AVATAR_BUCKET)
+        .remove(existing.map((f) => `${userId}/${f.name}`))
+    }
+  } catch (err) {
+    console.warn('Old avatar cleanup failed:', err)
+  }
+
+  const { error: uploadErr } = await supabase.storage
+    .from(AVATAR_BUCKET)
+    .upload(path, file, {
+      cacheControl: '3600',
+      upsert: true,
+      contentType: file.type,
+    })
+
+  if (uploadErr) {
+    console.error('Avatar upload failed:', uploadErr)
+    throw new Error(uploadErr.message || 'Upload failed')
+  }
+
+  const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path)
+  const publicUrl = `${data.publicUrl}?v=${Date.now()}`
+
+  console.log('✅ Avatar uploaded:', publicUrl)
+  return publicUrl
+}
+
+export async function deleteAvatar(userId) {
+  try {
+    const { data: files } = await supabase.storage
+      .from(AVATAR_BUCKET)
+      .list(userId)
+    if (files?.length) {
+      await supabase.storage
+        .from(AVATAR_BUCKET)
+        .remove(files.map((f) => `${userId}/${f.name}`))
+    }
+  } catch (err) {
+    console.warn('Avatar delete failed:', err)
+  }
+}
+
+/* =========================================
+   BLOG FUNCTIONS
+========================================= */
+
+export async function listBlogs(limit = 50) {
+  const { data: blogs, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  if (!blogs || blogs.length === 0) return []
+
+  // Fetch full author profiles (no email — it's in auth.users)
+  const authorIds = [...new Set(blogs.map((b) => b.author_id))]
+  const profileMap = await listProfilesByIds(authorIds)
+
+  // Fetch likes count
+  const blogIds = blogs.map((b) => b.id)
+  const { data: likes } = await supabase
+    .from('blog_likes')
+    .select('blog_id')
+    .in('blog_id', blogIds)
+
+  const likeCounts = {}
+  likes?.forEach((l) => {
+    likeCounts[l.blog_id] = (likeCounts[l.blog_id] || 0) + 1
+  })
+
+  // Fetch comments count
+  const { data: comments } = await supabase
+    .from('blog_comments')
+    .select('blog_id')
+    .in('blog_id', blogIds)
+
+  const commentCounts = {}
+  comments?.forEach((c) => {
+    commentCounts[c.blog_id] = (commentCounts[c.blog_id] || 0) + 1
+  })
+
+  return blogs.map((b) => ({
+    ...b,
+    profiles: profileMap[b.author_id] || null,
+    likes_count: likeCounts[b.id] || 0,
+    comments_count: commentCounts[b.id] || 0,
+    views: b.views || 0,
+  }))
+}
+
+export async function createBlog(authorId, blogData, file = null) {
+  let coverUrl = blogData.cover_url || null
+
+  if (file) {
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('Cover image must be under 5 MB.')
+    }
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
+    const path = `${authorId}/${Date.now()}-cover.${ext}`
+
+    const { error: uploadErr } = await supabase.storage
+      .from(BLOG_BUCKET)
+      .upload(path, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type,
+      })
+
+    if (uploadErr) throw new Error(`Cover upload failed: ${uploadErr.message}`)
+
+    const { data: urlData } = supabase.storage
+      .from(BLOG_BUCKET)
+      .getPublicUrl(path)
+    coverUrl = urlData.publicUrl
+  }
+
+  const { data, error } = await supabase
+    .from('blogs')
+    .insert({
+      author_id: authorId,
+      title: blogData.title,
+      category: blogData.category || 'General',
+      content: blogData.content,
+      cover_url: coverUrl,
+      read_time: blogData.read_time || '3 min read',
+      views: 0,
+    })
+    .select()
+    .single()
 
   if (error) throw error
   return data
+}
+
+export async function updateBlog(blogId, updates) {
+  const { data, error } = await supabase
+    .from('blogs')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', blogId)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteBlog(blog) {
+  if (blog.cover_url) {
+    try {
+      const markers = [
+        `/storage/v1/object/public/${BLOG_BUCKET}/`,
+        `/storage/v1/object/sign/${BLOG_BUCKET}/`,
+        `/object/public/${BLOG_BUCKET}/`,
+      ]
+      for (const marker of markers) {
+        const idx = blog.cover_url.indexOf(marker)
+        if (idx !== -1) {
+          let path = blog.cover_url.slice(idx + marker.length)
+          const qIdx = path.indexOf('?')
+          if (qIdx !== -1) path = path.slice(0, qIdx)
+          await supabase.storage.from(BLOG_BUCKET).remove([path])
+          break
+        }
+      }
+    } catch (err) {
+      console.warn('Cover cleanup failed:', err)
+    }
+  }
+
+  const { error } = await supabase.from('blogs').delete().eq('id', blog.id)
+  if (error) throw error
+}
+
+/* ---------- VIEWS ---------- */
+export async function incrementBlogViews(blogId) {
+  try {
+    const { data: blog } = await supabase
+      .from('blogs')
+      .select('views')
+      .eq('id', blogId)
+      .single()
+
+    const currentViews = blog?.views || 0
+
+    const { error } = await supabase
+      .from('blogs')
+      .update({ views: currentViews + 1 })
+      .eq('id', blogId)
+
+    if (error) throw error
+    return currentViews + 1
+  } catch (err) {
+    console.warn('View increment failed:', err)
+    return null
+  }
+}
+
+/* ---------- BLOG LIKES ---------- */
+export async function toggleBlogLike(blogId, userId, currentlyLiked) {
+  if (currentlyLiked) {
+    const { error } = await supabase
+      .from('blog_likes')
+      .delete()
+      .eq('blog_id', blogId)
+      .eq('user_id', userId)
+    if (error) throw error
+    return false
+  } else {
+    const { error } = await supabase
+      .from('blog_likes')
+      .insert({ blog_id: blogId, user_id: userId })
+    if (error) throw error
+    return true
+  }
+}
+
+export async function listBlogLikes(blogId) {
+  const { data, error } = await supabase
+    .from('blog_likes')
+    .select('user_id')
+    .eq('blog_id', blogId)
+  if (error) throw error
+  return data || []
+}
+
+/* ---------- BLOG COMMENTS ---------- */
+export async function listBlogComments(blogId) {
+  const { data: comments, error } = await supabase
+    .from('blog_comments')
+    .select('*')
+    .eq('blog_id', blogId)
+    .order('created_at', { ascending: true })
+  if (error) throw error
+  if (!comments || comments.length === 0) return []
+
+  const userIds = [...new Set(comments.map((c) => c.user_id))]
+  const profileMap = await listProfilesByIds(userIds)
+
+  return comments.map((c) => ({
+    ...c,
+    profiles: profileMap[c.user_id] || null,
+  }))
+}
+
+export async function createBlogComment(blogId, userId, text) {
+  const { data, error } = await supabase
+    .from('blog_comments')
+    .insert({ blog_id: blogId, user_id: userId, text })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteBlogComment(commentId) {
+  const { error } = await supabase
+    .from('blog_comments')
+    .delete()
+    .eq('id', commentId)
+  if (error) throw error
 }

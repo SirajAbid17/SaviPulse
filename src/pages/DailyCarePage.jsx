@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
+import '../styles/DailyCare.css'
 import {
   Stethoscope, Sparkles, Heart, Moon, Footprints, Flame,
   Droplet, Smile, Activity, CheckCircle2, AlertCircle,

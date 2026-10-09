@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   checkIsAdmin,
   getAdminStats,
@@ -9,11 +9,19 @@ import {
   toggleFeaturedReview,
   deleteReview,
   updateUserRole,
+  listBlogs,
+  createBlog,
+  updateBlog,
+  deleteBlog,
 } from '../lib/supabase'
+import '../styles/AdminPage.css'
+import ConfirmModal from '../components/ConfirmModal'
 import {
   Shield, Users, MessageSquare, Star, Activity, FileText,
   Loader2, CheckCircle2, XCircle, Trash2, Award, UserCog,
   TrendingUp, Search, RefreshCw, Crown, BarChart3,
+  Plus, Edit3, Send, Tag, Clock, Image as ImageIcon, X,
+  Eye, Calendar,
 } from 'lucide-react'
 
 export default function AdminPage({ user }) {
@@ -64,8 +72,43 @@ function AdminDashboard({ user }) {
   const [stats, setStats] = useState(null)
   const [users, setUsers] = useState([])
   const [reviews, setReviews] = useState([])
+  const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+
+  /* ============ MODAL STATE ============ */
+  const [modal, setModal] = useState({
+    open: false,
+    type: 'confirm',
+    title: '',
+    message: '',
+    confirmText: 'OK',
+    cancelText: 'Cancel',
+    showCancel: true,
+    loading: false,
+    onConfirm: null,
+    onCancel: null,
+  })
+
+  function openModal(config) {
+    setModal({
+      open: true,
+      type: 'confirm',
+      title: '',
+      message: '',
+      confirmText: 'OK',
+      cancelText: 'Cancel',
+      showCancel: true,
+      loading: false,
+      onConfirm: null,
+      onCancel: null,
+      ...config,
+    })
+  }
+
+  function closeModal() {
+    setModal((m) => ({ ...m, open: false, loading: false }))
+  }
 
   useEffect(() => {
     loadAll()
@@ -74,14 +117,16 @@ function AdminDashboard({ user }) {
   async function loadAll() {
     setLoading(true)
     try {
-      const [s, u, r] = await Promise.all([
+      const [s, u, r, b] = await Promise.all([
         getAdminStats(),
         listAllUsers(100),
         listAllReviews(),
+        listBlogs(100).catch(() => []),
       ])
       setStats(s)
       setUsers(u)
       setReviews(r)
+      setBlogs(b)
     } catch (err) {
       console.error('Load failed:', err)
     } finally {
@@ -104,6 +149,7 @@ function AdminDashboard({ user }) {
       icon: Star,
       count: reviews.filter((r) => r.status === 'pending').length,
     },
+    { id: 'blogs', label: 'Blogs', icon: FileText, count: blogs.length },
   ]
 
   return (
@@ -115,7 +161,7 @@ function AdminDashboard({ user }) {
           </div>
           <div>
             <h2>Admin Panel</h2>
-            <p>Manage users, reviews & system</p>
+            <p>Manage users, reviews, blogs & system</p>
           </div>
         </div>
 
@@ -166,13 +212,49 @@ function AdminDashboard({ user }) {
         <>
           {tab === 'overview' && <OverviewTab stats={stats} />}
           {tab === 'users' && (
-            <UsersTab users={users} currentUserId={user.id} onUpdate={loadAll} />
+            <UsersTab
+              users={users}
+              currentUserId={user.id}
+              onUpdate={loadAll}
+              openModal={openModal}
+              closeModal={closeModal}
+              setModal={setModal}
+            />
           )}
           {tab === 'reviews' && (
-            <ReviewsTab reviews={reviews} onUpdate={loadAll} />
+            <ReviewsTab
+              reviews={reviews}
+              onUpdate={loadAll}
+              openModal={openModal}
+              closeModal={closeModal}
+              setModal={setModal}
+            />
+          )}
+          {tab === 'blogs' && (
+            <BlogsTab
+              blogs={blogs}
+              user={user}
+              onUpdate={loadAll}
+              openModal={openModal}
+              closeModal={closeModal}
+              setModal={setModal}
+            />
           )}
         </>
       )}
+
+      <ConfirmModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        showCancel={modal.showCancel}
+        loading={modal.loading}
+        onConfirm={modal.onConfirm || closeModal}
+        onCancel={modal.onCancel || closeModal}
+      />
     </div>
   )
 }
@@ -219,7 +301,14 @@ function OverviewTab({ stats }) {
 /* =========================================
    USERS TAB
 ========================================= */
-function UsersTab({ users, currentUserId, onUpdate }) {
+function UsersTab({
+  users,
+  currentUserId,
+  onUpdate,
+  openModal,
+  closeModal,
+  setModal,
+}) {
   const [search, setSearch] = useState('')
   const [changing, setChanging] = useState(null)
 
@@ -232,26 +321,49 @@ function UsersTab({ users, currentUserId, onUpdate }) {
     )
   })
 
-  async function handleRoleChange(userId, newRole) {
+  function handleRoleChange(userId, newRole) {
     if (userId === currentUserId) {
-      alert("You can't change your own role.")
+      openModal({
+        type: 'warning',
+        title: 'Not Allowed',
+        message: "You can't change your own role.",
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
       return
     }
 
-    const ok = window.confirm(
-      `Change role to "${newRole}"? User will get new permissions.`
-    )
-    if (!ok) return
-
-    setChanging(userId)
-    try {
-      await updateUserRole(userId, newRole)
-      await onUpdate()
-    } catch (err) {
-      alert('Failed: ' + err.message)
-    } finally {
-      setChanging(null)
-    }
+    openModal({
+      type: 'confirm',
+      title: 'Change Role?',
+      message: `Change this user's role to "${newRole}"? They will get new permissions immediately.`,
+      confirmText: 'Change',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        setChanging(userId)
+        try {
+          await updateUserRole(userId, newRole)
+          await onUpdate()
+          closeModal()
+        } catch (err) {
+          openModal({
+            type: 'error',
+            title: 'Update Failed',
+            message: err.message || 'Failed to update role.',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: closeModal,
+            onCancel: closeModal,
+          })
+        } finally {
+          setChanging(null)
+        }
+      },
+      onCancel: closeModal,
+    })
   }
 
   return (
@@ -287,20 +399,22 @@ function UsersTab({ users, currentUserId, onUpdate }) {
 
               return (
                 <tr key={u.id}>
-                  <td>
+                  <td data-label="User">
                     <div className="admin-user-cell">
                       <div className="admin-user-avatar">{initials}</div>
                       <span>{u.full_name || 'No name'}</span>
                     </div>
                   </td>
-                  <td className="admin-email">{u.email || '—'}</td>
-                  <td>
+                  <td className="admin-email" data-label="Email">
+                    {u.email || '—'}
+                  </td>
+                  <td data-label="Role">
                     <span className={`admin-role-badge role-${u.role}`}>
                       {u.role === 'admin' && <Crown size={10} />}
                       {u.role || 'user'}
                     </span>
                   </td>
-                  <td className="admin-date">
+                  <td className="admin-date" data-label="Joined">
                     {u.created_at
                       ? new Date(u.created_at).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -309,7 +423,7 @@ function UsersTab({ users, currentUserId, onUpdate }) {
                         })
                       : '—'}
                   </td>
-                  <td>
+                  <td data-label="Actions">
                     {u.id === currentUserId ? (
                       <span className="admin-you">You</span>
                     ) : (
@@ -372,7 +486,13 @@ function UsersTab({ users, currentUserId, onUpdate }) {
 /* =========================================
    REVIEWS TAB
 ========================================= */
-function ReviewsTab({ reviews, onUpdate }) {
+function ReviewsTab({
+  reviews,
+  onUpdate,
+  openModal,
+  closeModal,
+  setModal,
+}) {
   const [filter, setFilter] = useState('all')
   const [acting, setActing] = useState(null)
 
@@ -387,23 +507,50 @@ function ReviewsTab({ reviews, onUpdate }) {
       await approveReview(id)
       await onUpdate()
     } catch (err) {
-      alert('Failed: ' + err.message)
+      openModal({
+        type: 'error',
+        title: 'Approve Failed',
+        message: err.message || 'Failed to approve review.',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
     } finally {
       setActing(null)
     }
   }
 
-  async function handleReject(id) {
-    if (!window.confirm('Reject this review?')) return
-    setActing(id)
-    try {
-      await rejectReview(id)
-      await onUpdate()
-    } catch (err) {
-      alert('Failed: ' + err.message)
-    } finally {
-      setActing(null)
-    }
+  function handleReject(id) {
+    openModal({
+      type: 'warning',
+      title: 'Reject Review?',
+      message: 'This review will be marked as rejected and hidden from users.',
+      confirmText: 'Reject',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        setActing(id)
+        try {
+          await rejectReview(id)
+          await onUpdate()
+          closeModal()
+        } catch (err) {
+          openModal({
+            type: 'error',
+            title: 'Reject Failed',
+            message: err.message || 'Failed to reject review.',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: closeModal,
+            onCancel: closeModal,
+          })
+        } finally {
+          setActing(null)
+        }
+      },
+      onCancel: closeModal,
+    })
   }
 
   async function handleFeature(id, current) {
@@ -412,23 +559,50 @@ function ReviewsTab({ reviews, onUpdate }) {
       await toggleFeaturedReview(id, !current)
       await onUpdate()
     } catch (err) {
-      alert('Failed: ' + err.message)
+      openModal({
+        type: 'error',
+        title: 'Update Failed',
+        message: err.message || 'Failed to update featured status.',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: closeModal,
+        onCancel: closeModal,
+      })
     } finally {
       setActing(null)
     }
   }
 
-  async function handleDelete(id) {
-    if (!window.confirm('Delete this review permanently?')) return
-    setActing(id)
-    try {
-      await deleteReview(id)
-      await onUpdate()
-    } catch (err) {
-      alert('Failed: ' + err.message)
-    } finally {
-      setActing(null)
-    }
+  function handleDelete(id) {
+    openModal({
+      type: 'danger',
+      title: 'Delete Review?',
+      message: 'This review will be permanently deleted. This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        setActing(id)
+        try {
+          await deleteReview(id)
+          await onUpdate()
+          closeModal()
+        } catch (err) {
+          openModal({
+            type: 'error',
+            title: 'Delete Failed',
+            message: err.message || 'Failed to delete review.',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: closeModal,
+            onCancel: closeModal,
+          })
+        } finally {
+          setActing(null)
+        }
+      },
+      onCancel: closeModal,
+    })
   }
 
   const filters = [
@@ -575,5 +749,451 @@ function ReviewsTab({ reviews, onUpdate }) {
         </div>
       )}
     </div>
+  )
+}
+
+/* =========================================
+   BLOGS TAB — Admin Management
+========================================= */
+function BlogsTab({ blogs, user, onUpdate, openModal, closeModal, setModal }) {
+  const [editing, setEditing] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [search, setSearch] = useState('')
+
+  const filtered = blogs.filter((b) => {
+    if (!search) return true
+    const q = search.toLowerCase()
+    return (
+      b.title?.toLowerCase().includes(q) ||
+      b.category?.toLowerCase().includes(q)
+    )
+  })
+
+  function handleNew() {
+    setEditing(null)
+    setShowForm(true)
+  }
+
+  function handleEdit(blog) {
+    setEditing(blog)
+    setShowForm(true)
+  }
+
+  function handleDelete(blog) {
+    openModal({
+      type: 'danger',
+      title: 'Delete Blog?',
+      message: `"${blog.title}" will be permanently deleted along with all its comments and likes.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        setModal((m) => ({ ...m, loading: true }))
+        try {
+          await deleteBlog(blog)
+          await onUpdate()
+          closeModal()
+        } catch (err) {
+          openModal({
+            type: 'error',
+            title: 'Delete Failed',
+            message: err.message || 'Could not delete blog.',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: closeModal,
+            onCancel: closeModal,
+          })
+        }
+      },
+      onCancel: closeModal,
+    })
+  }
+
+  async function handleSaved() {
+    setShowForm(false)
+    setEditing(null)
+    await onUpdate()
+  }
+
+  return (
+    <div className="admin-blogs">
+      {/* Header */}
+      <div className="admin-blogs-topbar">
+        <div className="admin-search">
+          <Search size={14} />
+          <input
+            type="text"
+            placeholder="Search blogs by title or category…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <button className="admin-blog-new-btn" onClick={handleNew}>
+          <Plus size={14} />
+          New Blog
+        </button>
+      </div>
+
+      {/* Blog Form (inline, when open) */}
+      {showForm && (
+        <AdminBlogForm
+          user={user}
+          editingBlog={editing}
+          onCancel={() => {
+            setShowForm(false)
+            setEditing(null)
+          }}
+          onSaved={handleSaved}
+        />
+      )}
+
+      {/* Blog list */}
+      {filtered.length === 0 ? (
+        <div className="admin-empty">
+          <FileText size={32} style={{ opacity: 0.3 }} />
+          <p>No blogs yet</p>
+        </div>
+      ) : (
+        <div className="admin-blogs-grid">
+          {filtered.map((b) => (
+            <div key={b.id} className="admin-blog-card">
+              {b.cover_url && (
+                <div className="admin-blog-cover">
+                  <img src={b.cover_url} alt={b.title} loading="lazy" />
+                </div>
+              )}
+
+              <div className="admin-blog-body">
+                <div className="admin-blog-meta">
+                  <span className="admin-blog-tag">
+                    <Tag size={9} />
+                    {b.category || 'General'}
+                  </span>
+                  <span className="admin-blog-time">
+                    <Clock size={9} />
+                    {b.read_time || '3 min read'}
+                  </span>
+                </div>
+
+                <h4 className="admin-blog-title">{b.title}</h4>
+                <p className="admin-blog-excerpt">
+                  {b.content?.slice(0, 100)}
+                  {b.content?.length > 100 ? '…' : ''}
+                </p>
+
+                <div className="admin-blog-footer">
+                  <span className="admin-blog-date">
+                    <Calendar size={9} />
+                    {new Date(b.created_at).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short',
+                    })}
+                  </span>
+
+                  <div className="admin-blog-actions">
+                    <button
+                      className="admin-blog-action edit"
+                      onClick={() => handleEdit(b)}
+                      title="Edit"
+                    >
+                      <Edit3 size={12} />
+                    </button>
+                    <button
+                      className="admin-blog-action delete"
+                      onClick={() => handleDelete(b)}
+                      title="Delete"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* =========================================
+   ADMIN BLOG FORM
+========================================= */
+function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
+  const [title, setTitle] = useState('')
+  const [category, setCategory] = useState('')
+  const [content, setContent] = useState('')
+  const [readTime, setReadTime] = useState('3 min read')
+  const [coverFile, setCoverFile] = useState(null)
+  const [coverPreview, setCoverPreview] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState('')
+
+  const coverRef = useRef(null)
+
+  useEffect(() => {
+    if (editingBlog) {
+      setTitle(editingBlog.title || '')
+      setCategory(editingBlog.category || '')
+      setContent(editingBlog.content || '')
+      setReadTime(editingBlog.read_time || '3 min read')
+      setCoverPreview(editingBlog.cover_url || '')
+      setCoverFile(null)
+    } else {
+      setTitle('')
+      setCategory('')
+      setContent('')
+      setReadTime('3 min read')
+      setCoverPreview('')
+      setCoverFile(null)
+    }
+    setErr('')
+  }, [editingBlog])
+
+  function handleCoverSelect(e) {
+    const f = e.target.files?.[0]
+    e.target.value = ''
+    if (!f) return
+    if (!f.type.startsWith('image/')) {
+      setErr('Cover must be an image.')
+      return
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setErr('Cover must be under 5 MB.')
+      return
+    }
+    setCoverFile(f)
+    setCoverPreview(URL.createObjectURL(f))
+    setErr('')
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    if (!title.trim()) {
+      setErr('Title is required.')
+      return
+    }
+    if (content.trim().length < 20) {
+      setErr('Content must be at least 20 characters.')
+      return
+    }
+
+    setSaving(true)
+    setErr('')
+
+    try {
+      if (editingBlog) {
+        const updates = {
+          title: title.trim(),
+          category: category.trim() || 'General',
+          content: content.trim(),
+          read_time: readTime,
+        }
+
+        if (coverFile) {
+          const ext = (coverFile.name.split('.').pop() || 'jpg').toLowerCase()
+          const path = `${user.id}/${Date.now()}-cover.${ext}`
+          const { error: upErr } = await supabaseStorageUpload(path, coverFile)
+          if (upErr) throw upErr
+
+          const { data: urlData } = supabaseStorageUrl(path)
+          updates.cover_url = urlData.publicUrl
+        }
+
+        await updateBlog(editingBlog.id, updates)
+      } else {
+        await createBlog(
+          user.id,
+          {
+            title: title.trim(),
+            category: category.trim() || 'General',
+            content: content.trim(),
+            read_time: readTime,
+          },
+          coverFile
+        )
+      }
+
+      await onSaved()
+    } catch (err) {
+      console.error(err)
+      setErr(err.message || 'Failed to save blog.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  /* Local helpers using supabase directly */
+  async function supabaseStorageUpload(path, file) {
+    const { supabase } = await import('../lib/supabase')
+    return supabase.storage.from('blogs').upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type,
+    })
+  }
+
+  async function supabaseStorageUrl(path) {
+    const { supabase } = await import('../lib/supabase')
+    return supabase.storage.from('blogs').getPublicUrl(path)
+  }
+
+  return (
+    <form className="admin-blog-form" onSubmit={handleSubmit}>
+      <div className="admin-blog-form-header">
+        <div className="admin-blog-form-icon">
+          {editingBlog ? <Edit3 size={15} /> : <Plus size={15} />}
+        </div>
+        <div>
+          <h3>{editingBlog ? 'Edit Blog' : 'Create New Blog'}</h3>
+          <p>
+            {editingBlog
+              ? 'Update this blog post'
+              : 'Fill in the details below to publish a new blog'}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="admin-blog-form-close"
+          onClick={onCancel}
+          aria-label="Close form"
+        >
+          <X size={14} />
+        </button>
+      </div>
+
+      {err && (
+        <div className="admin-blog-form-error">
+          <XCircle size={13} />
+          {err}
+        </div>
+      )}
+
+      <div className="admin-blog-form-grid">
+        {/* COVER */}
+        <div className="admin-blog-field admin-blog-field-full">
+          <label>
+            <ImageIcon size={11} />
+            Cover Image (optional)
+          </label>
+          <input
+            ref={coverRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleCoverSelect}
+          />
+          <div
+            className="admin-blog-cover-drop"
+            onClick={() => coverRef.current?.click()}
+          >
+            {coverPreview ? (
+              <img src={coverPreview} alt="Cover preview" />
+            ) : (
+              <div className="admin-blog-cover-empty">
+                <ImageIcon size={20} />
+                <span>Click to upload cover</span>
+                <small>JPG, PNG, WebP · Max 5 MB</small>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* TITLE */}
+        <div className="admin-blog-field admin-blog-field-full">
+          <label>
+            <FileText size={11} />
+            Title <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. How AI is Changing Healthcare"
+            maxLength={120}
+            required
+          />
+        </div>
+
+        {/* CATEGORY */}
+        <div className="admin-blog-field">
+          <label>
+            <Tag size={11} />
+            Category
+          </label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="e.g. AI Health"
+            maxLength={40}
+          />
+        </div>
+
+        {/* READ TIME */}
+        <div className="admin-blog-field">
+          <label>
+            <Clock size={11} />
+            Read Time
+          </label>
+          <input
+            type="text"
+            value={readTime}
+            onChange={(e) => setReadTime(e.target.value)}
+            placeholder="e.g. 3 min read"
+            maxLength={20}
+          />
+        </div>
+
+        {/* CONTENT */}
+        <div className="admin-blog-field admin-blog-field-full">
+          <label>
+            <Edit3 size={11} />
+            Content <span className="required">*</span>
+          </label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write your blog content here… Use double line breaks to create new paragraphs."
+            rows={10}
+            maxLength={8000}
+            required
+          />
+          <div className="admin-blog-field-footer">
+            <span>Min 20 characters</span>
+            <span>{content.length}/8000</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="admin-blog-form-actions">
+        <button
+          type="button"
+          className="admin-blog-btn-outline"
+          onClick={onCancel}
+          disabled={saving}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="admin-blog-btn-primary"
+          disabled={saving}
+        >
+          {saving ? (
+            <>
+              <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+              Saving…
+            </>
+          ) : (
+            <>
+              <Send size={14} />
+              {editingBlog ? 'Save Changes' : 'Publish Blog'}
+            </>
+          )}
+        </button>
+      </div>
+    </form>
   )
 }
