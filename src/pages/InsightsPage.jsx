@@ -10,11 +10,11 @@ import {
 } from 'lucide-react'
 
 export default function InsightsPage({ user }) {
-  /* ============ LOCAL DATA ============ */
+
   const [vitals, setVitals] = useState([])
   const [loadingVitals, setLoadingVitals] = useState(true)
 
-  /* ============ TAVILY DATA ============ */
+ 
   const [news, setNews] = useState([])
   const [trending, setTrending] = useState([])
   const [nutrition, setNutrition] = useState([])
@@ -28,9 +28,7 @@ export default function InsightsPage({ user }) {
     loadAllTavily()
   }, [user.id])
 
-  /* =========================================
-     LOAD USER VITALS (last 30 days)
-  ========================================= */
+
   async function loadVitals() {
     setLoadingVitals(true)
     const since = new Date()
@@ -47,9 +45,7 @@ export default function InsightsPage({ user }) {
     setLoadingVitals(false)
   }
 
-  /* =========================================
-     LOAD TAVILY (parallel)
-  ========================================= */
+  
   async function loadAllTavily() {
     setRefreshing(true)
     await Promise.all([
@@ -96,18 +92,14 @@ export default function InsightsPage({ user }) {
     }
   }
 
-  /* =========================================
-     COMPUTED STATS
-  ========================================= */
+  
   const stats = computeStats(vitals)
   const healthScore = computeHealthScore(vitals[0])
   const personalizedTips = generatePersonalizedTips(vitals, stats)
 
   return (
     <div className="insights-page">
-      {/* =========================================
-          HEADER
-      ========================================= */}
+    
       <section className="insights-header-card">
         <div className="insights-header-left">
           <div className="insights-header-icon">
@@ -132,9 +124,7 @@ export default function InsightsPage({ user }) {
         </button>
       </section>
 
-      {/* =========================================
-          SECTION 1: HEALTH SCORE + QUICK STATS
-      ========================================= */}
+     
       <section className="insights-section">
         <div className="insights-section-header">
           <div className="insights-section-icon">
@@ -198,9 +188,7 @@ export default function InsightsPage({ user }) {
         </div>
       </section>
 
-      {/* =========================================
-          SECTION 2: AI-PERSONALIZED TIPS
-      ========================================= */}
+    
       <section className="insights-section">
         <div className="insights-section-header">
           <div className="insights-section-icon" style={{ background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)', color: '#8b5cf6' }}>
@@ -228,9 +216,7 @@ export default function InsightsPage({ user }) {
         </div>
       </section>
 
-      {/* =========================================
-          SECTION 3: LIVE HEALTH NEWS (TAVILY)
-      ========================================= */}
+     
       <section className="insights-section">
         <div className="insights-section-header">
           <div className="insights-section-icon" style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: '#3b82f6' }}>
@@ -283,9 +269,7 @@ export default function InsightsPage({ user }) {
         )}
       </section>
 
-      {/* =========================================
-          SECTION 4: TRENDING HEALTH TOPICS (TAVILY)
-      ========================================= */}
+     
       <section className="insights-section">
         <div className="insights-section-header">
           <div className="insights-section-icon" style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', color: '#d97706' }}>
@@ -325,9 +309,7 @@ export default function InsightsPage({ user }) {
         )}
       </section>
 
-      {/* =========================================
-          SECTION 5: NUTRITION & DIET (TAVILY)
-      ========================================= */}
+      
       <section className="insights-section">
         <div className="insights-section-header">
           <div className="insights-section-icon" style={{ background: 'linear-gradient(135deg, #ecfdf5, #d1fae5)', color: '#059669' }}>
@@ -368,9 +350,7 @@ export default function InsightsPage({ user }) {
         )}
       </section>
 
-      {/* =========================================
-          FOOTER
-      ========================================= */}
+     
       <div className="insights-footer-note">
         <Info size={12} />
         Live data is cached and refreshed periodically. AI insights are
@@ -380,9 +360,7 @@ export default function InsightsPage({ user }) {
   )
 }
 
-/* =========================================
-   STAT BOX
-========================================= */
+
 function StatBox({ icon: Icon, label, value, unit, color, status }) {
   return (
     <div className={`insights-stat-box insights-stat-${color}`}>
@@ -404,9 +382,7 @@ function StatBox({ icon: Icon, label, value, unit, color, status }) {
   )
 }
 
-/* =========================================
-   LOADING & EMPTY
-========================================= */
+
 function InsightsLoading({ text }) {
   return (
     <div className="insights-loading">
@@ -425,9 +401,7 @@ function InsightsEmpty({ icon: Icon, text }) {
   )
 }
 
-/* =========================================
-   COMPUTE STATS
-========================================= */
+
 function computeStats(vitals) {
   if (!vitals || vitals.length === 0) {
     return {
@@ -494,9 +468,7 @@ function computeHealthScore(v) {
   return { score: pct, label: pct >= 75 ? 'Great' : pct >= 50 ? 'Good' : 'Fair', color: pct >= 75 ? 'emerald' : pct >= 50 ? 'lime' : 'amber' }
 }
 
-/* =========================================
-   STATUS HELPERS
-========================================= */
+
 function getHRStatus(hr) {
   if (!hr) return null
   if (hr < 50) return { text: 'Low', cls: 'status-warn' }
@@ -534,13 +506,11 @@ function getConsistencyStatus(days) {
   return { text: 'Low', cls: 'status-warn' }
 }
 
-/* =========================================
-   PERSONALIZED TIPS (from user's vitals)
-========================================= */
+
 function generatePersonalizedTips(vitals, stats) {
   const tips = []
 
-  // Sleep
+ 
   if (stats.avgSleep && stats.avgSleep < 7) {
     tips.push({
       icon: Moon,
@@ -559,7 +529,7 @@ function generatePersonalizedTips(vitals, stats) {
     })
   }
 
-  // Steps
+  
   if (stats.avgSteps && stats.avgSteps < 7000) {
     tips.push({
       icon: Footprints,
@@ -578,7 +548,7 @@ function generatePersonalizedTips(vitals, stats) {
     })
   }
 
-  // Water
+  
   if (stats.avgWater && stats.avgWater < 2) {
     tips.push({
       icon: Droplet,
@@ -589,7 +559,7 @@ function generatePersonalizedTips(vitals, stats) {
     })
   }
 
-  // Heart rate
+  
   if (stats.avgHR && (stats.avgHR > 100 || stats.avgHR < 50)) {
     tips.push({
       icon: Heart,
@@ -600,7 +570,7 @@ function generatePersonalizedTips(vitals, stats) {
     })
   }
 
-  // Consistency
+  
   if (stats.daysLogged < 15) {
     tips.push({
       icon: Calendar,
@@ -611,7 +581,7 @@ function generatePersonalizedTips(vitals, stats) {
     })
   }
 
-  // Fallback
+  
   if (tips.length === 0) {
     tips.push(
       {

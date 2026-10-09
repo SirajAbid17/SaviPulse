@@ -1,11 +1,3 @@
-/* =========================================================
-   SAVIPULSE — CHAT PAGE
-   Full-screen fit · No scroll button · Compact input
-========================================================= */
-
-/* =========================================
-   TOKENS
-========================================= */
 .chat-shell {
   --cp-primary:        #10b981;
   --cp-primary-dark:   #0f766e;
@@ -43,9 +35,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* =========================================
-   SIDEBAR
-========================================= */
+
 .chat-sidebar {
   display: flex;
   flex-direction: column;
@@ -228,9 +218,7 @@
   background: var(--cp-line-2);
 }
 
-/* =========================================
-   CONVERSATION ITEM
-========================================= */
+
 .chat-conv-item {
   position: relative;
   display: flex;
@@ -365,9 +353,7 @@
   background: var(--cp-line-2);
 }
 
-/* =========================================
-   MAIN CHAT AREA
-========================================= */
+
 .chat-main {
   flex: 1;
   display: flex;
@@ -511,9 +497,7 @@
   border-color: #fecaca;
 }
 
-/* =========================================
-   MESSAGES AREA
-========================================= */
+
 .chat-messages {
   flex: 1;
   min-height: 0;
@@ -545,9 +529,7 @@
 }
 .chat-msg-loading p { margin: 0; }
 
-/* =========================================
-   MESSAGE BUBBLES
-========================================= */
+
 .chat-msg {
   display: flex;
   align-items: flex-start;
@@ -660,9 +642,7 @@
   .chat-msg-actions { opacity: 1; }
 }
 
-/* =========================================
-   MARKDOWN
-========================================= */
+
 .chat-msg-markdown p { margin: 0 0 10px; }
 .chat-msg-markdown p:last-child { margin-bottom: 0; }
 .chat-msg-markdown strong { font-weight: 700; color: var(--cp-ink); }
@@ -700,9 +680,7 @@
   color: inherit;
 }
 
-/* =========================================
-   TYPING INDICATOR
-========================================= */
+
 .chat-typing {
   display: inline-flex;
   align-items: center;
@@ -750,9 +728,7 @@
   margin: 8px auto;
 }
 
-/* =========================================
-   EMPTY STATE
-========================================= */
+
 .chat-empty {
   display: flex;
   flex-direction: column;
@@ -861,31 +837,29 @@
 }
 .chat-trust-item svg { color: var(--cp-primary); }
 
-/* =========================================
-   INPUT FORM — COMPACT + SAME HEIGHT
-========================================= */
+
 .chat-input-form {
   display: flex;
   gap: 8px;
   padding: 10px 14px;
   border-top: 1px solid var(--cp-line-2);
   background: var(--cp-surface);
-  align-items: center;         /* ✅ center align — same height */
+  align-items: center;      
   flex-shrink: 0;
 }
 
-/* Input wrap — same height as send button */
+
 .chat-input-wrap {
   flex: 1;
   min-width: 0;
   min-height: 44px;
-  height: 44px;                 /* ✅ fixed height */
+  height: 44px;                
   padding: 0 14px;
   border-radius: 12px;
   background: var(--cp-surface-3);
   border: 1px solid var(--cp-line);
   display: flex;
-  align-items: center;          /* ✅ vertically centered */
+  align-items: center;       
   transition: border-color 0.16s var(--cp-ease), background 0.16s var(--cp-ease), box-shadow 0.16s var(--cp-ease);
 }
 
@@ -905,9 +879,9 @@
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--cp-ink);
-  height: 22px;                 /* single line */
+  height: 22px;             
   min-height: 22px;
-  max-height: 22px;             /* keep single line — auto expands visually */
+  max-height: 22px;             
   overflow-y: auto;
   scrollbar-width: thin;
   padding: 0;
@@ -915,14 +889,14 @@
 .chat-input-wrap textarea::placeholder { color: var(--cp-muted-2); }
 .chat-input-wrap textarea::-webkit-scrollbar { width: 0; display: none; }
 
-/* Send button — same height */
+
 .chat-send-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 44px;                 /* ✅ same as input */
-  width: 44px;                  /* square button */
+  height: 44px;                
+  width: 44px;                
   padding: 0;
   border-radius: 12px;
   background: var(--cp-primary);
@@ -947,7 +921,7 @@
   cursor: not-allowed;
 }
 
-/* Hide old footer hints (not used anymore) */
+
 .chat-input-footer,
 .chat-input-hints,
 .chat-char-count,
@@ -974,9 +948,7 @@
   color: #d97706;
 }
 
-/* =========================================
-   MOBILE OVERLAY
-========================================= */
+
 .chat-mobile-overlay {
   display: none;
   position: fixed;
@@ -990,9 +962,7 @@
   to   { opacity: 1; }
 }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+
 @media (max-width: 1200px) {
   .chat-sidebar { width: 260px; }
 }
@@ -1084,7 +1054,7 @@
     border-radius: 11px;
   }
   .chat-input-wrap textarea {
-    font-size: 14px;         /* slightly bigger, still compact */
+    font-size: 14px;        
     height: 20px;
     min-height: 20px;
     max-height: 20px;
@@ -1157,9 +1127,7 @@
   .chat-empty h4 { font-size: 15px; }
 }
 
-/* =========================================
-   ACCESSIBILITY · MOTION · PRINT
-========================================= */
+
 .chat-new-btn:focus-visible,
 .chat-sidebar-collapse:focus-visible,
 .chat-sidebar-open:focus-visible,
@@ -1219,12 +1187,12 @@
   scroll-behavior: smooth;
   position: relative;
 
-  /* ✅ Scrollbar hidden — scroll still works */
-  scrollbar-width: none;          /* Firefox */
-  -ms-overflow-style: none;       /* IE / Edge */
+  
+  scrollbar-width: none;          
+  -ms-overflow-style: none;      
 }
 
-/* Chrome / Safari / Edge */
+
 .chat-messages::-webkit-scrollbar {
   display: none;
   width: 0;

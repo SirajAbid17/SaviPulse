@@ -1,13 +1,4 @@
-/* =========================================================
-   SAVIPULSE — DASHBOARD HOME
-   Clean · Professional · Fully Responsive
-   ---------------------------------------------------------
-   ALL SCROLLBARS HIDDEN — scroll works, no visible bars
-========================================================= */
 
-/* =========================================
-   1. WRAPPER
-========================================= */
 .dashboard-home {
   display: flex;
   flex-direction: column;
@@ -15,9 +6,7 @@
   width: 100%;
 }
 
-/* =========================================
-   2. HERO
-========================================= */
+
 .hero-section-react {
   position: relative;
   overflow: hidden;
@@ -332,9 +321,7 @@
   font-weight: 500;
 }
 
-/* =========================================
-   3. TRUST GRID
-========================================= */
+
 .trust-grid-react {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -384,9 +371,7 @@
   line-height: 1.4;
 }
 
-/* =========================================
-   4. STATS GRID
-========================================= */
+
 .stats-grid-react {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -512,9 +497,7 @@
   font-weight: 500;
 }
 
-/* =========================================
-   5. SECTION CARD
-========================================= */
+
 .section-card-react {
   padding: 22px;
   background: #ffffff;
@@ -598,9 +581,7 @@
   border: 1px solid #d1fae5;
 }
 
-/* =========================================
-   6. MINI CHART
-========================================= */
+
 .mini-chart-react {
   display: flex;
   align-items: flex-end;
@@ -700,9 +681,7 @@
   color: #059669;
 }
 
-/* =========================================
-   7. NEWS LIST
-========================================= */
+
 .news-list-react {
   display: flex;
   flex-direction: column;
@@ -809,9 +788,7 @@
   font-weight: 500;
 }
 
-/* =========================================
-   8. FEEDBACK SECTION
-========================================= */
+
 .feedback-section {
   padding: 24px;
   background: #ffffff;
@@ -1157,7 +1134,7 @@
   color: #6d847d;
 }
 
-/* ✅ FEEDBACK LIST — scrollbar hidden */
+
 .feedback-list {
   display: flex;
   flex-direction: column;
@@ -1201,9 +1178,7 @@
   font-weight: 500;
 }
 
-/* =========================================
-   9. REVIEW CARDS
-========================================= */
+
 .review-card {
   position: relative;
   padding: 14px 16px;
@@ -1298,9 +1273,7 @@
   font-weight: 600;
 }
 
-/* =========================================
-   10. RESPONSIVE
-========================================= */
+
 
 @media (max-width: 1200px) {
   .hero-content-react {
@@ -1426,9 +1399,7 @@
   .review-card-text { padding-right: 8px; font-size: 12px; }
 }
 
-/* =========================================
-   ACCESSIBILITY
-========================================= */
+
 .hero-refresh-btn-react:focus-visible,
 .quick-question-react:focus-visible,
 .section-action-btn-react:focus-visible,
@@ -1456,9 +1427,7 @@
   }
 }
 
-/* =========================================
-   🔥 GLOBAL SCROLLBAR HIDE — catches every nested scroller
-========================================= */
+
 .dashboard-home,
 .dashboard-home * {
   scrollbar-width: none !important;

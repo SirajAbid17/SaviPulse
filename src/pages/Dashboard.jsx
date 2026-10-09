@@ -19,14 +19,7 @@ import AdminPage from './AdminPage'
 import ConfirmModal from '../components/ConfirmModal'
 import HelpScannerModal from '../components/HelpScannerModal'
 
-/* =========================================================
-   HEART BADGE + SCROLLING SUPPORT MESSAGE
-   ---------------------------------------------------------
-   • Desktop (≥ 900px): heart RIGHT edge, long scrolling message
-   • Mobile  (< 900px): heart LEFT edge, only "Scan here" text
-                        (no scroll, no marquee)
-   • Click → opens HelpScannerModal (SadaPay + IBAN)
-========================================================= */
+
 function RightHeartBadge({ onClick }) {
   const supportText =
     "I’m Siraj, creator of SaviPulse. Scan to support and inspire my next project!"
@@ -48,7 +41,7 @@ function RightHeartBadge({ onClick }) {
         }
       }}
     >
-      {/* === DESKTOP: long scrolling line === */}
+    
       <div className="heart-scroll-line">
         <div className="heart-scroll-marquee">
           <img
@@ -72,10 +65,10 @@ function RightHeartBadge({ onClick }) {
         </div>
       </div>
 
-      {/* === MOBILE: only short "Scan here" text === */}
+    
       <span className="heart-short-text">{shortText}</span>
 
-      {/* Heart icon */}
+      
       <Heart size={24} strokeWidth={2.4} fill="currentColor" />
     </div>
   )
@@ -96,7 +89,7 @@ export default function Dashboard({ session, profile }) {
   const [pendingChatQuestion, setPendingChatQuestion] = useState(null)
   const [helpModalOpen, setHelpModalOpen] = useState(false)
 
-  /* ============ MODAL STATE ============ */
+
   const [modal, setModal] = useState({
     open: false,
     type: 'confirm',
@@ -145,7 +138,7 @@ export default function Dashboard({ session, profile }) {
   const personal = navItems.slice(7)
   const isAdmin = profile?.role === 'admin'
 
-  /* ============ LOGOUT WITH MODAL ============ */
+  
   function handleLogout() {
     openModal({
       type: 'confirm',
@@ -175,7 +168,7 @@ export default function Dashboard({ session, profile }) {
 
   return (
     <div className="app-shell">
-      {/* MOBILE TOPBAR */}
+    
       <header className="mobile-topbar">
         <div className="brand-mini">
           <div className="brand-mini-icon">
@@ -197,7 +190,7 @@ export default function Dashboard({ session, profile }) {
         </button>
       </header>
 
-      {/* SIDEBAR */}
+   
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div className="logo-mark">
@@ -283,7 +276,7 @@ export default function Dashboard({ session, profile }) {
           )}
         </nav>
 
-        {/* SIDEBAR BOTTOM */}
+     
         <div className="sidebar-bottom">
           <div className="sidebar-user-card">
             <div className="sidebar-user-avatar">
@@ -324,7 +317,7 @@ export default function Dashboard({ session, profile }) {
         />
       )}
 
-      {/* MAIN AREA */}
+      
       <main className="main-area">
         <header className="topbar">
           <div className="topbar-title">
@@ -365,7 +358,7 @@ export default function Dashboard({ session, profile }) {
           </div>
         </header>
 
-        {/* PAGE CONTENT */}
+       
         <div className="page-content">
           {page === 'dashboard' && (
             <DashboardHome
@@ -398,7 +391,7 @@ export default function Dashboard({ session, profile }) {
           )}
         </div>
 
-        {/* GLOBAL FOOTER */}
+       
         <footer className="global-footer">
           <div className="global-footer-left">
             <div className="global-footer-logo">
@@ -423,16 +416,16 @@ export default function Dashboard({ session, profile }) {
         </footer>
       </main>
 
-      {/* 👇 HEART BADGE — opens HelpScannerModal on click */}
+     
       <RightHeartBadge onClick={() => setHelpModalOpen(true)} />
 
-      {/* HELP SCANNER MODAL */}
+    
       <HelpScannerModal
         isOpen={helpModalOpen}
         onClose={() => setHelpModalOpen(false)}
       />
 
-      {/* CONFIRM MODAL */}
+     
       <ConfirmModal
         open={modal.open}
         type={modal.type}

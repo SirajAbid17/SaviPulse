@@ -91,14 +91,12 @@ export default function DashboardHome({
   const firstName = displayName?.split(' ')[0] || 'there'
   const healthScore = computeHealthScore(vitals)
 
-  /* =========================================
-     ASK QUESTION → OPEN CHAT WITH IT
-  ========================================= */
+
   function askQuestion(q) {
     if (typeof onAskQuestion === 'function') {
       onAskQuestion(q)
     } else {
-      // Fallback: agar parent ne prop nahi diya to localStorage use karo
+     
       localStorage.setItem('pending_chat_question', q)
       window.location.href = '/chat'
     }
@@ -112,7 +110,7 @@ export default function DashboardHome({
         </div>
       )}
 
-      {/* HERO */}
+      
       <section className="hero-section-react">
         <div className="hero-glow-react hero-glow-one-react" />
         <div className="hero-glow-react hero-glow-two-react" />
@@ -175,7 +173,7 @@ export default function DashboardHome({
               </button>
             </div>
 
-            {/* QUICK QUESTIONS — onAskQuestion use */}
+           
             <div className="quick-questions-react">
               <button
                 className="quick-question-react"
@@ -204,7 +202,7 @@ export default function DashboardHome({
             </div>
           </div>
 
-          {/* ORB */}
+      
           <div className="hero-orb-wrapper-react">
             <div className="hero-orb-react">
               <div className="orb-ring-react ring-one-react" />
@@ -230,7 +228,7 @@ export default function DashboardHome({
         </div>
       </section>
 
-      {/* TRUST STRIP */}
+    
       <section className="trust-grid-react">
         <TrustCard
           icon={ShieldCheck}
@@ -254,7 +252,7 @@ export default function DashboardHome({
         />
       </section>
 
-      {/* STATS GRID */}
+   
       <section className="stats-grid-react">
         <StatCard
           label="Heart Rate"
@@ -312,7 +310,7 @@ export default function DashboardHome({
         />
       </section>
 
-      {/* 7-DAY TREND */}
+    
       {recentVitals.length > 0 && (
         <section className="section-card-react">
           <div className="section-card-header-react">
@@ -334,7 +332,7 @@ export default function DashboardHome({
 
      <Blogs user={user} profile={profile} />
 
-      {/* HEALTH NEWS */}
+     
       <section className="section-card-react">
         <div className="section-card-header-react">
           <div className="section-icon-react">
@@ -399,15 +397,13 @@ export default function DashboardHome({
         )}
       </section>
 
-      {/* FEEDBACK */}
+    
       <FeedbackSection user={user} displayName={displayName} />
     </div>
   )
 }
 
-/* =========================================
-   TRUST CARD
-========================================= */
+
 function TrustCard({ icon: Icon, title, text }) {
   return (
     <div className="trust-card-react">
@@ -422,9 +418,7 @@ function TrustCard({ icon: Icon, title, text }) {
   )
 }
 
-/* =========================================
-   STAT CARD
-========================================= */
+
 function StatCard({ label, value, unit, icon: Icon, color, status, progress = 0 }) {
   const isLogged = value !== '—'
 
@@ -462,9 +456,7 @@ function StatCard({ label, value, unit, icon: Icon, color, status, progress = 0 
   )
 }
 
-/* =========================================
-   MINI TREND CHART
-========================================= */
+
 function MiniTrendChart({ data }) {
   const days = []
   for (let i = 6; i >= 0; i--) {
@@ -516,9 +508,7 @@ function MiniTrendChart({ data }) {
   )
 }
 
-/* =========================================
-   FEEDBACK SECTION
-========================================= */
+
 function FeedbackSection({ user, displayName }) {
   const [reviews, setReviews] = useState([])
   const [myReview, setMyReview] = useState(null)
@@ -608,7 +598,7 @@ function FeedbackSection({ user, displayName }) {
       </div>
 
       <div className="feedback-layout">
-        {/* LEFT: FORM */}
+      
         <div className="feedback-form-col">
           <div className="feedback-form-card">
             {hasExistingReview ? (
@@ -751,7 +741,7 @@ function FeedbackSection({ user, displayName }) {
           </div>
         </div>
 
-        {/* RIGHT: REVIEWS */}
+       
         <div className="feedback-list-col">
           <div className="feedback-list-header">
             <h4>
@@ -788,9 +778,7 @@ function FeedbackSection({ user, displayName }) {
   )
 }
 
-/* =========================================
-   REVIEW CARD
-========================================= */
+
 function ReviewCard({ review }) {
   const name = review.profiles?.full_name || 'SaviPulse User'
   const initials = name
@@ -833,9 +821,7 @@ function ReviewCard({ review }) {
   )
 }
 
-/* =========================================
-   HELPERS
-========================================= */
+
 function getTimeOfDay() {
   const h = new Date().getHours()
   if (h < 12) return 'morning'

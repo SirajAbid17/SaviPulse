@@ -40,7 +40,7 @@ function renderMarkdown(text) {
 }
 
 export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
-  /* ============ CONVERSATION STATE ============ */
+ 
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId] = useState(null)
   const [convsLoading, setConvsLoading] = useState(true)
@@ -51,7 +51,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
   const [renameValue, setRenameValue] = useState('')
   const [menuOpenId, setMenuOpenId] = useState(null)
 
-  /* ============ CHAT STATE ============ */
+ 
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
@@ -60,7 +60,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
   const [copiedId, setCopiedId] = useState(null)
   const [reactions, setReactions] = useState({})
 
-  /* ============ MODAL STATE ============ */
+  
   const [modal, setModal] = useState({
     open: false,
     type: 'confirm',
@@ -99,12 +99,10 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
   const inputRef = useRef(null)
   const menuRef = useRef(null)
 
-  /* =========================================
-     INITIAL LOAD
-  ========================================= */
+ 
   useEffect(() => {
     initConversations()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [user.id])
 
   async function initConversations() {
@@ -164,7 +162,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
 
   useEffect(() => {
     scrollToBottom()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [messages, loading])
 
   const scrollToBottom = useCallback((smooth = true) => {
@@ -296,7 +294,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
     }, 400)
 
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [pendingQuestion, convsLoading, messagesLoading])
 
   function handleRetry() {
@@ -483,7 +481,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [])
 
   const filteredConvs = conversations.filter((c) => {
@@ -789,7 +787,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
         </p>
       </section>
 
-      {/* CONFIRM MODAL */}
+     
       <ConfirmModal
         open={modal.open}
         type={modal.type}
@@ -806,9 +804,7 @@ export default function ChatPage({ user, pendingQuestion, onPendingConsumed }) {
   )
 }
 
-/* =========================================
-   CONVERSATION ITEM
-========================================= */
+
 function ConversationItem({
   conv,
   active,
@@ -901,9 +897,7 @@ function ConversationItem({
   )
 }
 
-/* =========================================
-   EMPTY STATE
-========================================= */
+
 function EmptyState({ user, quickQuestions, onQuestionClick }) {
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] || 'there'
 
@@ -949,9 +943,7 @@ function EmptyState({ user, quickQuestions, onQuestionClick }) {
   )
 }
 
-/* =========================================
-   MESSAGE
-========================================= */
+
 function Message({ message, index, copied, reaction, onCopy, onReact, onRetry }) {
   const isUser = message.sender === 'user'
   const isEmergency = message.emergency
@@ -1022,9 +1014,7 @@ function Message({ message, index, copied, reaction, onCopy, onReact, onRetry })
   )
 }
 
-/* =========================================
-   TYPING INDICATOR
-========================================= */
+
 function TypingIndicator() {
   return (
     <div className="chat-msg chat-msg-ai">

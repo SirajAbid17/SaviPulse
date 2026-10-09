@@ -1,7 +1,3 @@
-/* =========================================================
-   SAVIPULSE — BLOGS PAGE + MODAL (Final Compact)
-========================================================= */
-
 .blogs-page {
   --bp-primary: #10b981;
   --bp-primary-dark: #0f766e;
@@ -23,9 +19,7 @@
   min-width: 0;
 }
 
-/* =========================================
-   HEADER
-========================================= */
+
 .blogs-header {
   display: flex;
   align-items: center;
@@ -138,9 +132,7 @@
   transform: none;
 }
 
-/* =========================================
-   FLASH
-========================================= */
+
 .blogs-flash {
   display: flex;
   align-items: center;
@@ -182,9 +174,7 @@
 }
 .blogs-flash-error .blogs-flash-icon { background: #dc2626; }
 
-/* =========================================
-   LAYOUT
-========================================= */
+
 .blogs-layout {
   display: grid;
   gap: 16px;
@@ -200,9 +190,7 @@
   grid-template-columns: 1fr;
 }
 
-/* =========================================
-   FORM (LEFT)
-========================================= */
+
 .blogs-form-col {
   min-width: 0;
   position: sticky;
@@ -377,7 +365,7 @@
   transform: none;
 }
 
-/* COVER */
+
 .blogs-cover-drop {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -434,9 +422,7 @@
   background: #fee2e2;
 }
 
-/* =========================================
-   RIGHT COLUMN
-========================================= */
+
 .blogs-right-col {
   display: flex;
   flex-direction: column;
@@ -550,7 +536,7 @@
   gap: 10px;
 }
 
-/* LOADING / EMPTY */
+
 .blogs-loading,
 .blogs-empty {
   display: flex;
@@ -577,9 +563,6 @@
   font-weight: 500;
 }
 
-/* =========================================
-   ✨ BLOG CARD — COMPACT (Thumbnail + Text side by side)
-========================================= */
 .blog-card {
   display: grid;
   grid-template-columns: 80px 1fr;
@@ -821,9 +804,7 @@
   color: var(--bp-danger);
 }
 
-/* =========================================================
-   BLOG MODAL — COMPACT (60dvh)
-========================================================= */
+
 .blog-modal-overlay {
   position: fixed;
   inset: 0;
@@ -847,7 +828,7 @@
   position: relative;
   width: 100%;
   max-width: 600px;
-  max-height: 62dvh;              /* ✅ BOHOT COMPACT */
+  max-height: 62dvh;              
   display: flex;
   flex-direction: column;
   background: #ffffff;
@@ -909,7 +890,7 @@
 
 .blog-modal-cover {
   width: 100%;
-  max-height: 100px;              /* ✅ chhota cover */
+  max-height: 100px;              
   overflow: hidden;
   background: var(--bp-surface-3);
 }
@@ -1034,9 +1015,7 @@
   );
 }
 
-/* =========================================================
-   RICH TEXT CONTENT
-========================================================= */
+
 .blog-modal-content {
   padding: 12px 20px 14px;
   font-size: 13px;
@@ -1173,9 +1152,7 @@
   );
 }
 
-/* =========================================================
-   COMMENTS SECTION
-========================================================= */
+
 .blog-comments-section {
   padding: 12px 20px 16px;
 }
@@ -1453,9 +1430,7 @@
   overflow-wrap: anywhere;
 }
 
-/* =========================================
-   FOOTER
-========================================= */
+
 .blog-modal-footer {
   flex-shrink: 0;
   display: flex;
@@ -1538,9 +1513,7 @@
 
 .blog-modal-done:active { transform: translateY(0); }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+
 @media (max-width: 1200px) {
   .blogs-layout.has-form { grid-template-columns: 280px 1fr; }
   .blogs-stats-div { grid-template-columns: repeat(2, 1fr); }
@@ -1568,7 +1541,7 @@
   .blogs-list-div { padding: 12px; }
   .blogs-list { grid-template-columns: 1fr; gap: 8px; }
 
-  /* Blog card — smaller thumbnail */
+  
   .blog-card {
     grid-template-columns: 68px 1fr;
     gap: 8px;
@@ -1590,7 +1563,7 @@
   .blog-card-author-info strong { font-size: 9.5px; }
   .blog-card-author-info small { font-size: 8px; }
 
-  /* Modal — bottom sheet */
+ 
   .blog-modal-overlay { padding: 0; align-items: flex-end; }
   .blog-modal-card {
     max-width: 100%;
@@ -1637,9 +1610,7 @@
   .blog-modal-footer { padding: 8px 14px 10px; }
 }
 
-/* =========================================
-   ACCESSIBILITY
-========================================= */
+
 .blogs-btn-outline:focus-visible,
 .blogs-btn-primary:focus-visible,
 .blog-card-action:focus-visible,
@@ -1674,31 +1645,27 @@
   .blogs-list-div { box-shadow: none; border-color: #ccc; }
 }
 
-/* =========================================
-   COMPACT WIDTH OVERRIDES
-========================================= */
 
-/* Blog card — narrower + smaller thumbnail */
 .blog-card {
-  grid-template-columns: 60px 1fr;   /* ✅ 80px → 60px */
+  grid-template-columns: 60px 1fr;   
   gap: 8px;
   padding: 9px;
   max-width: 100%;
 }
 
 .blog-card-cover {
-  width: 60px;                        /* ✅ 80px → 60px */
-  height: 60px;                       /* ✅ 80px → 60px */
+  width: 60px;                       
+  height: 60px;                      
 }
 
 .blog-card-title {
-  font-size: 12px;                    /* ✅ 12.5px → 12px */
+  font-size: 12px;                    
   -webkit-line-clamp: 2;
 }
 
 .blog-card-excerpt {
   font-size: 10px;
-  -webkit-line-clamp: 1;              /* ✅ 2 lines → 1 line */
+  -webkit-line-clamp: 1;              
 }
 
 .blog-card-stats {
@@ -1710,18 +1677,17 @@
   font-size: 9px;
 }
 
-/* List grid — 3 columns on desktop (smaller cards) */
+
 .blogs-list {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 8px;
 }
 
-/* Right column narrower */
+
 .blogs-layout.has-form {
-  grid-template-columns: 300px 1fr;   /* ✅ 320px → 300px */
+  grid-template-columns: 300px 1fr;   
 }
 
-/* Stats row narrower */
 .blogs-stats-div {
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
@@ -1741,14 +1707,14 @@
   font-size: 9px;
 }
 
-/* List container tighter */
+
 .blogs-list-div {
   padding: 14px;
 }
 
-/* Modal — narrower */
+
 .blog-modal-card {
-  max-width: 540px;                   /* ✅ 600px → 540px */
+  max-width: 540px;                  
 }
 
 .blog-modal-content {
@@ -1767,7 +1733,7 @@
 .blog-comments-section { padding: 10px 18px 14px; }
 .blog-modal-footer { padding: 9px 18px 11px; }
 
-/* Form panel narrower */
+
 .blogs-form-col {
   min-width: 0;
 }
@@ -1776,12 +1742,10 @@
   padding: 14px;
 }
 
-/* =========================================
-   MOBILE — even smaller
-========================================= */
+
 @media (max-width: 640px) {
   .blog-card {
-    grid-template-columns: 56px 1fr;   /* ✅ 68px → 56px */
+    grid-template-columns: 56px 1fr;   
     gap: 7px;
     padding: 8px;
   }
@@ -1823,7 +1787,7 @@
   }
 
   .blog-modal-card {
-    max-width: 100%;    /* mobile full width */
+    max-width: 100%;    
   }
 }
 
@@ -1844,28 +1808,24 @@
   }
 
   .blog-card-excerpt {
-    display: none;      /* hide excerpt on very small phones */
+    display: none;      
   }
 }
 
-/* =========================================
-   ✨ BLOG CARD — Perfect Height Match
-========================================= */
 
-/* Card grid — image column text ke barabar stretch hoga */
 .blog-card {
   display: grid;
-  grid-template-columns: 100px 1fr;   /* image column width */
+  grid-template-columns: 100px 1fr;   
   gap: 12px;
   padding: 12px;
-  align-items: stretch;                /* ✅ image full height legi */
+  align-items: stretch;               
 }
 
-/* Image full column height cover kare */
+
 .blog-card-cover {
   width: 100%;
-  height: 100%;                        /* ✅ text ki height ke barabar */
-  min-height: 110px;                   /* ✅ minimum height */
+  height: 100%;                        
+  min-height: 110px;                  
   aspect-ratio: auto;
   border-radius: 10px;
   overflow: hidden;
@@ -1888,16 +1848,16 @@
   transform: scale(1.06);
 }
 
-/* Content column */
+
 .blog-card-content {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
-  justify-content: space-between;      /* ✅ content spread */
+  justify-content: space-between;      
 }
 
-/* Text tweaks — thoda bada karo */
+
 .blog-card-title {
   font-size: 13px;
   line-height: 1.35;
@@ -1907,15 +1867,15 @@
 .blog-card-excerpt {
   font-size: 11px;
   line-height: 1.5;
-  -webkit-line-clamp: 2;               /* ✅ 2 lines wapas */
+  -webkit-line-clamp: 2;               
 }
 
-/* Footer ke bottom pe push */
+
 .blog-card-footer {
-  margin-top: auto;                    /* ✅ bottom pe stick */
+  margin-top: auto;                   
 }
 
-/* Card without cover — text full width */
+
 .blog-card:not(:has(.blog-card-cover)) {
   grid-template-columns: 1fr;
 }
@@ -1924,17 +1884,13 @@
   justify-content: flex-start;
 }
 
-/* =========================================
-   LIST GRID — bigger cards, better spacing
-========================================= */
+
 .blogs-list {
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 12px;
 }
 
-/* =========================================
-   MOBILE
-========================================= */
+
 @media (max-width: 640px) {
   .blog-card {
     grid-template-columns: 90px 1fr;
@@ -1981,32 +1937,28 @@
     -webkit-line-clamp: 2;
   }
 }
-/* =========================================
-   MODAL HEIGHT — THORA ZYADA
-========================================= */
 
-/* Desktop: modal height badhao */
 .blog-modal-card {
-  max-height: 78dvh;      /* ✅ 62dvh → 78dvh */
+  max-height: 78dvh;      
 }
 
-/* Cover bhi thoda bada */
+
 .blog-modal-cover {
-  max-height: 140px;      /* ✅ 100px → 140px */
+  max-height: 140px;      
 }
 
 .blog-modal-cover img {
   max-height: 140px;
 }
 
-/* Mobile: bhi zyada height */
+
 @media (max-width: 640px) {
   .blog-modal-card {
-    max-height: 88dvh;    /* ✅ 82dvh → 88dvh */
+    max-height: 88dvh;    
   }
 
   .blog-modal-cover {
-    max-height: 120px;    /* ✅ 90px → 120px */
+    max-height: 120px;    
   }
 
   .blog-modal-cover img {
@@ -2014,9 +1966,9 @@
   }
 }
 
-/* Tablet */
+
 @media (max-width: 900px) and (min-width: 641px) {
   .blog-modal-card {
-    max-height: 82dvh;    /* ✅ 70dvh → 82dvh */
+    max-height: 82dvh;    
   }
 }

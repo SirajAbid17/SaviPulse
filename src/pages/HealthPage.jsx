@@ -8,9 +8,7 @@ import {
   Sparkles, Info, RefreshCw, BarChart3, Zap,
 } from 'lucide-react'
 
-/* =========================================
-   VITAL FIELD DEFINITIONS
-========================================= */
+
 const VITAL_FIELDS = [
   {
     key: 'heart_rate',
@@ -103,9 +101,7 @@ export default function HealthPage({ user }) {
   const [recentVitals, setRecentVitals] = useState([])
   const [historyLoading, setHistoryLoading] = useState(true)
 
-  /* =========================================
-     LOAD TODAY + RECENT HISTORY
-  ========================================= */
+
   useEffect(() => {
     loadAll()
   }, [user.id])
@@ -157,9 +153,7 @@ export default function HealthPage({ user }) {
     }
   }
 
-  /* =========================================
-     SAVE VITALS
-  ========================================= */
+  
   async function handleSave(e) {
     e.preventDefault()
     setSaving(true)
@@ -167,7 +161,7 @@ export default function HealthPage({ user }) {
 
     const today = new Date().toISOString().split('T')[0]
 
-    // Build clean patch
+    
     const patch = { user_id: user.id, date: today }
     for (const [k, v] of Object.entries(vitals)) {
       if (v === '' || v === null || v === undefined) {
@@ -188,26 +182,22 @@ export default function HealthPage({ user }) {
     } else {
       setMessage({ type: 'success', text: 'Vitals saved successfully!' })
       setSavedAt(new Date())
-      // Refresh history
+   
       await loadAll()
       setTimeout(() => setMessage({ type: '', text: '' }), 3000)
     }
     setSaving(false)
   }
 
-  /* =========================================
-     COMPUTED: HEALTH SCORE
-  ========================================= */
+ 
   const healthScore = useMemo(() => computeHealthScore(vitals), [vitals])
 
-  /* =========================================
-     COMPUTED: BMI
-  ========================================= */
+  
   const bmi = useMemo(() => {
     const weight = Number(vitals.weight)
     if (!weight) return null
 
-    // Try to get height from profile (user_metadata)
+   
     const height = Number(user.user_metadata?.height)
     if (!height) return null
 
@@ -224,14 +214,10 @@ export default function HealthPage({ user }) {
     return { value, category, color }
   }, [vitals.weight, user.user_metadata?.height])
 
-  /* =========================================
-     RENDER
-  ========================================= */
+
   return (
     <div className="health-page">
-      {/* =========================================
-          HEADER — Health Score + Today badge
-      ========================================= */}
+     
       <section className="health-header">
         <div className="health-header-left">
           <div className="health-header-icon">
@@ -274,9 +260,7 @@ export default function HealthPage({ user }) {
         </div>
       </section>
 
-      {/* =========================================
-          VITALS FORM
-      ========================================= */}
+      
       <section className="health-form-card">
         <div className="health-form-header">
           <div>
@@ -298,7 +282,7 @@ export default function HealthPage({ user }) {
           </div>
         ) : (
           <form onSubmit={handleSave}>
-            {/* Vitals Grid */}
+          
             <div className="health-vitals-grid">
               {VITAL_FIELDS.map((f) => (
                 <VitalInput
@@ -310,7 +294,6 @@ export default function HealthPage({ user }) {
               ))}
             </div>
 
-            {/* Mood Selector */}
             <div className="health-mood-section">
               <label className="health-section-label">
                 <Smile size={13} />
@@ -341,7 +324,7 @@ export default function HealthPage({ user }) {
               </div>
             </div>
 
-            {/* Notes */}
+         
             <div className="health-notes-section">
               <label className="health-section-label">
                 <Info size={13} />
@@ -362,7 +345,7 @@ export default function HealthPage({ user }) {
               </div>
             </div>
 
-            {/* Message */}
+           
             {message.text && (
               <div className={`health-alert health-alert-${message.type}`}>
                 {message.type === 'success' ? (
@@ -407,11 +390,9 @@ export default function HealthPage({ user }) {
         )}
       </section>
 
-      {/* =========================================
-          TRENDS + BMI
-      ========================================= */}
+     
       <div className="health-bottom-grid">
-        {/* 7-day trend chart */}
+      
         <section className="health-card">
           <div className="health-card-header">
             <div className="health-card-icon">
@@ -425,7 +406,7 @@ export default function HealthPage({ user }) {
           <MiniStepsChart data={recentVitals} />
         </section>
 
-        {/* BMI Card */}
+       
         <section className="health-card">
           <div className="health-card-header">
             <div className="health-card-icon">
@@ -472,9 +453,7 @@ export default function HealthPage({ user }) {
         </section>
       </div>
 
-      {/* =========================================
-          30-DAY HISTORY
-      ========================================= */}
+     
       <section className="health-card">
         <div className="health-card-header">
           <div className="health-card-icon">
@@ -511,9 +490,7 @@ export default function HealthPage({ user }) {
   )
 }
 
-/* =========================================
-   VITAL INPUT — Reusable, with status
-========================================= */
+
 function VitalInput({ field, value, onChange }) {
   const Icon = field.icon
   const numValue = Number(value)
@@ -570,9 +547,7 @@ function VitalInput({ field, value, onChange }) {
   )
 }
 
-/* =========================================
-   MINI STEPS CHART
-========================================= */
+
 function MiniStepsChart({ data }) {
   const days = []
   for (let i = 6; i >= 0; i--) {
@@ -618,9 +593,7 @@ function MiniStepsChart({ data }) {
   )
 }
 
-/* =========================================
-   HISTORY ROW
-========================================= */
+
 function HistoryRow({ vitals }) {
   const date = new Date(vitals.date)
   const today = new Date().toISOString().split('T')[0]
@@ -675,9 +648,7 @@ function HistoryRow({ vitals }) {
   )
 }
 
-/* =========================================
-   HELPERS
-========================================= */
+
 function getVitalStatus(field, value, hasValue) {
   if (!hasValue) return { text: '', cls: '' }
   if (!field.ranges) return { text: '', cls: '' }

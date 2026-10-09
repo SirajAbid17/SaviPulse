@@ -10,9 +10,7 @@ import {
   ThumbsUp, TrendingDown, BarChart3, Eye,
 } from 'lucide-react'
 
-/* =========================================
-   MOODS
-========================================= */
+
 const MOODS = {
   great: { emoji: '😄', label: 'Great', color: '#10b981', score: 100 },
   good: { emoji: '🙂', label: 'Good', color: '#34d399', score: 80 },
@@ -68,9 +66,7 @@ export default function DailyCarePage({ user }) {
     setRefreshing(false)
   }
 
-  /* =========================================
-     COMPUTED VALUES
-  ========================================= */
+  
   const careItems = useMemo(
     () => generateCareItems(vitals, recentVitals),
     [vitals, recentVitals]
@@ -92,9 +88,7 @@ export default function DailyCarePage({ user }) {
 
   return (
     <div className="daily-care-page">
-      {/* =========================================
-          HERO
-      ========================================= */}
+      
       <section className="daily-care-hero">
         <div className="daily-care-hero-glow" />
         <div className="daily-care-hero-content">
@@ -128,9 +122,7 @@ export default function DailyCarePage({ user }) {
         </div>
       </section>
 
-      {/* =========================================
-          OVERVIEW STATS
-      ========================================= */}
+     
       <section className="daily-care-stats">
         <StatBox
           icon={CheckCircle2}
@@ -162,9 +154,7 @@ export default function DailyCarePage({ user }) {
         />
       </section>
 
-      {/* =========================================
-          PRIORITY ALERTS
-      ========================================= */}
+     
       {careItems.high.length > 0 && (
         <section className="daily-care-alerts">
           <div className="daily-care-alerts-header">
@@ -183,9 +173,7 @@ export default function DailyCarePage({ user }) {
         </section>
       )}
 
-      {/* =========================================
-          SUGGESTIONS
-      ========================================= */}
+      
       {careItems.medium.length > 0 && (
         <section className="daily-care-suggestions">
           <div className="daily-care-section-header">
@@ -206,9 +194,6 @@ export default function DailyCarePage({ user }) {
         </section>
       )}
 
-      {/* =========================================
-          WINS (Positive Feedback)
-      ========================================= */}
       {careItems.low.length > 0 && (
         <section className="daily-care-wins">
           <div className="daily-care-section-header">
@@ -229,9 +214,7 @@ export default function DailyCarePage({ user }) {
         </section>
       )}
 
-      {/* =========================================
-          ROUTINE RECOMMENDATIONS
-      ========================================= */}
+      
       <section className="daily-care-routine">
         <div className="daily-care-section-header">
           <div className="daily-care-section-icon" style={{ background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)', color: '#8b5cf6' }}>
@@ -296,9 +279,7 @@ export default function DailyCarePage({ user }) {
         </div>
       </section>
 
-      {/* =========================================
-          RECENT ACTIVITY
-      ========================================= */}
+      
       {recentVitals.length > 0 && (
         <section className="daily-care-recent">
           <div className="daily-care-section-header">
@@ -319,9 +300,7 @@ export default function DailyCarePage({ user }) {
         </section>
       )}
 
-      {/* =========================================
-          FOOTER NOTE
-      ========================================= */}
+      
       <div className="daily-care-footer-note">
         <Info size={12} />
         These tips are personalized based on your data. For medical concerns,
@@ -331,9 +310,7 @@ export default function DailyCarePage({ user }) {
   )
 }
 
-/* =========================================
-   STAT BOX
-========================================= */
+
 function StatBox({ icon: Icon, label, value, color, sub }) {
   return (
     <div className={`daily-care-stat daily-care-stat-${color}`}>
@@ -349,9 +326,7 @@ function StatBox({ icon: Icon, label, value, color, sub }) {
   )
 }
 
-/* =========================================
-   CARE ITEM
-========================================= */
+
 function CareItem({ item, priority }) {
   const Icon = item.icon
 
@@ -387,9 +362,7 @@ function CareItem({ item, priority }) {
   )
 }
 
-/* =========================================
-   ROUTINE CARD
-========================================= */
+
 function RoutineCard({ icon: Icon, time, title, items, color }) {
   return (
     <div className={`routine-card routine-${color}`}>
@@ -415,9 +388,7 @@ function RoutineCard({ icon: Icon, time, title, items, color }) {
   )
 }
 
-/* =========================================
-   RECENT ROW
-========================================= */
+
 function RecentRow({ vitals }) {
   const date = new Date(vitals.date)
   const today = new Date().toISOString().split('T')[0]
@@ -471,9 +442,7 @@ function RecentRow({ vitals }) {
   )
 }
 
-/* =========================================
-   GENERATE CARE ITEMS (Priority-based)
-========================================= */
+
 function generateCareItems(vitals, recentVitals) {
   const high = []
   const medium = []
@@ -502,7 +471,7 @@ function generateCareItems(vitals, recentVitals) {
   const water = Number(vitals.water)
   const mood = vitals.mood
 
-  /* ---------- HEART RATE ---------- */
+ 
   if (hr) {
     if (hr > 100) {
       high.push({
@@ -563,7 +532,7 @@ function generateCareItems(vitals, recentVitals) {
     }
   }
 
-  /* ---------- STEPS ---------- */
+ 
   if (steps) {
     if (steps >= 10000) {
       low.push({
@@ -595,7 +564,7 @@ function generateCareItems(vitals, recentVitals) {
     }
   }
 
-  /* ---------- WATER ---------- */
+  
   if (water) {
     if (water < 1.5) {
       high.push({
@@ -627,7 +596,7 @@ function generateCareItems(vitals, recentVitals) {
     }
   }
 
-  /* ---------- MOOD ---------- */
+  
   const moodMap = {
     great: {
       icon: Smile,
@@ -712,9 +681,7 @@ function generateCareItems(vitals, recentVitals) {
   return { high, medium, low }
 }
 
-/* =========================================
-   HELPERS
-========================================= */
+
 function computeStats(vitals, recentVitals) {
   const loggedToday = vitals
     ? [

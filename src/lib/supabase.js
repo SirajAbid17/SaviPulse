@@ -13,21 +13,19 @@ const RECORDS_BUCKET = 'records'
 const AVATAR_BUCKET = 'avatars'
 const BLOG_BUCKET = 'blogs'
 
-/* =========================================
-   IMAGE → BASE64 HELPER
-========================================= */
+
 async function urlToDataURL(imageUrl) {
-  console.log('📸 Fetching image:', imageUrl)
+ 
   const res = await fetch(imageUrl)
   if (!res.ok) throw new Error(`Failed to load image: ${res.status}`)
 
   const blob = await res.blob()
-  console.log('📦 Blob size:', Math.round(blob.size / 1024), 'KB')
+ 
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onloadend = () => {
-      console.log('✅ Base64 ready, length:', reader.result.length)
+     
       resolve(reader.result)
     }
     reader.onerror = () => reject(new Error('Base64 conversion failed'))
@@ -35,9 +33,7 @@ async function urlToDataURL(imageUrl) {
   })
 }
 
-/* =========================================
-   ROBUST STORAGE PATH EXTRACTION
-========================================= */
+
 function extractStoragePath(url) {
   if (!url) return null
   try {
@@ -76,9 +72,7 @@ function extractStoragePath(url) {
   }
 }
 
-/* =========================================
-   FIND REAL PATH IN BUCKET
-========================================= */
+
 async function findRealPathInBucket(extractedPath) {
   if (!extractedPath) return null
   const parts = extractedPath.split('/')
@@ -95,16 +89,14 @@ async function findRealPathInBucket(extractedPath) {
   }
   if (!files || files.length === 0) return null
 
-  console.log('📁 Files in bucket folder:', files.map((f) => f.name))
+ 
   const exact = files.find((f) => f.name === fileName)
   if (exact) return `${folder}/${exact.name}`
   if (files.length === 1) return `${folder}/${files[0].name}`
   return null
 }
 
-/* =========================================
-   EDGE FUNCTION CALLS
-========================================= */
+
 
 export async function callChatAI(message, history = []) {
   const { data, error } = await supabase.functions.invoke('chat-ai', {
@@ -159,10 +151,9 @@ export async function callAnalyzeRecord(imageUrl) {
 
   try {
     dataUrl = await urlToDataURL(imageUrl)
-    console.log('✅ Direct fetch succeeded')
+    
   } catch (err) {
-    console.warn('⚠️ Direct fetch failed:', err.message)
-    console.warn('🔗 Full URL:', imageUrl)
+   
 
     let path = extractStoragePath(imageUrl)
     console.warn('📂 Extracted path:', path)
@@ -202,7 +193,7 @@ export async function callAnalyzeRecord(imageUrl) {
       )
     }
 
-    console.log('🔐 Signed URL created')
+    
     dataUrl = await urlToDataURL(signed.signedUrl)
   }
 
@@ -218,10 +209,7 @@ export async function callAnalyzeRecord(imageUrl) {
   return data
 }
 
-/* =========================================
-   PROFILE HELPERS
-   ✅ FIXED: email column REMOVED (it's in auth.users, not profiles)
-========================================= */
+
 
 export async function getProfileById(userId) {
   const { data, error } = await supabase
@@ -253,9 +241,7 @@ export async function listProfilesByIds(userIds) {
   return profileMap
 }
 
-/* =========================================
-   CONVERSATION MANAGEMENT
-========================================= */
+
 
 export async function listConversations(userId) {
   const { data, error } = await supabase
@@ -357,9 +343,7 @@ export function generateTitle(text) {
   return clean.length < text.length ? clean + '…' : clean
 }
 
-/* =========================================
-   REVIEWS / FEEDBACK
-========================================= */
+
 
 export async function submitReview(userId, rating, text) {
   const { data: existing } = await supabase
@@ -534,9 +518,7 @@ export async function updateUserRole(userId, role) {
   return data
 }
 
-/* =========================================
-   MEDICAL RECORDS HELPERS
-========================================= */
+
 
 export async function listRecords(userId) {
   const { data, error } = await supabase
@@ -644,9 +626,7 @@ export async function updateRecord(recordId, updates) {
   return data
 }
 
-/* =========================================
-   AVATAR UPLOAD
-========================================= */
+
 
 function avatarExtension(file) {
   const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
@@ -665,7 +645,7 @@ export async function uploadAvatar(userId, file) {
   const ext = avatarExtension(file)
   const path = `${userId}/avatar.${ext}`
 
-  console.log('📤 Uploading avatar to:', path)
+ 
 
   try {
     const { data: existing } = await supabase.storage
@@ -696,7 +676,7 @@ export async function uploadAvatar(userId, file) {
   const { data } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path)
   const publicUrl = `${data.publicUrl}?v=${Date.now()}`
 
-  console.log('✅ Avatar uploaded:', publicUrl)
+
   return publicUrl
 }
 
@@ -715,9 +695,7 @@ export async function deleteAvatar(userId) {
   }
 }
 
-/* =========================================
-   BLOG FUNCTIONS
-========================================= */
+
 
 export async function listBlogs(limit = 50) {
   const { data: blogs, error } = await supabase
@@ -732,7 +710,7 @@ export async function listBlogs(limit = 50) {
   const authorIds = [...new Set(blogs.map((b) => b.author_id))]
   const profileMap = await listProfilesByIds(authorIds)
 
-  // Fetch likes count
+ 
   const blogIds = blogs.map((b) => b.id)
   const { data: likes } = await supabase
     .from('blog_likes')
@@ -744,7 +722,7 @@ export async function listBlogs(limit = 50) {
     likeCounts[l.blog_id] = (likeCounts[l.blog_id] || 0) + 1
   })
 
-  // Fetch comments count
+  
   const { data: comments } = await supabase
     .from('blog_comments')
     .select('blog_id')
@@ -846,7 +824,7 @@ export async function deleteBlog(blog) {
   if (error) throw error
 }
 
-/* ---------- VIEWS ---------- */
+
 export async function incrementBlogViews(blogId) {
   try {
     const { data: blog } = await supabase
@@ -870,7 +848,7 @@ export async function incrementBlogViews(blogId) {
   }
 }
 
-/* ---------- BLOG LIKES ---------- */
+
 export async function toggleBlogLike(blogId, userId, currentlyLiked) {
   if (currentlyLiked) {
     const { error } = await supabase
@@ -898,7 +876,7 @@ export async function listBlogLikes(blogId) {
   return data || []
 }
 
-/* ---------- BLOG COMMENTS ---------- */
+
 export async function listBlogComments(blogId) {
   const { data: comments, error } = await supabase
     .from('blog_comments')

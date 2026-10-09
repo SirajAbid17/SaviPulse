@@ -41,7 +41,7 @@ export default function RecordsPage({ user }) {
   const [filterType, setFilterType] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  /* ============ MODAL STATE ============ */
+
   const [modal, setModal] = useState({
     open: false,
     type: 'confirm',
@@ -77,7 +77,7 @@ export default function RecordsPage({ user }) {
 
   useEffect(() => {
     load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [])
 
   async function load() {
@@ -212,7 +212,6 @@ export default function RecordsPage({ user }) {
     })
   }
 
-  /* ============ FILTERED ============ */
   const filtered = records.filter((r) => {
     if (filterType !== 'all' && r.type !== filterType) return false
     if (searchQuery) {
@@ -235,7 +234,7 @@ export default function RecordsPage({ user }) {
 
   return (
     <div className="records-page">
-      {/* HEADER */}
+    
       <section className="records-header-card">
         <div className="records-header-left">
           <div className="records-header-icon">
@@ -265,7 +264,7 @@ export default function RecordsPage({ user }) {
         </section>
       )}
 
-      {/* SEARCH + FILTERS */}
+      
       <section className="records-toolbar-card">
         <div className="records-search-box">
           <FileText size={15} />
@@ -305,14 +304,14 @@ export default function RecordsPage({ user }) {
         </div>
       </section>
 
-      {/* ERROR */}
+    
       {error && (
         <div className="alert alert-error" style={{ marginTop: 14 }}>
           <AlertCircle size={16} /> {error}
         </div>
       )}
 
-      {/* RECORDS GRID */}
+    
       <section className="records-list-card">
         {loading ? (
           <div className="records-loading">
@@ -357,7 +356,7 @@ export default function RecordsPage({ user }) {
         )}
       </section>
 
-      {/* UPLOAD MODAL */}
+     
       {showUploadModal && (
         <UploadModal
           onClose={() => setShowUploadModal(false)}
@@ -366,7 +365,7 @@ export default function RecordsPage({ user }) {
         />
       )}
 
-      {/* VIEW / ANALYSIS MODAL */}
+    
       {viewRecord && (
         <ViewModal
           record={viewRecord}
@@ -378,7 +377,7 @@ export default function RecordsPage({ user }) {
         />
       )}
 
-      {/* CONFIRM MODAL */}
+     
       <ConfirmModal
         open={modal.open}
         type={modal.type}
@@ -395,9 +394,7 @@ export default function RecordsPage({ user }) {
   )
 }
 
-/* =========================================
-   RECORD STAT
-========================================= */
+
 function RecordStat({ icon: Icon, value, label, color }) {
   return (
     <div className={`record-stat-v2 record-stat-${color}`}>
@@ -412,9 +409,7 @@ function RecordStat({ icon: Icon, value, label, color }) {
   )
 }
 
-/* =========================================
-   RECORD CARD — Compact + Single-Row Actions
-========================================= */
+
 function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
   const hasAI = !!record.ai_analysis?.summary
   const isImage = record.file_type?.startsWith('image/')
@@ -423,7 +418,7 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
 
   return (
     <div className="record-card-v2">
-      {/* THUMBNAIL */}
+     
       <div className="record-thumb-v2">
         {isImage ? (
           <img src={record.file_url} alt={record.title} loading="lazy" />
@@ -478,9 +473,9 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
         </div>
       </div>
 
-      {/* ACTIONS — Single Row: tags left, icons right */}
+     
       <div className="record-actions-v2">
-        {/* Tags inline (left side) */}
+      
         {record.tags?.length > 0 ? (
           <div className="record-tags-inline">
             {record.tags.slice(0, 2).map((tag, i) => (
@@ -496,7 +491,7 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
 
         <span className="record-actions-spacer" />
 
-        {/* AI button — icon only */}
+       
         {isImage && (
           <button
             onClick={hasAI ? onView : onAnalyze}
@@ -517,12 +512,12 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
           </button>
         )}
 
-        {/* View */}
+      
         <button onClick={onView} title="View" className="record-action-v2">
           <Eye size={13} />
         </button>
 
-        {/* Download */}
+      
         <a
           href={record.file_url}
           target="_blank"
@@ -533,7 +528,7 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
           <Download size={13} />
         </a>
 
-        {/* Pin */}
+       
         <button
           onClick={onPin}
           title={record.is_pinned ? 'Unpin' : 'Pin'}
@@ -555,9 +550,7 @@ function RecordCard({ record, analyzing, onView, onAnalyze, onPin, onDelete }) {
   )
 }
 
-/* =========================================
-   UPLOAD MODAL
-========================================= */
+
 function UploadModal({ onClose, onUpload, uploading }) {
   const [file, setFile] = useState(null)
   const [title, setTitle] = useState('')
@@ -787,9 +780,7 @@ function UploadModal({ onClose, onUpload, uploading }) {
   )
 }
 
-/* =========================================
-   VIEW / ANALYSIS MODAL
-========================================= */
+
 function ViewModal({ record, mode, setMode, onClose, onAnalyze, analyzing }) {
   const hasAI = !!record.ai_analysis?.summary
   const isImage = record.file_type?.startsWith('image/')
@@ -926,9 +917,7 @@ function ViewModal({ record, mode, setMode, onClose, onAnalyze, analyzing }) {
   )
 }
 
-/* =========================================
-   AI ANALYSIS VIEW
-========================================= */
+
 function AIAnalysisView({ analysis: a }) {
   return (
     <div className="ai-analysis-v2">

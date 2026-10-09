@@ -64,9 +64,7 @@ export default function AdminPage({ user }) {
   return <AdminDashboard user={user} />
 }
 
-/* =========================================
-   ADMIN DASHBOARD
-========================================= */
+
 function AdminDashboard({ user }) {
   const [tab, setTab] = useState('overview')
   const [stats, setStats] = useState(null)
@@ -76,7 +74,7 @@ function AdminDashboard({ user }) {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
-  /* ============ MODAL STATE ============ */
+ 
   const [modal, setModal] = useState({
     open: false,
     type: 'confirm',
@@ -259,9 +257,7 @@ function AdminDashboard({ user }) {
   )
 }
 
-/* =========================================
-   OVERVIEW TAB
-========================================= */
+
 function OverviewTab({ stats }) {
   if (!stats) return null
 
@@ -298,9 +294,7 @@ function OverviewTab({ stats }) {
   )
 }
 
-/* =========================================
-   USERS TAB
-========================================= */
+
 function UsersTab({
   users,
   currentUserId,
@@ -483,9 +477,7 @@ function UsersTab({
   )
 }
 
-/* =========================================
-   REVIEWS TAB
-========================================= */
+
 function ReviewsTab({
   reviews,
   onUpdate,
@@ -752,9 +744,7 @@ function ReviewsTab({
   )
 }
 
-/* =========================================
-   BLOGS TAB — Admin Management
-========================================= */
+
 function BlogsTab({ blogs, user, onUpdate, openModal, closeModal, setModal }) {
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
@@ -816,7 +806,7 @@ function BlogsTab({ blogs, user, onUpdate, openModal, closeModal, setModal }) {
 
   return (
     <div className="admin-blogs">
-      {/* Header */}
+    
       <div className="admin-blogs-topbar">
         <div className="admin-search">
           <Search size={14} />
@@ -834,7 +824,7 @@ function BlogsTab({ blogs, user, onUpdate, openModal, closeModal, setModal }) {
         </button>
       </div>
 
-      {/* Blog Form (inline, when open) */}
+     
       {showForm && (
         <AdminBlogForm
           user={user}
@@ -916,9 +906,7 @@ function BlogsTab({ blogs, user, onUpdate, openModal, closeModal, setModal }) {
   )
 }
 
-/* =========================================
-   ADMIN BLOG FORM
-========================================= */
+
 function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
@@ -1024,7 +1012,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
     }
   }
 
-  /* Local helpers using supabase directly */
+
   async function supabaseStorageUpload(path, file) {
     const { supabase } = await import('../lib/supabase')
     return supabase.storage.from('blogs').upload(path, file, {
@@ -1071,7 +1059,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
       )}
 
       <div className="admin-blog-form-grid">
-        {/* COVER */}
+      
         <div className="admin-blog-field admin-blog-field-full">
           <label>
             <ImageIcon size={11} />
@@ -1100,7 +1088,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
           </div>
         </div>
 
-        {/* TITLE */}
+     
         <div className="admin-blog-field admin-blog-field-full">
           <label>
             <FileText size={11} />
@@ -1116,7 +1104,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
           />
         </div>
 
-        {/* CATEGORY */}
+        
         <div className="admin-blog-field">
           <label>
             <Tag size={11} />
@@ -1131,7 +1119,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
           />
         </div>
 
-        {/* READ TIME */}
+       
         <div className="admin-blog-field">
           <label>
             <Clock size={11} />
@@ -1146,7 +1134,7 @@ function AdminBlogForm({ user, editingBlog, onCancel, onSaved }) {
           />
         </div>
 
-        {/* CONTENT */}
+      
         <div className="admin-blog-field admin-blog-field-full">
           <label>
             <Edit3 size={11} />

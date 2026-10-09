@@ -10,9 +10,7 @@ import {
 } from 'lucide-react'
 import '../styles/NewsPage.css'
 
-/* =========================================
-   CATEGORY DEFINITIONS
-========================================= */
+
 const CATEGORIES = [
   { id: 'all', label: 'All', icon: LayoutGrid, color: '#64748b' },
   { id: 'heart', label: 'Heart', icon: Heart, color: '#ef4444' },
@@ -24,9 +22,7 @@ const CATEGORIES = [
   { id: 'wellness', label: 'Wellness', icon: Sparkles, color: '#f59e0b' },
 ]
 
-/* =========================================
-   CATEGORIZE ARTICLE FROM TITLE/SNIPPET
-========================================= */
+
 function categorizeArticle(item) {
   const text = `${item.title} ${item.snippet || ''}`.toLowerCase()
 
@@ -41,9 +37,7 @@ function categorizeArticle(item) {
   return 'wellness'
 }
 
-/* =========================================
-   TIME AGO HELPER
-========================================= */
+
 function timeAgo(dateStr) {
   if (!dateStr) return ''
   try {
@@ -69,7 +63,7 @@ export default function NewsPage() {
 
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [viewMode, setViewMode] = useState('grid') // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('grid') 
   const [bookmarks, setBookmarks] = useState(() => {
     try {
       const saved = localStorage.getItem('savipulse_news_bookmarks')
@@ -80,9 +74,7 @@ export default function NewsPage() {
   })
   const [showBookmarksOnly, setShowBookmarksOnly] = useState(false)
 
-  /* =========================================
-     LOAD NEWS
-  ========================================= */
+ 
   useEffect(() => {
     load()
   }, [])
@@ -94,7 +86,7 @@ export default function NewsPage() {
       const res = await callHealthNews('health news today')
       const raw = res?.news || []
 
-      // Add category + id
+     
       const enriched = raw.map((n, i) => ({
         ...n,
         id: `news-${i}-${n.url}`,
@@ -115,9 +107,7 @@ export default function NewsPage() {
     setRefreshing(false)
   }
 
-  /* =========================================
-     BOOKMARKS
-  ========================================= */
+  
   function toggleBookmark(id) {
     setBookmarks((prev) => {
       const updated = prev.includes(id)
@@ -130,18 +120,16 @@ export default function NewsPage() {
     })
   }
 
-  /* =========================================
-     FILTER
-  ========================================= */
+ 
   const filtered = useMemo(() => {
     return news.filter((n) => {
-      // Category filter
+  
       if (activeCategory !== 'all' && n.category !== activeCategory) return false
 
-      // Bookmarks filter
+   
       if (showBookmarksOnly && !bookmarks.includes(n.id)) return false
 
-      // Search
+    
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase()
         const matches =
@@ -155,9 +143,7 @@ export default function NewsPage() {
     })
   }, [news, activeCategory, searchQuery, showBookmarksOnly, bookmarks])
 
-  /* =========================================
-     CATEGORY COUNTS
-  ========================================= */
+  
   const categoryCounts = useMemo(() => {
     const counts = { all: news.length }
     news.forEach((n) => {
@@ -166,14 +152,10 @@ export default function NewsPage() {
     return counts
   }, [news])
 
-  /* =========================================
-     RENDER
-  ========================================= */
+ 
   return (
     <div className="news-page">
-      {/* =========================================
-          HEADER
-      ========================================= */}
+    
       <section className="news-header-card">
         <div className="news-header-left">
           <div className="news-header-icon">
@@ -208,9 +190,7 @@ export default function NewsPage() {
         </div>
       </section>
 
-      {/* =========================================
-          STATS BAR
-      ========================================= */}
+    
       {!loading && news.length > 0 && (
         <section className="news-stats-bar">
           <div className="news-stat">
@@ -255,9 +235,7 @@ export default function NewsPage() {
         </section>
       )}
 
-      {/* =========================================
-          SEARCH + FILTERS
-      ========================================= */}
+     
       <section className="news-filters">
         <div className="news-search">
           <Search size={14} />
@@ -291,9 +269,7 @@ export default function NewsPage() {
         </button>
       </section>
 
-      {/* =========================================
-          CATEGORY TABS
-      ========================================= */}
+      
       {!loading && news.length > 0 && (
         <section className="news-categories">
           {CATEGORIES.map((cat) => {
@@ -322,9 +298,7 @@ export default function NewsPage() {
         </section>
       )}
 
-      {/* =========================================
-          ERROR
-      ========================================= */}
+     
       {error && (
         <div className="news-alert news-alert-error">
           <AlertCircle size={16} />
@@ -332,9 +306,7 @@ export default function NewsPage() {
         </div>
       )}
 
-      {/* =========================================
-          LOADING STATE
-      ========================================= */}
+     
       {loading && news.length === 0 && (
         <div className="news-loading">
           <Loader2 size={26} style={{ animation: 'spin 1s linear infinite' }} />
@@ -343,9 +315,7 @@ export default function NewsPage() {
         </div>
       )}
 
-      {/* =========================================
-          EMPTY STATE
-      ========================================= */}
+      
       {!loading && filtered.length === 0 && news.length > 0 && (
         <div className="news-empty">
           <Filter size={40} style={{ opacity: 0.3 }} />
@@ -372,9 +342,7 @@ export default function NewsPage() {
         </div>
       )}
 
-      {/* =========================================
-          NEWS GRID / LIST
-      ========================================= */}
+     
       {filtered.length > 0 && (
         <section className={`news-container news-${viewMode}`}>
           {filtered.map((item, i) => (
@@ -390,9 +358,7 @@ export default function NewsPage() {
         </section>
       )}
 
-      {/* =========================================
-          FOOTER NOTE
-      ========================================= */}
+     
       {filtered.length > 0 && (
         <div className="news-footer-note">
           <Sparkles size={12} />
@@ -405,9 +371,7 @@ export default function NewsPage() {
   )
 }
 
-/* =========================================
-   NEWS CARD
-========================================= */
+
 function NewsCard({ item, index, bookmarked, onToggleBookmark, viewMode }) {
   const category = CATEGORIES.find((c) => c.id === item.category) || CATEGORIES[0]
   const CategoryIcon = category.icon

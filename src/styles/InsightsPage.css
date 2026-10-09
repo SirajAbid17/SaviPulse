@@ -1,23 +1,4 @@
-/* =========================================================
-   SAVIPULSE — INSIGHTS PAGE
-   Clean · Professional · Fully Responsive
-   ---------------------------------------------------------
-   1.  Tokens
-   2.  Page & Header
-   3.  Section Cards
-   4.  Stats Grid (Snapshot)
-   5.  AI Tips Grid
-   6.  News Grid
-   7.  Trending List
-   8.  Nutrition Grid
-   9.  Loading / Empty / Footer
-   10. Responsive
-   11. Accessibility
-========================================================= */
 
-/* =========================================
-   1. TOKENS
-========================================= */
 .insights-page {
   --ip-primary:      #10b981;
   --ip-primary-dark: #0f766e;
@@ -40,9 +21,7 @@
   min-width: 0;
 }
 
-/* =========================================
-   2. HEADER
-========================================= */
+
 .insights-header-card {
   display: flex;
   align-items: center;
@@ -117,9 +96,7 @@
   cursor: wait;
 }
 
-/* =========================================
-   3. SECTION CARDS
-========================================= */
+
 .insights-section {
   padding: 22px;
   background: var(--ip-surface);
@@ -200,9 +177,7 @@
 
 .insights-mini-refresh:disabled { opacity: 0.6; cursor: wait; }
 
-/* =========================================
-   4. STATS GRID (Snapshot)
-========================================= */
+
 .insights-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -292,9 +267,7 @@
 .insights-stat-status.status-warn   { background: #fee2e2; color: #b91c1c; }
 .insights-stat-status.status-danger { background: #fecaca; color: #991b1b; }
 
-/* =========================================
-   5. AI TIPS GRID
-========================================= */
+
 .insights-tips-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -346,9 +319,7 @@
   overflow-wrap: anywhere;
 }
 
-/* =========================================
-   6. NEWS GRID
-========================================= */
+
 .insights-news-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -439,9 +410,7 @@
   transform: translate(2px, -2px);
 }
 
-/* =========================================
-   7. TRENDING LIST
-========================================= */
+
 .insights-trending-list {
   display: flex;
   flex-direction: column;
@@ -514,9 +483,7 @@
   transform: translateX(3px);
 }
 
-/* =========================================
-   8. NUTRITION GRID
-========================================= */
+
 .insights-nutrition-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -591,9 +558,7 @@
 
 .insights-nutrition-link svg { flex-shrink: 0; }
 
-/* =========================================
-   9. LOADING / EMPTY / FOOTER
-========================================= */
+
 .insights-loading,
 .insights-empty {
   display: flex;
@@ -633,11 +598,7 @@
   flex-shrink: 0;
 }
 
-/* =========================================
-   10. RESPONSIVE
-========================================= */
 
-/* --- Tablet --- */
 @media (max-width: 1024px) {
   .insights-stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -651,7 +612,7 @@
   }
 }
 
-/* --- Small tablet --- */
+
 @media (max-width: 900px) {
   .insights-header-card {
     padding: 18px 20px;
@@ -674,7 +635,7 @@
   }
 }
 
-/* --- Mobile --- */
+
 @media (max-width: 640px) {
   .insights-page {
     gap: 14px;
@@ -763,7 +724,7 @@
   }
 }
 
-/* --- Ultra small --- */
+
 @media (max-width: 420px) {
   .insights-header-card {
     padding: 14px 16px;
@@ -786,9 +747,7 @@
   }
 }
 
-/* =========================================
-   11. ACCESSIBILITY
-========================================= */
+
 .insights-refresh-btn:focus-visible,
 .insights-mini-refresh:focus-visible,
 .insights-news-card:focus-visible,
@@ -808,7 +767,7 @@
   }
 }
 
-/* Print */
+
 @media print {
   .insights-refresh-btn,
   .insights-mini-refresh {

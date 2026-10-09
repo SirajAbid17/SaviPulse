@@ -1,9 +1,4 @@
-/* =========================================================
-   SAVIPULSE — DASHBOARD SHELL
-   Clean · Flat · Professional · Fully Responsive
-========================================================= */
 
-/* ---------- TOKENS ---------- */
 .app-shell {
   --sp-primary:        #10b981;
   --sp-primary-dark:   #0f766e;
@@ -43,9 +38,7 @@
 .app-shell *::before,
 .app-shell *::after { box-sizing: border-box; }
 
-/* =========================================================
-   MOBILE TOPBAR
-========================================================= */
+
 .mobile-topbar {
   display: none;
   position: sticky;
@@ -98,9 +91,7 @@
 }
 .icon-button:hover { background: var(--sp-surface-2); border-color: var(--sp-primary); }
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -379,9 +370,7 @@
   to { opacity: 1; }
 }
 
-/* =========================================================
-   MAIN AREA
-========================================================= */
+
 .main-area {
   flex: 1;
   min-width: 0;
@@ -588,9 +577,7 @@
 .global-footer-version { color: var(--sp-muted); }
 .global-footer-made { color: var(--sp-muted); }
 
-/* =========================================================
-   CHAT SHELL
-========================================================= */
+
 .chat-shell {
   display: flex;
   height: 100%;
@@ -603,9 +590,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* =========================================================
-   RESPONSIVE — LAYOUT
-========================================================= */
+
 
 @media (min-width: 1440px) {
   .sidebar-logout-btn {
@@ -696,17 +681,7 @@
   .page-content:has(.chat-shell) { padding: 0; }
 }
 
-/* =========================================================
-   HEART BADGE + ATTACHED SCROLLING SUPPORT MESSAGE
-   ---------------------------------------------------------
-   • Desktop (≥ 900px): heart RIGHT edge, message slides LEFT
-   • Mobile  (< 900px): heart LEFT edge,  message slides RIGHT
-   • On hover: heart + message fuse into ONE continuous pill
-   • Marquee scrolls infinitely, pauses on direct hover
-   • QR slot inside the marquee
-========================================================= */
 
-/* --- Wrapper (heart + message) --- */
 .right-heart-badge {
   position: fixed;
   top: 92%;
@@ -728,7 +703,7 @@
   animation: rightHeartPulse 2.4s infinite ease-in-out;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  /* Desktop default — right edge */
+ 
   right: 0;
   left: auto;
   border-radius: 16px 0 0 16px;
@@ -741,7 +716,7 @@
   animation-play-state: paused;
 }
 
-/* Heart icon */
+
 .right-heart-badge > svg {
   width: 24px;
   height: 24px;
@@ -758,9 +733,7 @@
   transform: scale(1.1);
 }
 
-/* =========================================================
-   THE SCROLLING MESSAGE — attached to heart on hover
-========================================================= */
+
 .heart-scroll-line {
   position: relative;
   height: 100%;
@@ -768,18 +741,18 @@
   display: flex;
   align-items: center;
 
-  /* collapsed by default */
+  
   width: 0;
   opacity: 0;
   pointer-events: none;
 
-  /* Same color as hovered heart — attached look */
+  
   background: var(--sp-primary-dark, #0f766e);
   color: #ffffff;
 
   overflow: hidden;
 
-  /* Rounded on the OUTER side only */
+
   border-radius: 16px 0 0 16px;
   border: none;
 
@@ -788,7 +761,7 @@
     opacity 0.3s ease;
 }
 
-/* Desktop: message sits LEFT of the heart */
+
 .right-heart-badge .heart-scroll-line {
   order: -1;
   margin-right: 0;
@@ -800,7 +773,7 @@
   pointer-events: auto;
 }
 
-/* --- Marquee wrapper --- */
+
 .heart-scroll-marquee {
   display: inline-flex;
   align-items: center;
@@ -813,7 +786,7 @@
   padding-right: 18px;
 }
 
-/* --- Text style --- */
+
 .heart-scroll-text {
   display: inline-block;
   font-size: 12.5px;
@@ -824,7 +797,7 @@
   white-space: nowrap;
 }
 
-/* --- QR inside the marquee --- */
+
 .heart-scroll-qr {
   width: 34px;
   height: 34px;
@@ -837,29 +810,25 @@
   user-select: none;
 }
 
-/* Desktop animation: scroll right → left */
+
 @keyframes heartMarqueeLeft {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-/* Pause marquee while hovering directly over the message */
+
 .right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
   animation-play-state: paused;
 }
 
-/* =========================================================
-   PULSE
-========================================================= */
+
 @keyframes rightHeartPulse {
   0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
   50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
   100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
 }
 
-/* =========================================================
-   LARGE SCREENS (≥ 1440px)
-========================================================= */
+
 @media (min-width: 1440px) {
   .right-heart-badge {
     height: 60px;
@@ -888,9 +857,7 @@
   }
 }
 
-/* =========================================================
-   SMALL SCREENS (< 900px) — heart LEFT edge
-========================================================= */
+
 @media (max-width: 900px) {
   .right-heart-badge {
     right: auto;
@@ -918,7 +885,7 @@
     animation: heartMarqueeRight 26s linear infinite;
   }
 
-  /* Mobile animation: scroll left → right */
+  
   @keyframes heartMarqueeRight {
     0%   { transform: translateX(-50%); }
     100% { transform: translateX(0); }
@@ -931,9 +898,7 @@
   }
 }
 
-/* =========================================================
-   EXTRA SMALL MOBILE (≤ 480px)
-========================================================= */
+
 @media (max-width: 480px) {
   .right-heart-badge {
     height: 46px;
@@ -964,9 +929,7 @@
   }
 }
 
-/* =========================================================
-   ULTRA SMALL (≤ 360px) — safe fallback
-========================================================= */
+
 @media (max-width: 360px) {
   .right-heart-badge:hover .heart-scroll-line {
     width: 240px;
@@ -976,9 +939,7 @@
   }
 }
 
-/* =========================================================
-   HELP MODAL ANIMATIONS
-========================================================= */
+
 @keyframes modalIn {
   from {
     opacity: 0;
@@ -997,16 +958,7 @@
   90%  { opacity: 1; }
   100% { top: 0%;   opacity: 0; }
 }
-/* =========================================================
-   HEART BADGE + ATTACHED SCROLLING SUPPORT MESSAGE
-   ---------------------------------------------------------
-   • Desktop (≥ 900px): heart RIGHT edge, message slides LEFT,
-                        scroll chalega
-   • Mobile  (< 900px): heart LEFT edge, scroll NAHI chalega
-                        (message permanently hidden on hover)
-========================================================= */
 
-/* --- Wrapper (heart + message) --- */
 .right-heart-badge {
   position: fixed;
   top: 92%;
@@ -1028,7 +980,7 @@
   animation: rightHeartPulse 2.4s infinite ease-in-out;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  /* Desktop default — right edge */
+
   right: 0;
   left: auto;
   border-radius: 16px 0 0 16px;
@@ -1041,7 +993,7 @@
   animation-play-state: paused;
 }
 
-/* Heart icon */
+
 .right-heart-badge > svg {
   width: 24px;
   height: 24px;
@@ -1058,9 +1010,7 @@
   transform: scale(1.1);
 }
 
-/* =========================================================
-   THE SCROLLING MESSAGE — desktop only
-========================================================= */
+
 .heart-scroll-line {
   position: relative;
   height: 100%;
@@ -1068,7 +1018,7 @@
   display: flex;
   align-items: center;
 
-  /* collapsed by default */
+ 
   width: 0;
   opacity: 0;
   pointer-events: none;
@@ -1086,7 +1036,7 @@
     opacity 0.3s ease;
 }
 
-/* Desktop: message sits LEFT of the heart */
+
 .right-heart-badge .heart-scroll-line {
   order: -1;
   margin-right: 0;
@@ -1098,7 +1048,7 @@
   pointer-events: auto;
 }
 
-/* --- Marquee wrapper --- */
+
 .heart-scroll-marquee {
   display: inline-flex;
   align-items: center;
@@ -1111,7 +1061,7 @@
   padding-right: 18px;
 }
 
-/* --- Text style --- */
+
 .heart-scroll-text {
   display: inline-block;
   font-size: 12.5px;
@@ -1122,7 +1072,7 @@
   white-space: nowrap;
 }
 
-/* --- QR inside the marquee --- */
+
 .heart-scroll-qr {
   width: 34px;
   height: 34px;
@@ -1140,23 +1090,19 @@
   100% { transform: translateX(-50%); }
 }
 
-/* Pause marquee while hovering directly over the message */
+
 .right-heart-badge:hover .heart-scroll-line:hover .heart-scroll-marquee {
   animation-play-state: paused;
 }
 
-/* =========================================================
-   PULSE
-========================================================= */
+
 @keyframes rightHeartPulse {
   0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
   50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
   100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
 }
 
-/* =========================================================
-   LARGE SCREENS (≥ 1440px)
-========================================================= */
+
 @media (min-width: 1440px) {
   .right-heart-badge {
     height: 60px;
@@ -1185,19 +1131,15 @@
   }
 }
 
-/* =========================================================
-   SMALL SCREENS (< 900px) — heart LEFT edge
-   👇 Scroll/message is COMPLETELY DISABLED here.
-   Hover pe sirf heart pulse karega, koi text nahi aayega.
-========================================================= */
+
 @media (max-width: 900px) {
-  /* Heart stays on the LEFT */
+ 
   .right-heart-badge {
     right: auto;
     left: 0;
     border-radius: 0 16px 16px 0;
     box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
-    /* no gap on hover, because nothing appears */
+  
     gap: 0;
   }
 
@@ -1205,7 +1147,7 @@
     box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
   }
 
-  /* ❌ Hide the scrolling message entirely on small screens */
+
   .heart-scroll-line,
   .right-heart-badge:hover .heart-scroll-line {
     display: none !important;
@@ -1222,9 +1164,7 @@
   }
 }
 
-/* =========================================================
-   EXTRA SMALL MOBILE (≤ 480px)
-========================================================= */
+
 @media (max-width: 480px) {
   .right-heart-badge {
     height: 46px;
@@ -1236,7 +1176,7 @@
     margin: 13px;
   }
 
-  /* belt-and-braces — hide again here */
+ 
   .heart-scroll-line,
   .right-heart-badge:hover .heart-scroll-line {
     display: none !important;
@@ -1246,14 +1186,7 @@
   }
 }
 
-/* =========================================================
-   HEART BADGE + SCROLLING SUPPORT MESSAGE
-   ---------------------------------------------------------
-   • Desktop (≥ 900px): heart RIGHT edge, long scrolling text
-   • Mobile  (< 900px): heart LEFT edge, only "Scan here"
-========================================================= */
 
-/* --- Wrapper (heart + message) --- */
 .right-heart-badge {
   position: fixed;
   top: 92%;
@@ -1275,7 +1208,7 @@
   animation: rightHeartPulse 2.4s infinite ease-in-out;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  /* Desktop default — right edge */
+  
   right: 0;
   left: auto;
   border-radius: 16px 0 0 16px;
@@ -1304,9 +1237,7 @@
   transform: scale(1.1);
 }
 
-/* =========================================================
-   LONG SCROLL LINE — desktop only
-========================================================= */
+
 .heart-scroll-line {
   position: relative;
   height: 100%;
@@ -1385,11 +1316,9 @@
   animation-play-state: paused;
 }
 
-/* =========================================================
-   SHORT TEXT — mobile only ("Scan here")
-========================================================= */
+
 .heart-short-text {
-  display: none;                     /* hidden on desktop */
+  display: none;                    
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -1406,18 +1335,14 @@
   50%      { opacity: 0.85; }
 }
 
-/* =========================================================
-   PULSE
-========================================================= */
+
 @keyframes rightHeartPulse {
   0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
   50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
   100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
 }
 
-/* =========================================================
-   LARGE SCREENS (≥ 1440px)
-========================================================= */
+
 @media (min-width: 1440px) {
   .right-heart-badge {
     height: 60px;
@@ -1446,12 +1371,7 @@
   }
 }
 
-/* =========================================================
-   SMALL SCREENS (< 900px)
-   • Heart on LEFT edge
-   • Long scroll line DISABLED
-   • Only short "Scan here" text shows
-========================================================= */
+
 @media (max-width: 900px) {
   .right-heart-badge {
     right: auto;
@@ -1468,7 +1388,7 @@
     box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
   }
 
-  /* 🔥 HIDE the long scroll line on mobile */
+  
   .right-heart-badge .heart-scroll-line,
   .right-heart-badge:hover .heart-scroll-line {
     display: none !important;
@@ -1485,7 +1405,7 @@
     animation: none !important;
   }
 
-  /* 🟢 SHOW the short "Scan here" text */
+ 
   .heart-short-text {
     display: inline-block;
   }
@@ -1501,9 +1421,7 @@
   }
 }
 
-/* =========================================================
-   EXTRA SMALL MOBILE (≤ 480px)
-========================================================= */
+
 @media (max-width: 480px) {
   .right-heart-badge {
     height: 46px;
@@ -1520,9 +1438,7 @@
   }
 }
 
-/* =========================================================
-   ULTRA SMALL (≤ 360px)
-========================================================= */
+
 @media (max-width: 360px) {
   .heart-short-text {
     font-size: 11px;
@@ -1533,27 +1449,19 @@
 }
 
 .heart-short-text {
-  display: none;                     /* hidden on desktop */
+  display: none;                    
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #ffffff;
   white-space: nowrap;
-  padding-left: 14px;                /* 👈 LEFT GAP — yahan adjust karo */
+  padding-left: 14px;                
   padding-right: 4px;
   order: -1;
   margin-right: 2px;
   animation: heartShortPulse 2.4s infinite ease-in-out;
 }
-/* =========================================================
-   HEART BADGE + SCROLLING SUPPORT MESSAGE — FINAL
-   ---------------------------------------------------------
-   • Desktop (≥ 900px): heart RIGHT edge, long scrolling text
-   • Mobile  (< 900px): heart LEFT edge, only "Scan here" text
-   Click → opens HelpScannerModal
-========================================================= */
 
-/* ---------- Wrapper ---------- */
 .right-heart-badge {
   position: fixed;
   top: 92%;
@@ -1603,7 +1511,7 @@
   transform: scale(1.1);
 }
 
-/* ---------- Long scrolling line (desktop) ---------- */
+
 .heart-scroll-line {
   position: relative;
   height: 100%;
@@ -1680,16 +1588,16 @@
   animation-play-state: paused;
 }
 
-/* ---------- Short text (mobile only) ---------- */
+
 .heart-short-text {
-  display: none;                     /* hidden on desktop */
+  display: none;                    
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #ffffff;
   white-space: nowrap;
   order: -1;
-  padding-left: 14px;                /* 👈 LEFT GAP yahan */
+  padding-left: 14px;                
   padding-right: 4px;
   margin-right: 2px;
   animation: heartShortPulse 2.4s infinite ease-in-out;
@@ -1700,14 +1608,14 @@
   50%      { opacity: 0.85; }
 }
 
-/* ---------- Pulse ---------- */
+
 @keyframes rightHeartPulse {
   0%   { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
   50%  { box-shadow: -4px 0 32px rgba(16, 185, 129, 0.55); }
   100% { box-shadow: -4px 0 20px rgba(16, 185, 129, 0.25); }
 }
 
-/* ---------- Large screens ---------- */
+
 @media (min-width: 1440px) {
   .right-heart-badge {
     height: 60px;
@@ -1736,7 +1644,7 @@
   }
 }
 
-/* ---------- Small screens (< 900px) ---------- */
+
 @media (max-width: 900px) {
   .right-heart-badge {
     right: auto;
@@ -1753,7 +1661,7 @@
     box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
   }
 
-  /* Hide long scroll line */
+ 
   .right-heart-badge .heart-scroll-line,
   .right-heart-badge:hover .heart-scroll-line {
     display: none !important;
@@ -1770,7 +1678,7 @@
     animation: none !important;
   }
 
-  /* Show short text */
+ 
   .heart-short-text {
     display: inline-block;
   }
@@ -1786,7 +1694,7 @@
   }
 }
 
-/* ---------- Extra small (≤ 480px) ---------- */
+
 @media (max-width: 480px) {
   .right-heart-badge {
     height: 46px;
@@ -1804,7 +1712,7 @@
   }
 }
 
-/* ---------- Ultra small (≤ 360px) ---------- */
+
 @media (max-width: 360px) {
   .heart-short-text {
     font-size: 11px;
@@ -1814,12 +1722,7 @@
     padding-right: 8px;
   }
 }
-/* =========================================================
-   SMALL SCREENS (< 900px)
-   • Heart on LEFT edge
-   • Long scroll line DISABLED
-   • Only short "Support" text — tighter width
-========================================================= */
+
 @media (max-width: 900px) {
   .right-heart-badge {
     right: auto;
@@ -1828,7 +1731,7 @@
     box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25);
     gap: 0;
 
-    /* 👇 YAHAN padding kam kar di */
+   
     padding-left: 0;
     padding-right: 4px;
 
@@ -1840,7 +1743,7 @@
     box-shadow: 6px 0 28px rgba(16, 185, 129, 0.55);
   }
 
-  /* HIDE the long scroll line */
+ 
   .right-heart-badge .heart-scroll-line,
   .right-heart-badge:hover .heart-scroll-line {
     display: none !important;
@@ -1857,19 +1760,19 @@
     animation: none !important;
   }
 
-  /* SHOW the short text — tighter left gap */
+  
   .heart-short-text {
     display: inline-block;
-    font-size: 11.5px;              /* 👈 thoda chhota font */
-    padding-left: 8px;              /* 👈 kam left gap (pehle 14px tha) */
-    padding-right: 2px;             /* 👈 kam right gap */
+    font-size: 11.5px;            
+    padding-left: 8px;              
+    padding-right: 2px;            
     margin-right: 0;
     letter-spacing: 0.01em;
   }
 
-  /* Heart icon margin bhi thoda tighter */
+ 
   .right-heart-badge > svg {
-    margin: 14px 10px 14px 6px;     /* 👈 right side kam kiya */
+    margin: 14px 10px 14px 6px;    
   }
 
   @keyframes rightHeartPulse {
@@ -1878,30 +1781,26 @@
     100% { box-shadow: 4px 0 20px rgba(16, 185, 129, 0.25); }
   }
 }
-/* =========================================================
-   EXTRA SMALL MOBILE (≤ 480px)
-========================================================= */
+
 @media (max-width: 480px) {
   .right-heart-badge {
-    height: 42px;                    /* 👈 thoda chhota height */
+    height: 42px;                   
     border-radius: 0 12px 12px 0;
     padding-right: 4px;
   }
 
   .right-heart-badge > svg {
-    width: 18px;                     /* 👈 chhota heart icon */
+    width: 18px;                   
     height: 18px;
     margin: 12px 8px 12px 4px;
   }
 
   .heart-short-text {
     font-size: 11px;
-    padding-left: 6px;               /* 👈 aur kam gap */
+    padding-left: 6px;              
   }
 }
-/* =========================================================
-   ULTRA SMALL (≤ 360px)
-========================================================= */
+
 @media (max-width: 360px) {
   .right-heart-badge {
     height: 38px;

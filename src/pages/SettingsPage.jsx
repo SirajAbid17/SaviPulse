@@ -11,7 +11,7 @@ import {
 import '../styles/settings.css'
 
 export default function SettingsPage({ user, profile, displayName, onLogout }) {
-  /* ============ FRESH PROFILE ============ */
+ 
   const [freshProfile, setFreshProfile] = useState(profile)
   const [profileLoaded, setProfileLoaded] = useState(false)
 
@@ -34,12 +34,12 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     }
   }
 
-  /* ============ UI STATE ============ */
+
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
 
-  /* ============ FORM STATE ============ */
+ 
   const [fullName, setFullName] = useState('')
   const [bio, setBio] = useState('')
   const [gender, setGender] = useState('')
@@ -51,12 +51,12 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
   const [emailUpdates, setEmailUpdates] = useState(true)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
 
-  /* ============ AVATAR STATE ============ */
+  
   const [avatarUrl, setAvatarUrl] = useState('')
   const [avatarUploading, setAvatarUploading] = useState(false)
   const avatarInputRef = useRef(null)
 
-  /* ============ MODAL STATE ============ */
+ 
   const [modal, setModal] = useState({
     open: false,
     type: 'confirm',
@@ -90,7 +90,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     setModal((m) => ({ ...m, open: false, loading: false }))
   }
 
-  /* ============ SYNC PROFILE → FORM ============ */
+ 
   useEffect(() => {
     if (!profileLoaded) return
     const p = freshProfile
@@ -109,7 +109,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
 
   const isAdmin = freshProfile?.role === 'admin'
 
-  /* ============ HELPERS ============ */
+ 
   function flash(type, text, ms = 3500) {
     setMessage({ type, text })
     if (ms) setTimeout(() => setMessage({ type: '', text: '' }), ms)
@@ -121,7 +121,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     .map((w) => w[0]?.toUpperCase())
     .join('')
 
-  /* ============ SAVE PROFILE ============ */
+ 
   async function handleSaveProfile(e) {
     e?.preventDefault()
     if (!fullName.trim()) {
@@ -175,7 +175,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     }
   }
 
-  /* ============ AVATAR HANDLERS ============ */
+ 
   async function handleAvatarSelect(e) {
     const file = e.target.files?.[0]
     e.target.value = ''
@@ -276,13 +276,13 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     })
   }
 
-  /* ============ PASSWORD ============ */
+  
   async function handleChangePassword(newPassword) {
     const { error } = await supabase.auth.updateUser({ password: newPassword })
     if (error) throw error
   }
 
-  /* ============ DELETE ACCOUNT ============ */
+ 
   function handleDeleteAccount() {
     openModal({
       type: 'danger',
@@ -331,13 +331,13 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
     }
   }
 
-  /* ============ BMI ============ */
+  
   const bmi =
     height && weight
       ? (Number(weight) / Math.pow(Number(height) / 100, 2)).toFixed(1)
       : null
 
-  /* ============ TABS ============ */
+
   const tabs = [
     { id: 'profile', label: 'Profile', icon: UserIcon, desc: 'Personal info' },
     { id: 'health', label: 'Health', icon: Activity, desc: 'Health metrics' },
@@ -347,7 +347,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
 
   return (
     <div className="settings-page">
-      {/* HERO */}
+    
       <section className="settings-hero">
         <div className="settings-hero-bg" />
         <div className="settings-hero-content">
@@ -367,7 +367,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       </section>
 
-      {/* FLASH */}
+    
       {message.text && (
         <div className={`settings-flash settings-flash-${message.type}`}>
           <div className="settings-flash-icon">
@@ -383,7 +383,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       )}
 
-      {/* TABS */}
+    
       <div className="settings-tabs-wrap">
         <div className="settings-tabs">
           {tabs.map((t) => {
@@ -407,10 +407,10 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       </div>
 
-      {/* ============ TAB: PROFILE ============ */}
+    
       {activeTab === 'profile' && (
         <form onSubmit={handleSaveProfile} className="settings-form">
-          {/* Avatar Card */}
+         
           <section className="settings-avatar-card">
             <div className="settings-avatar-card-bg" />
             <div className="settings-avatar-card-content">
@@ -436,7 +436,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
                   onChange={handleAvatarSelect}
                 />
 
-                {/* Buttons OUTSIDE the circle, below */}
+               
                 <div className="settings-avatar-actions">
                   <button
                     type="button"
@@ -494,7 +494,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
             </div>
           </section>
 
-          {/* Basic Info */}
+        
           <section className="settings-card">
             <div className="settings-card-header">
               <div className="settings-card-icon blue">
@@ -594,7 +594,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </form>
       )}
 
-      {/* ============ TAB: HEALTH ============ */}
+     
       {activeTab === 'health' && (
         <div className="settings-form">
           <section className="settings-card">
@@ -705,7 +705,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       )}
 
-      {/* ============ TAB: PREFERENCES ============ */}
+    
       {activeTab === 'preferences' && (
         <div className="settings-form">
           <section className="settings-card">
@@ -760,7 +760,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       )}
 
-      {/* ============ TAB: SECURITY ============ */}
+     
       {activeTab === 'security' && (
         <div className="settings-form">
           <section className="settings-card">
@@ -855,7 +855,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         </div>
       )}
 
-      {/* PASSWORD MODAL */}
+      
       {showPasswordModal && (
         <PasswordModal
           onClose={() => setShowPasswordModal(false)}
@@ -867,7 +867,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
         />
       )}
 
-      {/* CONFIRM MODAL (replaces all alert/confirm) */}
+     
       <ConfirmModal
         open={modal.open}
         type={modal.type}
@@ -884,9 +884,7 @@ export default function SettingsPage({ user, profile, displayName, onLogout }) {
   )
 }
 
-/* =========================================
-   TOGGLE ROW
-========================================= */
+
 function ToggleRow({ icon: Icon, title, text, checked, onChange }) {
   return (
     <div className="settings-toggle-row">
@@ -910,9 +908,7 @@ function ToggleRow({ icon: Icon, title, text, checked, onChange }) {
   )
 }
 
-/* =========================================
-   PASSWORD MODAL
-========================================= */
+
 function PasswordModal({ onClose, onSubmit }) {
   const [pwd, setPwd] = useState('')
   const [confirm, setConfirm] = useState('')

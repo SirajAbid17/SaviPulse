@@ -1,11 +1,4 @@
-/* =========================================================
-   SAVIPULSE — RECORDS PAGE (Compact · Single-Row Actions)
-   Clean · Professional · Fully Responsive · Production Ready
-========================================================= */
 
-/* =========================================
-   1. TOKENS
-========================================= */
 .records-page {
   --rp-primary:        #10b981;
   --rp-primary-dark:   #0f766e;
@@ -36,9 +29,7 @@
   min-width: 0;
 }
 
-/* =========================================
-   2. HEADER
-========================================= */
+
 .records-header-card {
   display: flex;
   align-items: center;
@@ -128,9 +119,7 @@
   transform: translateY(0);
 }
 
-/* =========================================
-   3. STATS GRID
-========================================= */
+
 .records-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -189,9 +178,7 @@
   font-weight: 700;
 }
 
-/* =========================================
-   4. TOOLBAR
-========================================= */
+
 .records-toolbar-card {
   padding: 18px 20px;
   background: var(--rp-surface);
@@ -291,9 +278,7 @@
   box-shadow: 0 6px 14px -6px rgba(99, 102, 241, 0.55);
 }
 
-/* =========================================
-   5. RECORDS LIST CARD + GRID
-========================================= */
+
 .records-list-card {
   padding: 22px;
   background: var(--rp-surface);
@@ -308,9 +293,7 @@
   gap: 16px;
 }
 
-/* =========================================
-   6. RECORD CARD — COMPACT
-========================================= */
+
 .record-card-v2 {
   display: flex;
   flex-direction: column;
@@ -328,10 +311,10 @@
   transform: translateY(-2px);
 }
 
-/* ---- Thumbnail — CHHOTA ---- */
+
 .record-thumb-v2 {
   position: relative;
-  height: 110px;                /* pehle 160px — ab chhota */
+  height: 110px;               
   display: flex;
   align-items: center;
   justify-content: center;
@@ -426,7 +409,7 @@
   box-shadow: 0 6px 14px -6px rgba(124, 58, 237, 0.7);
 }
 
-/* ---- Body — COMPACT ---- */
+
 .record-body-v2 {
   padding: 12px 14px;
   flex: 1;
@@ -474,9 +457,7 @@
   font-weight: 600;
 }
 
-/* =========================================
-   CARD ACTIONS — SINGLE ROW (tags + icons)
-========================================= */
+
 .record-actions-v2 {
   display: flex;
   align-items: center;
@@ -487,7 +468,7 @@
   min-height: 46px;
 }
 
-/* Tags inline (left) */
+*/
 .record-tags-inline {
   display: flex;
   align-items: center;
@@ -532,7 +513,7 @@
   min-width: 4px;
 }
 
-/* Icon buttons — compact */
+
 .record-action-v2 {
   width: 30px;
   height: 30px;
@@ -581,9 +562,7 @@
   border-color: #fecaca;
 }
 
-/* =========================================
-   7. LOADING / EMPTY
-========================================= */
+
 .records-loading,
 .records-empty {
   display: flex;
@@ -626,9 +605,7 @@
   letter-spacing: -0.02em;
 }
 
-/* =========================================
-   8. MODALS
-========================================= */
+
 .modal-overlay-v2 {
   position: fixed;
   inset: 0;
@@ -735,7 +712,7 @@
   line-height: 1.6;
 }
 
-/* ---- Upload form ---- */
+
 .upload-form-v2 {
   padding: 22px 24px 24px;
   display: flex;
@@ -969,7 +946,7 @@
   border-color: #cbd5e1;
 }
 
-/* ---- View modal ---- */
+
 .modal-tabs-v2 {
   display: flex;
   gap: 4px;
@@ -1208,9 +1185,7 @@
   font-size: 11px;
 }
 
-/* =========================================
-   9. AI ANALYSIS VIEW
-========================================= */
+
 .ai-analysis-v2 {
   display: flex;
   flex-direction: column;
@@ -1450,9 +1425,7 @@
   flex-shrink: 0;
 }
 
-/* =========================================
-   10. RESPONSIVE
-========================================= */
+
 
 @media (max-width: 1024px) {
   .records-stats-grid {
@@ -1545,7 +1518,7 @@
 
   .record-stat-v2 strong { font-size: 17px; }
 
-  /* Compact action buttons on tiny screens */
+  
   .record-actions-v2 {
     padding: 8px 10px;
     gap: 4px;
@@ -1567,9 +1540,7 @@
   .ai-analysis-body-v2 { padding: 16px 16px 18px; }
 }
 
-/* =========================================
-   11. ACCESSIBILITY
-========================================= */
+
 .records-upload-btn:focus-visible,
 .records-chip:focus-visible,
 .record-action-v2:focus-visible,
@@ -1596,7 +1567,7 @@
   .records-upload-btn:hover { transform: none; }
 }
 
-/* Print */
+
 @media print {
   .records-upload-btn,
   .records-toolbar-card,

@@ -1,23 +1,3 @@
-/* =========================================================
-   SAVIPULSE — ADMIN PAGE
-   Clean · Professional · Fully Responsive
-   ---------------------------------------------------------
-   1.  Tokens
-   2.  Loading / Access Denied
-   3.  Page & Header
-   4.  Tabs
-   5.  Overview / Stats Grid
-   6.  Users Tab (Search + Table)
-   7.  Reviews Tab (Filters + Grid + Cards)
-   8.  Empty States
-   9.  Responsive
-   10. Accessibility
-   11. Print
-========================================================= */
-
-/* =========================================
-   1. TOKENS
-========================================= */
 .admin-page,
 .admin-loading,
 .admin-denied {
@@ -58,9 +38,7 @@
   color: var(--ad-ink);
 }
 
-/* =========================================
-   2. LOADING / ACCESS DENIED
-========================================= */
+
 .admin-loading,
 .admin-denied {
   min-height: 60vh;
@@ -131,9 +109,7 @@
   letter-spacing: 0.08em;
 }
 
-/* =========================================
-   3. PAGE & HEADER
-========================================= */
+
 .admin-page {
   display: flex;
   flex-direction: column;
@@ -223,9 +199,7 @@
   transform: none;
 }
 
-/* =========================================
-   4. TABS
-========================================= */
+
 .admin-tabs {
   display: flex;
   gap: 6px;
@@ -301,9 +275,7 @@
   color: #b45309;
 }
 
-/* =========================================
-   5. OVERVIEW / STATS GRID
-========================================= */
+
 .admin-overview {
   display: flex;
   flex-direction: column;
@@ -370,7 +342,7 @@
   line-height: 1.1;
 }
 
-/* Stat color variants */
+
 .admin-stat-blue    .admin-stat-icon { background: #eff6ff; color: #2563eb; }
 .admin-stat-purple  .admin-stat-icon { background: #f5f3ff; color: #7c3aed; }
 .admin-stat-emerald .admin-stat-icon { background: #ecfdf5; color: #059669; }
@@ -378,9 +350,7 @@
 .admin-stat-red     .admin-stat-icon { background: #fef2f2; color: #dc2626; }
 .admin-stat-slate   .admin-stat-icon { background: #f1f5f9; color: #475569; }
 
-/* =========================================
-   6. USERS TAB
-========================================= */
+
 .admin-users {
   display: flex;
   flex-direction: column;
@@ -427,7 +397,7 @@
   color: var(--ad-muted-2);
 }
 
-/* Table */
+
 .admin-table-wrap {
   background: var(--ad-surface);
   border: 1px solid var(--ad-line);
@@ -479,7 +449,7 @@
   color: var(--ad-ink-2);
 }
 
-/* User cell */
+
 .admin-user-cell {
   display: flex;
   align-items: center;
@@ -527,7 +497,7 @@
   white-space: nowrap;
 }
 
-/* Role badge */
+
 .admin-role-badge {
   display: inline-flex;
   align-items: center;
@@ -554,7 +524,7 @@
   color: #475569;
 }
 
-/* Role actions */
+
 .admin-role-actions {
   display: flex;
   gap: 6px;
@@ -624,9 +594,7 @@
   letter-spacing: 0.05em;
 }
 
-/* =========================================
-   7. REVIEWS TAB
-========================================= */
+
 .admin-reviews {
   display: flex;
   flex-direction: column;
@@ -690,14 +658,14 @@
   color: #fff;
 }
 
-/* Reviews grid */
+
 .admin-reviews-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 14px;
 }
 
-/* Review card */
+
 .admin-review-card {
   display: flex;
   flex-direction: column;
@@ -732,7 +700,7 @@
   background: linear-gradient(90deg, var(--ad-danger-bg) 0%, var(--ad-surface) 12%);
 }
 
-/* Head */
+
 .admin-review-head {
   display: flex;
   align-items: flex-start;
@@ -795,7 +763,7 @@
   flex-shrink: 0;
 }
 
-/* Review text */
+
 .admin-review-text {
   margin: 0;
   font-size: 13px;
@@ -805,7 +773,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Meta */
+
 .admin-review-meta {
   display: flex;
   align-items: center;
@@ -863,7 +831,7 @@
   font-weight: 600;
 }
 
-/* Actions */
+
 .admin-review-actions {
   display: flex;
   gap: 6px;
@@ -954,9 +922,7 @@
   color: var(--ad-danger);
 }
 
-/* =========================================
-   8. EMPTY STATES
-========================================= */
+
 .admin-empty {
   display: flex;
   flex-direction: column;
@@ -980,18 +946,14 @@
   letter-spacing: 0.01em;
 }
 
-/* =========================================
-   9. RESPONSIVE
-========================================= */
 
-/* Large tablet */
 @media (max-width: 1100px) {
   .admin-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Tablet */
+
 @media (max-width: 900px) {
   .admin-header { padding: 18px 20px; }
   .admin-header h2 { font-size: 20px; }
@@ -1002,7 +964,7 @@
   }
 }
 
-/* Mobile */
+
 @media (max-width: 640px) {
   .admin-page { gap: 14px; }
 
@@ -1049,7 +1011,7 @@
   .admin-search { padding: 10px 14px; }
   .admin-search input { font-size: 12.5px; }
 
-  /* Card-style table on mobile */
+
   .admin-table-wrap {
     border-radius: 14px;
   }
@@ -1113,7 +1075,7 @@
   }
 }
 
-/* Small mobile */
+
 @media (max-width: 420px) {
   .admin-header { padding: 14px 16px; }
   .admin-header h2 { font-size: 17px; }
@@ -1140,9 +1102,7 @@
   }
 }
 
-/* =========================================
-   10. ACCESSIBILITY
-========================================= */
+
 .admin-tab:focus-visible,
 .admin-refresh-btn:focus-visible,
 .admin-filter-btn:focus-visible,
@@ -1192,9 +1152,7 @@
   }
 }
 
-/* =========================================
-   11. PRINT
-========================================= */
+
 @media print {
   .admin-refresh-btn,
   .admin-tabs,
@@ -1225,9 +1183,7 @@
   }
 }
 
-/* =========================================
-   ADMIN BLOGS TAB
-========================================= */
+
 .admin-blogs {
   display: flex;
   flex-direction: column;
@@ -1270,7 +1226,7 @@
   box-shadow: 0 12px 24px -10px rgba(16, 185, 129, 0.7);
 }
 
-/* Blog list grid */
+
 .admin-blogs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1432,9 +1388,7 @@
   border-color: var(--ad-danger-line);
 }
 
-/* =========================================
-   ADMIN BLOG FORM
-========================================= */
+
 .admin-blog-form {
   padding: 20px;
   background: var(--ad-surface);
@@ -1599,7 +1553,7 @@
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Cover drop */
+
 .admin-blog-cover-drop {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -1646,7 +1600,7 @@
   font-weight: 500;
 }
 
-/* Actions */
+
 .admin-blog-form-actions {
   display: flex;
   gap: 8px;
@@ -1704,9 +1658,7 @@
   transform: none;
 }
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+
 @media (max-width: 900px) {
   .admin-blogs-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1751,9 +1703,7 @@
   }
 }
 
-/* =========================================
-   FOCUS STATES
-========================================= */
+
 .admin-blog-new-btn:focus-visible,
 .admin-blog-action:focus-visible,
 .admin-blog-btn-outline:focus-visible,

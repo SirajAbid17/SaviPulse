@@ -18,9 +18,7 @@ import {
 import './Blog.css'
 import ConfirmModal from '../ConfirmModal'
 
-/* =========================================
-   HELPERS
-========================================= */
+
 function timeAgo(dateStr) {
   try {
     const d = new Date(dateStr)
@@ -56,10 +54,7 @@ function getInitials(name) {
     .join('')
 }
 
-/* =========================================
-   ✨ BLOG CONTENT FORMATTER
-   Converts markdown-like syntax → rich HTML
-========================================= */
+
 function formatBlogContent(text) {
   if (!text) return ''
 
@@ -119,9 +114,7 @@ function formatBlogContent(text) {
     .replace(/<p>\s*<\/p>/g, '')
 }
 
-/* =========================================
-   MAIN COMPONENT
-========================================= */
+
 export default function Blogs({ user, profile }) {
   const isAdmin = profile?.role === 'admin'
   const userId = user?.id
@@ -166,7 +159,7 @@ export default function Blogs({ user, profile }) {
 
   useEffect(() => {
     loadBlogs()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [])
 
   async function loadBlogs() {
@@ -267,7 +260,6 @@ export default function Blogs({ user, profile }) {
         </div>
       </section>
 
-      {/* LAYOUT — single column (no form) */}
       <div className="blogs-layout no-form">
         <div className="blogs-right-col">
           {/* STATS */}
@@ -313,7 +305,7 @@ export default function Blogs({ user, profile }) {
             </div>
           </div>
 
-          {/* LIST */}
+        
           <div className="blogs-list-div">
             <div className="blogs-list-header">
               <div className="blogs-list-header-left">
@@ -360,7 +352,7 @@ export default function Blogs({ user, profile }) {
         </div>
       </div>
 
-      {/* MODAL */}
+   
       {activeBlog && (
         <BlogModal
           blog={activeBlog}
@@ -383,7 +375,7 @@ export default function Blogs({ user, profile }) {
         />
       )}
 
-      {/* CONFIRM MODAL */}
+     
       <ConfirmModal
         open={modal.open}
         type={modal.type}
@@ -400,9 +392,7 @@ export default function Blogs({ user, profile }) {
   )
 }
 
-/* =========================================
-   BLOG CARD — Compact (thumbnail + text)
-========================================= */
+
 function BlogCard({ blog, isAdmin, currentUserId, onOpen, onDelete }) {
   const authorName = blog.profiles?.full_name || 'SaviPulse'
   const authorAvatar = blog.profiles?.avatar_url
@@ -505,9 +495,7 @@ function BlogCard({ blog, isAdmin, currentUserId, onOpen, onDelete }) {
   )
 }
 
-/* =========================================
-   BLOG MODAL — WITH RICH TEXT
-========================================= */
+
 function BlogModal({ blog, user, profile, onClose, onStatsChange }) {
   const isAdmin = profile?.role === 'admin'
   const userId = user?.id
@@ -553,7 +541,7 @@ function BlogModal({ blog, user, profile, onClose, onStatsChange }) {
 
   useEffect(() => {
     loadCommentsAndLikes()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [blog.id])
 
   async function loadCommentsAndLikes() {
@@ -711,7 +699,7 @@ function BlogModal({ blog, user, profile, onClose, onStatsChange }) {
 
           <div className="blog-modal-divider" />
 
-          {/* COMMENTS */}
+        
           <div className="blog-comments-section">
             <div className="blog-comments-header">
               <div className="blog-comments-header-icon">

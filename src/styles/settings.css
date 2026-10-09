@@ -1,13 +1,4 @@
-/* =========================================================
-   SAVIPULSE — SETTINGS PAGE
-   Clean · Flat · Professional
-   ---------------------------------------------------------
-   • No shadows, no glows — flat surfaces
-   • Subtle borders for depth
-   • Responsive: 1200 / 1024 / 900 / 720 / 640 / 480 / 380
-========================================================= */
 
-/* ---------- THEME TOKENS ---------- */
 .settings-page {
   --sp-primary:        #10b981;
   --sp-primary-2:      #0ea5a4;
@@ -46,7 +37,7 @@
 .settings-page *::before,
 .settings-page *::after { box-sizing: border-box; }
 
-/* ---------- DARK MODE ---------- */
+
 @media (prefers-color-scheme: dark) {
   .settings-page {
     --sp-ink:        #e8f3ee;
@@ -61,7 +52,7 @@
   }
 }
 
-/* ---------- KEYFRAMES ---------- */
+
 @keyframes settingsFadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -71,9 +62,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* =========================================================
-   HERO
-========================================================= */
+
 .settings-hero {
   position: relative;
   overflow: hidden;
@@ -141,9 +130,7 @@
   white-space: nowrap;
 }
 
-/* =========================================================
-   FLASH
-========================================================= */
+
 .settings-flash {
   position: relative;
   display: flex;
@@ -175,9 +162,7 @@
 .settings-flash-info    { color: #2458a6; background: #f1f7ff; border-color: #d3e4ff; }
 .settings-flash-info    .settings-flash-icon { background: #3978d4; }
 
-/* =========================================================
-   TABS
-========================================================= */
+
 .settings-tabs-wrap {
   position: relative;
   padding: 5px;
@@ -242,9 +227,7 @@
 }
 .settings-tab.active .settings-tab-info small { color: rgba(255,255,255,.75); }
 
-/* =========================================================
-   CARDS
-========================================================= */
+
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -301,9 +284,7 @@
   line-height: 1.5;
 }
 
-/* =========================================================
-   AVATAR CARD
-========================================================= */
+
 .settings-avatar-card {
   border: 1px solid var(--sp-line);
   border-radius: var(--sp-radius);
@@ -378,7 +359,7 @@
   border-color: #d64545;
 }
 
-/* --- avatar stack --- */
+
 .settings-avatar-large {
   position: relative;
   width: 100px;
@@ -421,7 +402,7 @@
 
 .settings-avatar-ring { display: none; }
 
-/* --- avatar info --- */
+
 .settings-avatar-info {
   flex: 1;
   min-width: 0;
@@ -488,9 +469,7 @@
   background: var(--sp-primary);
 }
 
-/* =========================================================
-   FORM FIELDS
-========================================================= */
+
 .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px 14px; }
 .settings-field-full { grid-column: 1 / -1; }
 
@@ -591,9 +570,7 @@
   text-transform: uppercase;
 }
 
-/* =========================================================
-   BMI
-========================================================= */
+
 .settings-bmi-card {
   display: flex;
   align-items: center;
@@ -645,9 +622,7 @@
   line-height: 1.6;
 }
 
-/* =========================================================
-   EMPTY HINT
-========================================================= */
+
 .settings-empty-hint {
   display: flex;
   align-items: flex-start;
@@ -663,9 +638,7 @@
 .settings-empty-hint p { margin: 0; font-size: 12.5px; line-height: 1.6; }
 .settings-empty-hint strong { color: var(--sp-ink-2); font-weight: 600; }
 
-/* =========================================================
-   SAVE BUTTON
-========================================================= */
+
 .settings-save-bar { display: flex; justify-content: flex-end; }
 
 .settings-save-btn {
@@ -691,9 +664,7 @@
 }
 .settings-save-btn:disabled { opacity: .6; cursor: wait; }
 
-/* =========================================================
-   TOGGLES
-========================================================= */
+
 .settings-toggle-list { display: flex; flex-direction: column; }
 
 .settings-toggle-row {
@@ -750,9 +721,7 @@
 }
 .settings-switch.on .settings-switch-thumb { transform: translateX(20px); }
 
-/* =========================================================
-   ACTION LIST
-========================================================= */
+
 .settings-action-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
 
 .settings-action-row {
@@ -793,9 +762,7 @@
 
 .settings-action-arrow { flex-shrink: 0; color: var(--sp-muted-2); }
 
-/* =========================================================
-   LOGOUT + DANGER
-========================================================= */
+
 .settings-logout-btn {
   display: flex;
   align-items: center;
@@ -859,9 +826,7 @@
 }
 .settings-danger-btn:hover { background: #b93038; border-color: #b93038; }
 
-/* =========================================================
-   PASSWORD MODAL
-========================================================= */
+
 .settings-modal-overlay {
   position: fixed;
   z-index: 1000;
@@ -992,9 +957,7 @@
 .settings-modal .alert { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-radius: 9px; font-size: 12px; font-weight: 500; }
 .settings-modal .alert-error { border: 1px solid #f4d0d0; color: #b9323b; background: #fff3f3; }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+
 @media (max-width: 1024px) {
   .settings-tab { min-width: 140px; }
 }
@@ -1109,9 +1072,7 @@
   .settings-card { padding: 14px; }
 }
 
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
+
 .settings-tab:focus-visible,
 .settings-avatar-btn:focus-visible,
 .settings-save-btn:focus-visible,
@@ -1133,28 +1094,26 @@
     transition-duration: .01ms !important;
   }
 }
-/* Pehle */
+
 .settings-field textarea{
   min-height: 96px;
-  resize: vertical;      /* 👈 ye hatao */
+  resize: vertical;     
 }
 
-/* Ab */
+
 .settings-field textarea{
   min-height: 96px;
-  resize: none;          /* 👈 drag resize band */
-  overflow-y: auto;      /* scroll still works */
+  resize: none;         
+  overflow-y: auto;    
 }
 .settings-save-bar {
   display: flex;
   justify-content: flex-end;
-  margin-top: 24px;      /* 👈 ye add karo — grid se gap */
-  padding-top: 20px;     /* 👈 extra breathing room */
-  border-top: 1px solid var(--sp-line-2);   /* 👈 optional divider */
+  margin-top: 24px;     
+  padding-top: 20px;    
+  border-top: 1px solid var(--sp-line-2);  
 }
-/* =========================================================
-   FORM FIELDS — resize band
-========================================================= */
+
 .settings-field input,
 .settings-field select,
 .settings-field textarea {
@@ -1177,19 +1136,17 @@
 .settings-field select  { min-height: 42px; cursor: pointer; }
 .settings-field textarea{
   min-height: 96px;
-  resize: none;          /* 👈 drag resize band */
-  overflow-y: auto;      /* scroll andar */
+  resize: none;        
+  overflow-y: auto;     
 }
 
-/* =========================================================
-   SAVE BAR — proper spacing
-========================================================= */
+
 .settings-save-bar {
   display: flex;
   justify-content: flex-end;
-  margin-top: 24px;                            /* 👈 0 → 24px */
-  padding-top: 20px;                           /* 👈 extra gap */
-  border-top: 1px solid var(--sp-line-2);      /* 👈 halka divider */
+  margin-top: 24px;                          
+  padding-top: 20px;                          
+  border-top: 1px solid var(--sp-line-2);     
 }
 @media (max-width: 640px) {
   .settings-save-bar {
@@ -1205,7 +1162,7 @@
   border-top: 1px solid var(--sp-line-2);
 }
 
-/* Profile tab me jahan form hai, wahan bhi same gap */
+
 .settings-form .settings-save-bar { margin-top: 24px; }
 .settings-field textarea {
   resize: none !important;

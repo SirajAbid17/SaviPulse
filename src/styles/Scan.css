@@ -1,10 +1,4 @@
-/* =========================================================
-   CONFIRM MODAL — SaviPulse
-   Clean · Flat · Professional · Fully Responsive
-   Works with ConfirmModal.jsx
-========================================================= */
 
-/* ---------- OVERLAY ---------- */
 .cm-overlay {
   position: fixed;
   inset: 0;
@@ -28,7 +22,7 @@
   opacity: 1;
 }
 
-/* ---------- CARD ---------- */
+
 .cm-card {
   position: relative;
   width: 100%;
@@ -61,7 +55,7 @@
   opacity: 1;
 }
 
-/* ---------- CLOSE BUTTON ---------- */
+
 .cm-close {
   position: absolute;
   top: 12px;
@@ -97,7 +91,7 @@
   transform: scale(0.94);
 }
 
-/* ---------- ICON ---------- */
+
 .cm-icon {
   width: 58px;
   height: 58px;
@@ -110,10 +104,10 @@
   border-radius: 16px;
   color: #ffffff;
 
-  /* background + box-shadow come from inline style (per type) */
+ 
 }
 
-/* ---------- TITLE ---------- */
+
 .cm-title {
   margin: 0 0 8px;
 
@@ -125,7 +119,7 @@
   line-height: 1.25;
 }
 
-/* ---------- MESSAGE ---------- */
+
 .cm-message {
   margin: 0 0 22px;
 
@@ -136,7 +130,7 @@
   color: #6d847d;
 }
 
-/* ---------- ACTIONS ---------- */
+
 .cm-actions {
   display: flex;
   gap: 10px;
@@ -152,7 +146,7 @@
   min-width: 140px;
 }
 
-/* ---------- BUTTONS ---------- */
+
 .cm-btn {
   flex: 1;
 
@@ -190,7 +184,7 @@
   opacity: 0.72;
 }
 
-/* Cancel button */
+
 .cm-btn-cancel {
   background: #ffffff;
   color: #26443c;
@@ -203,7 +197,7 @@
   color: #0f2a24;
 }
 
-/* Confirm button — color comes from inline style */
+
 .cm-btn-confirm {
   color: #ffffff;
 }
@@ -212,26 +206,20 @@
   filter: brightness(1.08);
 }
 
-/* ---------- LOADING SPINNER ---------- */
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
-/* =========================================================
-   TYPE-SPECIFIC ACCENTS (optional, per type)
-========================================================= */
+
 .cm-card-danger .cm-title { color: #991b1b; }
 .cm-card-error  .cm-title { color: #991b1b; }
 .cm-card-warning .cm-title { color: #92400e; }
 .cm-card-success .cm-title { color: #065f46; }
 .cm-card-info   .cm-title { color: #075985; }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
-/* Small mobile */
 @media (max-width: 480px) {
   .cm-overlay {
     padding: 16px;
@@ -275,7 +263,7 @@
   }
 }
 
-/* Ultra small */
+
 @media (max-width: 360px) {
   .cm-card {
     padding: 22px 18px 16px;
@@ -295,7 +283,7 @@
   }
 }
 
-/* Reduced motion */
+
 @media (prefers-reduced-motion: reduce) {
   .cm-overlay,
   .cm-card,

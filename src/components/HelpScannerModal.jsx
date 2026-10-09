@@ -89,7 +89,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
       </svg>
     `);
 
-  /* Only modal-open animation. NO scanning line keyframes. */
+  
   const keyframes = `
     @keyframes hsm-modalIn {
       from { opacity: 0; transform: scale(0.96) translateY(8px); }
@@ -180,7 +180,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
           padding: 16,
         }}
       >
-        {/* Backdrop */}
+      
         <div
           style={{
             position: "absolute",
@@ -191,7 +191,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
           }}
         />
 
-        {/* Card */}
+       
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
@@ -208,7 +208,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
               "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
           }}
         >
-          {/* Close button */}
+         
           <button
             type="button"
             onClick={onClose}
@@ -254,7 +254,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
             </svg>
           </button>
 
-          {/* Header */}
+          
           <div
             style={{
               borderBottom: "1px solid #f4f4f5",
@@ -313,9 +313,9 @@ export default function HelpScannerModal({ isOpen, onClose }) {
             </p>
           </div>
 
-          {/* Body */}
+
           <div style={{ padding: "12px 20px" }}>
-            {/* QR box — NO scanning line, NO animation */}
+           
             <div
               style={{
                 position: "relative",
@@ -348,7 +348,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
                   }}
                 />
 
-                {/* Static corner brackets — no animation */}
+               
                 <span
                   style={{
                     position: "absolute",
@@ -400,7 +400,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            {/* SadaPay / EasyPaisa row */}
+           
             <div
               style={{
                 marginTop: 12,
@@ -447,7 +447,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
               <CopyButton copied={copiedWallet} onClick={handleCopyWallet} />
             </div>
 
-            {/* IBAN row */}
+          
             <div
               style={{
                 marginTop: 8,
@@ -496,7 +496,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
               <CopyButton copied={copiedIban} onClick={handleCopyIban} />
             </div>
 
-            {/* Tags */}
+           
             <div
               style={{
                 marginTop: 10,
@@ -565,7 +565,7 @@ export default function HelpScannerModal({ isOpen, onClose }) {
            
           </div>
 
-          {/* Footer */}
+        
           <div
             style={{
               borderTop: "1px solid #f4f4f5",

@@ -1,24 +1,3 @@
-/* =========================================================
-   SAVIPULSE — HEALTH PAGE
-   Clean · Professional · Fully Responsive
-   ---------------------------------------------------------
-   1.  Tokens
-   2.  Page & Header
-   3.  Health Score Ring
-   4.  Form Card
-   5.  Vitals Grid
-   6.  Mood Selector
-   7.  Notes Section
-   8.  Alerts & Actions
-   9.  Bottom Grid (Trend + BMI)
-   10. History List
-   11. Responsive
-   12. Accessibility
-========================================================= */
-
-/* =========================================
-   1. TOKENS
-========================================= */
 .health-page {
   --hp-primary:      #10b981;
   --hp-primary-dark: #0f766e;
@@ -41,9 +20,7 @@
   min-width: 0;
 }
 
-/* =========================================
-   2. HEADER
-========================================= */
+
 .health-header {
   display: flex;
   align-items: center;
@@ -95,9 +72,7 @@
 
 .health-header p svg { flex-shrink: 0; }
 
-/* =========================================
-   3. HEALTH SCORE RING
-========================================= */
+
 .health-score-ring {
   position: relative;
   width: 78px;
@@ -143,7 +118,7 @@
   margin-top: 3px;
 }
 
-/* Color variants */
+
 .health-score-emerald { color: #10b981; }
 .health-score-green   { color: #16a34a; }
 .health-score-lime    { color: #65a30d; }
@@ -158,9 +133,7 @@
 .health-score-red     .health-score-value { color: #dc2626; }
 .health-score-slate   .health-score-value { color: var(--hp-muted); }
 
-/* =========================================
-   4. FORM CARD
-========================================= */
+
 .health-form-card {
   padding: 24px;
   background: var(--hp-surface);
@@ -209,9 +182,7 @@
   flex-shrink: 0;
 }
 
-/* =========================================
-   5. VITALS GRID
-========================================= */
+
 .health-vitals-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -237,7 +208,7 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* Status border colors */
+
 .health-vital-input.status-good   { border-color: #a7f3d0; }
 .health-vital-input.status-warn   { border-color: #fde68a; }
 .health-vital-input.status-danger { border-color: #fecaca; }
@@ -362,9 +333,7 @@
 
 .health-vital-goal svg { flex-shrink: 0; }
 
-/* =========================================
-   6. MOOD SELECTOR
-========================================= */
+
 .health-mood-section {
   margin-top: 24px;
 }
@@ -432,9 +401,7 @@
   color: var(--mood-color);
 }
 
-/* =========================================
-   7. NOTES
-========================================= */
+
 .health-notes-section {
   margin-top: 24px;
 }
@@ -478,9 +445,7 @@
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* =========================================
-   8. ALERTS & ACTIONS
-========================================= */
+
 .health-alert {
   display: flex;
   align-items: center;
@@ -570,9 +535,7 @@
   cursor: wait;
 }
 
-/* =========================================
-   9. BOTTOM GRID (Trend + BMI)
-========================================= */
+
 .health-bottom-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -633,7 +596,7 @@
   flex-shrink: 0;
 }
 
-/* Mini Chart (steps) */
+
 .mini-chart {
   display: flex;
   align-items: flex-end;
@@ -728,9 +691,7 @@
   color: #059669;
 }
 
-/* =========================================
-   BMI
-========================================= */
+
 .bmi-display {
   display: flex;
   flex-direction: column;
@@ -813,9 +774,7 @@
   letter-spacing: 0.05em;
 }
 
-/* =========================================
-   10. HISTORY LIST
-========================================= */
+
 .health-history-list {
   display: flex;
   flex-direction: column;
@@ -893,9 +852,7 @@
 .health-history-vital.water { background: #dbeafe; color: #1d4ed8; }
 .health-history-vital.mood  { background: #fef9c3; padding: 2px 6px; font-size: 13px; }
 
-/* =========================================
-   EMPTY & LOADING STATES
-========================================= */
+
 .health-loading,
 .health-empty-small {
   display: flex;
@@ -928,18 +885,14 @@
   font-weight: 700;
 }
 
-/* =========================================
-   11. RESPONSIVE
-========================================= */
 
-/* --- Tablet --- */
 @media (max-width: 1024px) {
   .health-bottom-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* --- Small tablet --- */
+
 @media (max-width: 900px) {
   .health-header {
     padding: 18px 20px;
@@ -966,7 +919,7 @@
   }
 }
 
-/* --- Mobile --- */
+
 @media (max-width: 640px) {
   .health-page {
     gap: 14px;
@@ -1096,7 +1049,7 @@
   }
 }
 
-/* --- Ultra small --- */
+
 @media (max-width: 420px) {
   .health-header {
     padding: 14px 16px;
@@ -1136,9 +1089,7 @@
   }
 }
 
-/* =========================================
-   12. ACCESSIBILITY
-========================================= */
+
 .health-mood-btn:focus-visible,
 .health-btn-primary:focus-visible,
 .health-btn-secondary:focus-visible,
@@ -1158,7 +1109,7 @@
   }
 }
 
-/* Print */
+
 @media print {
   .health-form-actions {
     display: none;
